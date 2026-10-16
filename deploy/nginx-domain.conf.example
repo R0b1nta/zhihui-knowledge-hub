@@ -1,0 +1,24 @@
+# 已有 WordPress：先检查当前 Web 服务配置，不要直接覆盖。
+# 替换域名与证书路径。此配置仅在证书已存在时才能启用。
+server {
+    listen 80;
+    server_name YOUR_DOMAIN;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name YOUR_DOMAIN;
+    ssl_certificate /PATH/TO/fullchain.pem;
+    ssl_certificate_key /PATH/TO/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 128k;
+
+    location / {
+        proxy_pass http://127.0.0.1:3100;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}

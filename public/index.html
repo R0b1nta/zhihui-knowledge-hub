@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="磁脉知识库，连接知识与协作。浏览公开知识文章，员工登录后管理团队项目。">
+  <meta name="theme-color" content="#244b42">
+  <title>磁脉知识库 · 连接知识与协作</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+  <aside class="sidebar">
+    <a class="brand" href="#home"><img src="/favicon.svg" alt="" width="38" height="38"><span>磁脉知识库<small>CIMAI KNOWLEDGE</small></span></a>
+    <div class="nav-caption">工作空间</div>
+    <nav aria-label="主导航">
+      <a href="#home" data-nav="home"><span class="nav-symbol">◈</span>空间首页</a>
+      <a href="#knowledge" data-nav="knowledge"><span class="nav-symbol">▤</span>知识文库</a>
+      <a href="#projects" data-nav="projects"><span class="nav-symbol">▦</span>项目空间<span class="nav-lock">私密</span></a>
+      <a href="#admin" data-nav="admin" id="admin-nav" hidden><span class="nav-symbol">⚙</span>内容与账号</a>
+    </nav>
+    <div class="sidebar-note"><span class="eyebrow">CONNECT & GROW</span><strong>让经验留下来，<br>让协作向前走。</strong><p>一个持续生长的知识空间。</p><div class="note-art" aria-hidden="true"><i></i><i></i><i></i></div></div>
+    <div class="sidebar-foot"><span class="dot"></span>公开知识，自由探索</div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><div class="breadcrumb">磁脉 <span>/</span> <strong id="page-label">空间首页</strong></div><div class="top-actions"><span class="public-tag">◉ 公开访问</span><button class="button small" id="account-button">员工登录 <span>↗</span></button></div></header>
+    <main id="main" tabindex="-1"><div class="loading">正在加载知识空间…</div></main>
+    <footer><span>© <span id="year"></span> 磁脉知识库</span><span>知识连接彼此，协作创造价值。</span></footer>
+  </div>
+  <dialog id="dialog"><div id="dialog-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

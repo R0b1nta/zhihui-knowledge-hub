@@ -1,0 +1,28 @@
+[Unit]
+Description=Cimai Knowledge Hub
+After=network.target
+
+[Service]
+Type=simple
+User=cimai
+Group=cimai
+WorkingDirectory=/opt/cimai-knowledge-hub
+ExecStart=/usr/bin/node /opt/cimai-knowledge-hub/server.mjs
+Environment=NODE_ENV=production
+Environment=PORT=3100
+# 初次 IP 试运行：仅公开页面可用，员工登录需 HTTPS。
+# 接入本机 HTTPS 反向代理后，改为 HOST=127.0.0.1 并关闭公网 3100。
+Environment=HOST=0.0.0.0
+Environment=SESSION_SECURE=1
+Environment=DATA_DIR=/var/lib/cimai
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cimai
+
+[Install]
+WantedBy=multi-user.target
