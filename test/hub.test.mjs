@@ -133,3 +133,82 @@ test('备份生成可独立打开并包含完整记录的数据库',async t=>{
   await backup(f.db,path);
   const copy=new DatabaseSync(path);assert.equal(copy.prepare('PRAGMA integrity_check').get().integrity_check,'ok');assert.equal(copy.prepare('SELECT COUNT(*) AS n FROM articles').get().n,3);copy.close();
 });
+
+test('全局搜索：访客只有公开文章，登录员工可搜索项目，退出立即隔离',async t=>{
+  const f=await fixture(t);const admin=(await f.login()).cookie;
+  await f.request('articles','POST',{title:'永磁知识',category:'技术',summary:'公开资料',content:'介绍整体充退磁方案'},admin);
+  await f.request('projects','POST',{title:'机密永磁项目',description:'专用退磁线圈设计记录',owner:'张工程师',deadline:'2026-12-01',status:'active'},admin);
+  const search=(q,cookie='',scope='all')=>f.request(`search?${new URLSearchParams({q,scope})}`,'GET',undefined,cookie);
+  const visitor=await search('永磁');assert.equal(visitor.status,200);assert.equal(visitor.body.total,1);assert.equal(visitor.body.counts.project,0);assert.equal(visitor.body.canSearchProjects,false);
+  assert.equal(JSON.stringify(visitor.body).includes('机密'),false);
+  assert.equal((await search('张工程师')).body.total,0);
+  assert.equal((await search('永磁','','project')).status,401);
+  const member=await search('永磁',admin);assert.equal(member.body.total,2);assert.equal(member.body.counts.project,1);assert.equal(member.body.canSearchProjects,true);
+  assert.equal((await search('张工程师 退磁',admin)).body.results[0].type,'project');
+  assert.equal((await search('进行中',admin)).body.results[0].type,'project');
+  assert.equal((await search('2026-12-01',admin)).body.results[0].owner,'张工程师');
+  const project=(await search('机密',admin)).body.results[0];
+  assert.equal((await f.request(`projects/${project.id}`)).status,401);
+  assert.equal((await f.request(`projects/${project.id}`,'GET',undefined,admin)).body.title,'机密永磁项目');
+  await f.request('logout','POST',{},admin);
+  assert.equal((await search('机密',admin)).body.total,0);
+});
+
+test('全局搜索：全文、多关键词、排序、分页和输入边界',async t=>{
+  const f=await fixture(t);const admin=(await f.login()).cookie;
+  const article={title:'Coil',category:'技术',summary:'公开资料',content:'磁场'.repeat(140)+'特殊关键词 脉冲设计 100% A_B <script>alert(1)</script>'};
+  await f.request('articles','POST',article,admin);
+  const search=q=>f.request(`search?q=${encodeURIComponent(q)}`);
+  const full=await search('特殊关键词');assert.equal(full.body.total,1);assert.match(full.body.results[0].excerpt,/特殊关键词/);assert.ok(full.body.results[0].excerpt.startsWith('…'));
+  assert.equal((await search('coil 脉冲设计')).body.total,1);
+  assert.equal((await search('Coil 不存在')).body.total,0);
+  assert.equal((await search('100%')).body.total,1);assert.equal((await search('A_B')).body.total,1);
+  assert.equal((await search("' OR 1=1 --")).body.total,0);
+  assert.equal((await search('   ')).body.total,0);
+  assert.equal((await search('x'.repeat(101))).status,400);
+  assert.equal((await search('a b c d e f g h i')).status,400);
+  assert.equal((await f.request('search?q=coil&scope=users')).status,400);
+  assert.equal((await f.request('search?q=coil&page=-1')).status,400);
+  const insert=f.db.prepare('INSERT INTO articles(title,category,summary,content,updated) VALUES (?,?,?,?,?)');
+  for(let i=0;i<24;i++)insert.run(`相关资料 ${i}`,'技术','摘要','分页关键词 Coil','2026-10-16T00:00:00.000Z');
+  const first=(await f.request('search?q=COIL')).body;assert.equal(first.total,25);assert.equal(first.results[0].title,'Coil');assert.equal(first.results.length,12);
+  const second=(await f.request('search?q=COIL&page=2')).body;assert.equal(second.results.length,12);assert.equal(first.results.some(a=>second.results.some(b=>a.type===b.type&&a.id===b.id)),false);
+  const third=(await f.request('search?q=COIL&page=3')).body;assert.equal(third.results.length,1);
+  const id=first.results[0].id;
+  await f.request(`articles/${id}`,'PUT',{...article,content:'已修改正文'},admin);
+  assert.equal((await search('特殊关键词')).body.total,0);
+  await f.request(`articles/${id}`,'DELETE',{},admin);
+  assert.equal((await f.request(`articles/${id}`)).status,404);
+});
+
+test('全局搜索：安全连接与账号停用边界',async t=>{
+  const f=await fixture(t,true);
+  const admin=(await f.request('login','POST',{username:'admin',password:'Admin-test-password-123'},'',{'X-Forwarded-Proto':'https'})).cookie;
+  f.db.prepare('INSERT INTO projects(title,description,owner,deadline,status,updated,updated_by) VALUES (?,?,?,?,?,?,?)').run('私密词项目','敏感正文','员工','','planned',new Date().toISOString(),'管理员');
+  const httpResult=await f.request('search?q=私密词','GET',undefined,admin);assert.equal(httpResult.body.total,0);assert.equal(httpResult.body.canSearchProjects,false);
+  const httpsResult=await f.request('search?q=私密词','GET',undefined,admin,{'X-Forwarded-Proto':'https'});assert.equal(httpsResult.body.total,1);
+  f.db.prepare('UPDATE users SET active=0 WHERE id=1').run();
+  const disabled=await f.request('search?q=私密词','GET',undefined,admin,{'X-Forwarded-Proto':'https'});assert.equal(disabled.body.total,0);assert.equal(disabled.body.canSearchProjects,false);
+});
+
+test('旧站参考内容：仅管理员可预览导入，保留原数据并避免重复',async t=>{
+  const f=await fixture(t);const admin=(await f.login()).cookie;
+  assert.equal((await f.request('reference-articles')).status,401);
+  await f.request('users','POST',{username:'member',name:'员工甲',password:'Member-password-123'},admin);
+  const member=(await f.login('member','Member-password-123')).cookie;
+  assert.equal((await f.request('reference-articles','GET',undefined,member)).status,403);
+  const references=(await f.request('reference-articles','GET',undefined,admin)).body;assert.equal(references.length,7);assert.equal(references.every(a=>!a.imported),true);
+  assert.equal((await f.request('articles')).body.length,3);
+  assert.equal((await f.request('reference-articles/import','POST',{ids:[references[0].id]},member)).status,403);
+  assert.equal((await f.request('reference-articles/import','POST',{ids:[references[0].id,'bad-id']},admin)).status,400);
+  assert.equal((await f.request('articles')).body.length,3);
+  const ids=references.map(item=>item.id);
+  assert.equal((await f.request('reference-articles/import','POST',{ids},admin)).body.imported,7);
+  assert.equal((await f.request('articles')).body.length,10);
+  assert.equal((await f.request('search?q=整体充退磁')).body.total>=1,true);
+  const imported=(await f.request('articles')).body.find(a=>a.title===references[0].title);
+  await f.request(`articles/${imported.id}`,'PUT',{...imported,title:'管理员修订名称',content:'保留编辑内容'},admin);
+  assert.equal((await f.request('reference-articles/import','POST',{ids},admin)).body.imported,0);
+  assert.equal((await f.request(`articles/${imported.id}`)).body.content,'保留编辑内容');
+  assert.equal((await f.request('reference-articles','GET',undefined,admin)).body.every(a=>a.imported),true);
+});
