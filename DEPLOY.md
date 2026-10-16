@@ -10,6 +10,8 @@
 
 ## 2. 安装并上传
 
+一键方式：上传 `deploy/aliyun-setup.sh` 到服务器后执行 `sudo bash aliyun-setup.sh`，脚本自动完成 Node.js 安装、运行用户创建、源码拉取、systemd 服务配置与本机自测，然后在控制台防火墙放行 TCP 3100 即可。以下为手动步骤，供排查或自定义时参考。
+
 使用官方渠道安装 Node.js 24 或更新版本，确认 `node --version`。参考服务文件假设 Node 在 `/usr/bin/node`，如果实际路径不同需修改 `ExecStart`。需要 `node:sqlite` 内置模块，不需要额外数据库、Redis 或 npm 依赖。
 
 上传本项目源码到 `/opt/cimai-knowledge-hub`，不上传本机的 `data/`、测试数据或备份。创建专用运行用户和数据目录：
