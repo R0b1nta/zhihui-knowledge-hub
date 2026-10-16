@@ -7,6 +7,7 @@ const h = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<
 const date = value => value ? new Date(value).toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}) : '未设置';
 const route = () => {
   const name = location.hash.slice(1).split('?')[0];
+  if (name.startsWith('article/')) return 'article';
   return ['home','knowledge','projects','admin','search'].includes(name) ? name : 'home';
 };
 const admin = () => state.user?.role === 'admin';
@@ -23,7 +24,12 @@ async function api(path, method='GET', data) {
   return result;
 }
 function title(heading, subtitle, action='') { return `<div class="page-title"><div><h1>${heading}</h1><p>${subtitle}</p></div>${action}</div>`; }
-function articleCard(article) { return `<button class="article-card" data-article="${article.id}"><span class="badge">${h(article.category)}</span><h3>${h(article.title)}</h3><p>${h(article.summary)}</p><div class="article-meta"><span>更新于 ${date(article.updated)}</span><span aria-hidden="true">↗</span></div></button>`; }
+function articleReturnHash() {
+  const hash = route()==='article' ? new URLSearchParams(location.hash.split('?')[1] || '').get('from') : (location.hash || '#home');
+  return hash==='#home' || hash==='#knowledge' || /^#search(?:\?|$)/.test(hash || '') ? hash : '#knowledge';
+}
+function articleHref(id) { return `#article/${id}?${new URLSearchParams({from:articleReturnHash()})}`; }
+function articleCard(article) { return `<a class="article-card" href="${h(articleHref(article.id))}"><span class="badge">${h(article.category)}</span><h3>${h(article.title)}</h3><p>${h(article.summary)}</p><div class="article-meta"><span>更新于 ${date(article.updated)}</span><span aria-hidden="true">↗</span></div></a>`; }
 function home() {
   const categories = new Set(state.articles.map(a => a.category)).size;
   main.innerHTML=`<section class="hero"><div class="hero-copy"><span class="eyebrow">KNOWLEDGE CONNECTS US</span><h1>让每一份经验，<br>成为下一步的力量。</h1><p>在这里发现知识、分享方法，<br>也让团队的每一个项目，向前一步。</p><div class="hero-actions"><a class="button" href="#knowledge">探索知识文库 <span>↗</span></a><a class="button secondary" href="#projects">进入项目空间 <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><i></i></div></section><div class="intro-row"><span>欢迎来到磁脉，知识与协作从这里连接。</span><div class="intro-stats"><span><strong>${state.articles.length}</strong>篇公开文章</span><span><strong>${categories}</strong>个知识分类</span></div></div><div class="section-heading"><h2>找到你的空间</h2><span class="eyebrow">OUR SPACES</span></div><div class="spaces"><a class="space-card" href="#knowledge"><div class="space-icon" aria-hidden="true">▤</div><div><h3>知识文库 <span class="badge">公开</span></h3><p>让知识有迹可循，让经验触手可及。</p></div><span class="arrow">↗</span></a><a class="space-card project" href="#projects"><div class="space-icon" aria-hidden="true">▦</div><div><h3>项目空间 <span class="badge warm">员工专属</span></h3><p>看见目标与进展，让协作更有方向。</p></div><span class="arrow">↗</span></a></div><div class="section-heading"><div><h2>最近更新</h2><p class="section-subtitle">沉淀一点经验，积累一份共同的知识。</p></div><a class="text-button" href="#knowledge">全部文章 <span>→</span></a></div>${state.articles.length ? `<div class="card-grid">${state.articles.slice(0,3).map(articleCard).join('')}</div>` : '<div class="empty"><h3>知识正在积累中</h3><p>正式文章发布后，会在这里展示。</p></div>'}<div class="bottom-note"><span>◈</span>${state.articles.some(article=>article.summary.startsWith('示例文章'))?'当前包含使用示例，管理员可在后台编辑或删除。':'公开知识持续更新。'}项目内容仅向已登录的员工开放。</div>`;
@@ -70,13 +76,13 @@ function searchPage() {
   api(`search?${new URLSearchParams({q:params.query,scope:params.scope,page:String(params.page)})}`).then(result=>{
     if (sequence!==searchSequence || route()!=='search' || userId!==state.user?.id) return;
     const pages = Math.max(1,Math.ceil(result.total/result.pageSize));
-    $('#global-results').innerHTML = `<div class="search-summary"><span>“${h(result.query)}” · 共 <strong>${result.total}</strong> 条结果</span><span>按相关程度排序</span></div>${result.results.length?`<div class="search-results">${result.results.map(item=>`<button class="search-result" data-search-result="${item.id}" data-result-type="${item.type}"><div class="search-result-heading"><span class="badge ${item.type==='project'?'warm':''}">${item.type==='project'?'员工项目':'知识文章'}</span><span>${h(item.category)}</span></div><h3>${highlighted(item.title,result.query)}</h3><p>${highlighted(item.excerpt,result.query)}</p><div class="search-result-meta"><span>${item.type==='project'?`负责人：${h(item.owner)} · `:''}更新于 ${date(item.updated)}</span><span>查看详情 ↗</span></div></button>`).join('')}</div>`:`<div class="empty"><h3>${result.total?'这一页暂时没有结果':'没有找到相关内容'}</h3><p>试试更简短的关键词，或切换搜索范围。</p>${result.total?'<button class="button secondary" data-search-page="1">返回第一页</button>':''}</div>`}${result.total?`<div class="search-pagination"><button class="button secondary small" data-search-page="${params.page-1}" ${params.page<=1?'disabled':''}>上一页</button><span>第 ${params.page} / ${pages} 页</span><button class="button secondary small" data-search-page="${params.page+1}" ${params.page>=pages?'disabled':''}>下一页</button></div>`:''}`;
+    $('#global-results').innerHTML = `<div class="search-summary"><span>“${h(result.query)}” · 共 <strong>${result.total}</strong> 条结果</span><span>按相关程度排序</span></div>${result.results.length?`<div class="search-results">${result.results.map(item=>`${item.type==='article'?`<a class="search-result" href="${h(articleHref(item.id))}">`:`<button class="search-result" data-search-result="${item.id}" data-result-type="${item.type}">`}<div class="search-result-heading"><span class="badge ${item.type==='project'?'warm':''}">${item.type==='project'?'员工项目':'知识文章'}</span><span>${h(item.category)}</span></div><h3>${highlighted(item.title,result.query)}</h3><p>${highlighted(item.excerpt,result.query)}</p><div class="search-result-meta"><span>${item.type==='project'?`负责人：${h(item.owner)} · `:''}更新于 ${date(item.updated)}</span><span>查看详情 ↗</span></div>${item.type==='article'?'</a>':'</button>'}`).join('')}</div>`:`<div class="empty"><h3>${result.total?'这一页暂时没有结果':'没有找到相关内容'}</h3><p>试试更简短的关键词，或切换搜索范围。</p>${result.total?'<button class="button secondary" data-search-page="1">返回第一页</button>':''}</div>`}${result.total?`<div class="search-pagination"><button class="button secondary small" data-search-page="${params.page-1}" ${params.page<=1?'disabled':''}>上一页</button><span>第 ${params.page} / ${pages} 页</span><button class="button secondary small" data-search-page="${params.page+1}" ${params.page>=pages?'disabled':''}>下一页</button></div>`:''}`;
   }).catch(error=>{
     if (sequence===searchSequence && route()==='search') $('#global-results').innerHTML=`<div class="empty"><h3>搜索暂时无法完成</h3><p>${h(error.message)}</p><button class="button secondary" data-action="retry-search">重新搜索</button></div>`;
   });
 }
 async function openSearchResult(id,type) {
-  if (type==='article') return readArticle(id,await api(`articles/${id}`));
+  if (type==='article') { location.hash=articleHref(id); return; }
   const userId=state.user?.id;
   const project = await api(`projects/${id}`);
   if (!state.user || state.user.id!==userId) return toast('请重新登录后查看项目');
@@ -106,13 +112,14 @@ function adminPage() {
 function render() {
   searchSequence++;
   const current=route();
-  document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===current);if(a.dataset.nav===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索'})[current];
+  const activeNav=current==='article'?'knowledge':current;
+  document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===activeNav);if(a.dataset.nav===activeNav)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索',article:'文章详情'})[current];
   $('#admin-nav').hidden=!admin();
   $('#account-button').textContent=state.user?`${state.user.name} · 退出`:'员工登录 ↗';
   $('#global-search').placeholder=state.user?'搜索知识、项目、负责人…':'搜索公开知识…';
   document.title=`${$('#page-label').textContent} · 磁脉知识库`;
-  ({home,knowledge,projects,admin:adminPage,search:searchPage})[current]();
+  ({home,knowledge,projects,admin:adminPage,search:searchPage,article:articlePage})[current]();
 }
 async function refresh() {
   const [info,articles]=await Promise.all([api('me'),api('articles')]);
@@ -165,14 +172,25 @@ function resetUser(id) {
 function confirmAction(heading,message,handler) {
   openDialog(heading,`<form><p class="form-note">${h(message)}</p>${actions('确认')}</form>`);formSubmit(handler);
 }
-function readArticle(id,article) {
-  const item=article || state.articles.find(a=>a.id===id);if(!item)return;
-  if (article) {
-    if (state.articles.some(existing=>existing.id===id)) state.articles=state.articles.map(existing=>existing.id===id?article:existing);
-    else state.articles.push(article);
-  }
-  openDialog('知识文库',`<span class="badge">${h(item.category)}</span><h1 class="article-detail-title">${h(item.title)}</h1><p class="form-note">更新于 ${date(item.updated)}</p><div class="article-body">${h(item.content)}</div>${admin()?`<div class="form-actions"><button class="button secondary" data-edit-article="${id}">编辑文章</button></div>`:''}`);
+function articlePage() {
+  const returnHash=articleReturnHash();
+  const returnLabel=returnHash.startsWith('#search')?'返回搜索结果':returnHash==='#home'?'返回首页':'返回知识文库';
+  const backLink=`<a class="text-button article-back" href="${h(returnHash)}">← ${returnLabel}</a>`;
+  const id=location.hash.slice(1).split('?')[0].split('/')[1];
+  const sequence=searchSequence;
+  const showError=message=>{main.innerHTML=`<div class="article-page">${backLink}<section class="empty"><h1>暂时无法查看文章</h1><p>${h(message)}</p><a class="button secondary" href="#knowledge">浏览知识文库</a></section></div>`;};
+  if (!/^[1-9]\d{0,9}$/.test(id || '')) { showError('文章地址不正确，请从知识文库重新打开。'); return; }
+  main.innerHTML=`<div class="article-page">${backLink}<div class="loading" role="status">正在加载文章…</div></div>`;
+  api(`articles/${id}`).then(item=>{
+    if (sequence!==searchSequence || route()!=='article') return;
+    if (state.articles.some(existing=>existing.id===item.id)) state.articles=state.articles.map(existing=>existing.id===item.id?item:existing);
+    else state.articles.push(item);
+    document.title=`${item.title} · 磁脉知识库`;
+    main.innerHTML=`<div class="article-page">${backLink}<article class="article-reading"><header class="article-reading-header"><div class="article-reading-meta"><span class="badge">${h(item.category)}</span><span>更新于 ${date(item.updated)}</span></div><h1>${h(item.title)}</h1>${item.summary?`<p class="article-reading-summary">${h(item.summary)}</p>`:''}</header><div class="article-body article-reading-body">${h(item.content)}</div><div class="article-reading-footer"><a class="text-button" href="#knowledge">← 浏览更多知识</a>${admin()?`<button class="button secondary small" data-edit-article="${item.id}">编辑文章</button>`:''}</div></article></div>`;
+    main.focus({preventScroll:true});
+  }).catch(error=>{if(sequence===searchSequence && route()==='article')showError(error.message);});
 }
+
 function previewReference(id) {
   const item=state.references.find(article=>article.id===id);if(!item)return;
   openDialog('旧站参考内容',`<span class="badge">${h(item.category)}</span><h1 class="article-detail-title">${h(item.title)}</h1><p class="form-note">${h(item.source)}</p><div class="article-body">${h(item.content)}</div>${item.imported?'<p class="form-note">已导入知识库，可在公开文章列表中编辑。</p>':`<div class="form-actions"><button class="button" data-import-reference="${h(id)}">确认并公开导入</button></div>`}`);
@@ -189,7 +207,6 @@ document.addEventListener('click',async event=>{
     if(target.dataset.searchResult)return await openSearchResult(Number(target.dataset.searchResult),target.dataset.resultType);
     if(target.dataset.reference)return previewReference(target.dataset.reference);
     if(target.dataset.importReference)return confirmReferenceImport([target.dataset.importReference]);
-    if(target.dataset.article)return readArticle(Number(target.dataset.article));
     if(target.dataset.editArticle)return editArticle(Number(target.dataset.editArticle));
     if(target.dataset.editProject)return editProject(Number(target.dataset.editProject));
     if(target.dataset.category){state.category=target.dataset.category;knowledge();return;}
