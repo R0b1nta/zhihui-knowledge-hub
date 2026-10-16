@@ -1,13 +1,17 @@
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const dialog = $('#dialog');
-const state = { articles: [], projects: [], users: [], user: null, configured: false, loginAvailable: false, category: '全部', query: '', status: 'all' };
+const state = { articles: [], projects: [], users: [], references: [], user: null, configured: false, loginAvailable: false, category: '全部', query: '', status: 'all' };
 const statuses = { planned: '待开始', active: '进行中', done: '已完成' };
 const h = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date = value => value ? new Date(value).toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}) : '未设置';
-const route = () => ['home','knowledge','projects','admin'].includes(location.hash.slice(1)) ? location.hash.slice(1) : 'home';
+const route = () => {
+  const name = location.hash.slice(1).split('?')[0];
+  return ['home','knowledge','projects','admin','search'].includes(name) ? name : 'home';
+};
 const admin = () => state.user?.role === 'admin';
 let toastTimer;
+let searchSequence = 0;
 function toast(text) { $('#toast').textContent=text; $('#toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(() => $('#toast').hidden=true,3500); }
 async function api(path, method='GET', data) {
   const response = await fetch(`/api/${path}`, { method, credentials:'same-origin', headers: data === undefined ? {} : {'Content-Type':'application/json'}, body: data === undefined ? undefined : JSON.stringify(data) });
@@ -22,7 +26,7 @@ function title(heading, subtitle, action='') { return `<div class="page-title"><
 function articleCard(article) { return `<button class="article-card" data-article="${article.id}"><span class="badge">${h(article.category)}</span><h3>${h(article.title)}</h3><p>${h(article.summary)}</p><div class="article-meta"><span>更新于 ${date(article.updated)}</span><span aria-hidden="true">↗</span></div></button>`; }
 function home() {
   const categories = new Set(state.articles.map(a => a.category)).size;
-  main.innerHTML=`<section class="hero"><div class="hero-copy"><span class="eyebrow">KNOWLEDGE CONNECTS US</span><h1>让每一份经验，<br>成为下一步的力量。</h1><p>在这里发现知识、分享方法，<br>也让团队的每一个项目，向前一步。</p><div class="hero-actions"><a class="button" href="#knowledge">探索知识文库 <span>↗</span></a><a class="button secondary" href="#projects">进入项目空间 <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><i></i></div></section><div class="intro-row"><span>欢迎来到磁脉，知识与协作从这里连接。</span><div class="intro-stats"><span><strong>${state.articles.length}</strong>篇公开文章</span><span><strong>${categories}</strong>个知识分类</span></div></div><div class="section-heading"><h2>找到你的空间</h2><span class="eyebrow">OUR SPACES</span></div><div class="spaces"><a class="space-card" href="#knowledge"><div class="space-icon" aria-hidden="true">▤</div><div><h3>知识文库 <span class="badge">公开</span></h3><p>让知识有迹可循，让经验触手可及。</p></div><span class="arrow">↗</span></a><a class="space-card project" href="#projects"><div class="space-icon" aria-hidden="true">▦</div><div><h3>项目空间 <span class="badge warm">员工专属</span></h3><p>看见目标与进展，让协作更有方向。</p></div><span class="arrow">↗</span></a></div><div class="section-heading"><div><h2>最近更新</h2><p class="section-subtitle">沉淀一点经验，积累一份共同的知识。</p></div><a class="text-button" href="#knowledge">全部文章 <span>→</span></a></div>${state.articles.length ? `<div class="card-grid">${state.articles.slice(0,3).map(articleCard).join('')}</div>` : '<div class="empty"><h3>知识正在积累中</h3><p>正式文章发布后，会在这里展示。</p></div>'}<div class="bottom-note"><span>◈</span>当前文章为使用示例，正式资料将由管理员陆续发布。项目内容仅向已登录的员工开放。</div>`;
+  main.innerHTML=`<section class="hero"><div class="hero-copy"><span class="eyebrow">KNOWLEDGE CONNECTS US</span><h1>让每一份经验，<br>成为下一步的力量。</h1><p>在这里发现知识、分享方法，<br>也让团队的每一个项目，向前一步。</p><div class="hero-actions"><a class="button" href="#knowledge">探索知识文库 <span>↗</span></a><a class="button secondary" href="#projects">进入项目空间 <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><i></i></div></section><div class="intro-row"><span>欢迎来到磁脉，知识与协作从这里连接。</span><div class="intro-stats"><span><strong>${state.articles.length}</strong>篇公开文章</span><span><strong>${categories}</strong>个知识分类</span></div></div><div class="section-heading"><h2>找到你的空间</h2><span class="eyebrow">OUR SPACES</span></div><div class="spaces"><a class="space-card" href="#knowledge"><div class="space-icon" aria-hidden="true">▤</div><div><h3>知识文库 <span class="badge">公开</span></h3><p>让知识有迹可循，让经验触手可及。</p></div><span class="arrow">↗</span></a><a class="space-card project" href="#projects"><div class="space-icon" aria-hidden="true">▦</div><div><h3>项目空间 <span class="badge warm">员工专属</span></h3><p>看见目标与进展，让协作更有方向。</p></div><span class="arrow">↗</span></a></div><div class="section-heading"><div><h2>最近更新</h2><p class="section-subtitle">沉淀一点经验，积累一份共同的知识。</p></div><a class="text-button" href="#knowledge">全部文章 <span>→</span></a></div>${state.articles.length ? `<div class="card-grid">${state.articles.slice(0,3).map(articleCard).join('')}</div>` : '<div class="empty"><h3>知识正在积累中</h3><p>正式文章发布后，会在这里展示。</p></div>'}<div class="bottom-note"><span>◈</span>${state.articles.some(article=>article.summary.startsWith('示例文章'))?'当前包含使用示例，管理员可在后台编辑或删除。':'公开知识持续更新。'}项目内容仅向已登录的员工开放。</div>`;
 }
 function filteredArticles() {
   const query = state.query.trim().toLowerCase();
@@ -37,6 +41,48 @@ function knowledge() {
   main.innerHTML=title('知识文库','公开的知识与方法，随时查阅，持续积累。',admin()?'<button class="button" data-action="new-article">＋ 发布文章</button>':'<span class="badge">无需登录</span>')+`<div class="search-bar"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="搜索文章" placeholder="搜索文章标题、摘要或正文…" value="${h(state.query)}"></div><div class="filters">${['全部',...new Set(state.articles.map(a=>a.category))].map(c=>`<button class="filter ${c===state.category?'active':''}" data-category="${h(c)}">${h(c)}</button>`).join('')}</div><p class="section-subtitle" id="results-count"></p><div class="section-heading"></div><div id="article-results"></div>`;
   renderArticleResults();
   $('#search').addEventListener('input',event=>{state.query=event.target.value;renderArticleResults();});
+}
+function searchParams() {
+  const params = new URLSearchParams(location.hash.split('?')[1] || '');
+  return { query: params.get('q') || '', scope: ['article','project'].includes(params.get('scope')) ? params.get('scope') : 'all', page: /^[1-9]\d{0,3}$/.test(params.get('page') || '') ? Number(params.get('page')) : 1 };
+}
+function navigateSearch(query, scope='all', page=1) {
+  const params = new URLSearchParams({q:query.trim(),scope,page:String(page)});
+  const hash = `#search?${params}`;
+  if (location.hash === hash) render(); else location.hash = hash;
+}
+function highlighted(text, query) {
+  const terms = [...new Set(query.trim().split(/\s+/u).filter(Boolean))].slice(0,8).sort((a,b)=>b.length-a.length);
+  if (!terms.length) return h(text);
+  const escaped = terms.map(term=>term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+  const pattern = new RegExp(`(${escaped.join('|')})`,'giu');
+  return String(text).split(pattern).map((part,index)=>index%2 ? `<mark>${h(part)}</mark>` : h(part)).join('');
+}
+function searchPage() {
+  const params = searchParams();
+  if (!state.user && params.scope === 'project') params.scope = 'all';
+  $('#global-search').value = params.query;
+  main.innerHTML = title('全局搜索',state.user?'统一搜索知识文章、项目说明、负责人和截止日期。':'搜索公开文章的标题、分类、摘要与全文。') + `<form id="page-search-form" class="search-bar search-page-form" role="search"><span aria-hidden="true">⌕</span><input name="q" id="page-search" type="search" aria-label="搜索全部内容" placeholder="输入关键词，多个词用空格分隔…" maxlength="100" value="${h(params.query)}"><button class="button small" type="submit">搜索</button></form><div class="filters">${[['all','全部'],['article','知识文章'],...(state.user?[['project','项目空间']]:[])].map(([scope,label])=>`<button class="filter ${params.scope===scope?'active':''}" data-search-scope="${scope}">${label}</button>`).join('')}</div><p class="form-note search-visibility">${state.user?'项目搜索仅限当前账号有权访问的团队空间。':'员工登录后可同时搜索项目；访客搜索不会包含项目内容。'}</p><div id="global-results" aria-live="polite">${params.query?'<div class="loading">正在搜索…</div>':'<div class="empty"><h3>从一个关键词开始</h3><p>例如：充退磁、电磁铆接、技术服务。多个关键词会同时匹配。</p></div>'}</div>`;
+  $('#page-search-form').addEventListener('submit',event=>{event.preventDefault();navigateSearch(new FormData(event.currentTarget).get('q'),params.scope);});
+  if (!params.query.trim()) return;
+  const sequence = searchSequence;
+  const userId = state.user?.id;
+  api(`search?${new URLSearchParams({q:params.query,scope:params.scope,page:String(params.page)})}`).then(result=>{
+    if (sequence!==searchSequence || route()!=='search' || userId!==state.user?.id) return;
+    const pages = Math.max(1,Math.ceil(result.total/result.pageSize));
+    $('#global-results').innerHTML = `<div class="search-summary"><span>“${h(result.query)}” · 共 <strong>${result.total}</strong> 条结果</span><span>按相关程度排序</span></div>${result.results.length?`<div class="search-results">${result.results.map(item=>`<button class="search-result" data-search-result="${item.id}" data-result-type="${item.type}"><div class="search-result-heading"><span class="badge ${item.type==='project'?'warm':''}">${item.type==='project'?'员工项目':'知识文章'}</span><span>${h(item.category)}</span></div><h3>${highlighted(item.title,result.query)}</h3><p>${highlighted(item.excerpt,result.query)}</p><div class="search-result-meta"><span>${item.type==='project'?`负责人：${h(item.owner)} · `:''}更新于 ${date(item.updated)}</span><span>查看详情 ↗</span></div></button>`).join('')}</div>`:`<div class="empty"><h3>${result.total?'这一页暂时没有结果':'没有找到相关内容'}</h3><p>试试更简短的关键词，或切换搜索范围。</p>${result.total?'<button class="button secondary" data-search-page="1">返回第一页</button>':''}</div>`}${result.total?`<div class="search-pagination"><button class="button secondary small" data-search-page="${params.page-1}" ${params.page<=1?'disabled':''}>上一页</button><span>第 ${params.page} / ${pages} 页</span><button class="button secondary small" data-search-page="${params.page+1}" ${params.page>=pages?'disabled':''}>下一页</button></div>`:''}`;
+  }).catch(error=>{
+    if (sequence===searchSequence && route()==='search') $('#global-results').innerHTML=`<div class="empty"><h3>搜索暂时无法完成</h3><p>${h(error.message)}</p><button class="button secondary" data-action="retry-search">重新搜索</button></div>`;
+  });
+}
+async function openSearchResult(id,type) {
+  if (type==='article') return readArticle(id,await api(`articles/${id}`));
+  const userId=state.user?.id;
+  const project = await api(`projects/${id}`);
+  if (!state.user || state.user.id!==userId) return toast('请重新登录后查看项目');
+  if (!state.projects.some(item=>item.id===id)) state.projects.push(project);
+  else state.projects = state.projects.map(item=>item.id===id?project:item);
+  openDialog('项目详情',`<span class="badge status-${h(project.status)}">${statuses[project.status]}</span><h1 class="article-detail-title">${h(project.title)}</h1><p class="form-note">负责人：${h(project.owner)} · 截止日期：${date(project.deadline)}</p><div class="article-body">${h(project.description || '暂无项目说明')}</div><div class="form-actions"><button class="button secondary" data-edit-project="${id}">编辑项目 ↗</button></div>`);
 }
 function projectCard(project) {
   const today = new Date();
@@ -55,21 +101,25 @@ function projects() {
 function adminPage() {
   if(!admin()){main.innerHTML=title('内容与账号','这里需要管理员账号。')+'<div class="empty"><h3>请使用管理员账号登录</h3><p>管理员负责发布公开文章和开通员工账号。</p><button class="button" data-action="login">员工登录 ↗</button></div>';return;}
   main.innerHTML=title('内容与账号','管理对外分享的知识，以及团队成员的访问权限。')+`<section class="admin-section"><div class="section-heading"><h2>公开文章 · ${state.articles.length}</h2><button class="button small" data-action="new-article">＋ 发布文章</button></div><div class="table-wrap"><table><thead><tr><th>文章标题</th><th>分类</th><th>更新日期</th><th>操作</th></tr></thead><tbody>${state.articles.map(a=>`<tr><td>${h(a.title)}</td><td>${h(a.category)}</td><td>${date(a.updated)}</td><td><div class="inline-actions"><button class="text-button" data-edit-article="${a.id}">编辑</button><button class="text-button" data-delete-article="${a.id}">删除</button></div></td></tr>`).join('')||'<tr><td colspan="4">暂无文章</td></tr>'}</tbody></table></div></section><section class="admin-section"><div class="section-heading"><h2>团队账号 · ${state.users.length}</h2><button class="button small" data-action="new-user">＋ 开通账号</button></div><div class="table-wrap"><table><thead><tr><th>姓名</th><th>账号</th><th>角色 / 状态</th><th>操作</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${h(u.name)}</td><td>${h(u.username)}</td><td>${u.role==='admin'?'管理员':'员工'} / ${u.active?'已启用':'已停用'}</td><td><div class="inline-actions"><button class="text-button" data-reset-user="${u.id}">重设密码</button>${u.role!=='admin'?`<button class="text-button" data-toggle-user="${u.id}">${u.active?'停用':'启用'}</button>`:''}</div></td></tr>`).join('')}</tbody></table></div></section>`;
+  main.insertAdjacentHTML('beforeend',`<section class="admin-section"><div class="section-heading"><div><h2>旧站参考内容 · ${state.references.length} 篇</h2><p class="section-subtitle">沿用当前版式。预览整理后的内容，确认后再导入公开知识库；不覆盖现有文章。</p></div><button class="button small" data-action="import-references" ${state.references.every(item=>item.imported)?'disabled':''}>导入全部待发布内容</button></div><div class="table-wrap"><table><thead><tr><th>参考文章</th><th>分类</th><th>状态</th><th>操作</th></tr></thead><tbody>${state.references.map(item=>`<tr><td>${h(item.title)}</td><td>${h(item.category)}</td><td>${item.imported?'已导入':'待确认'}</td><td><button class="text-button" data-reference="${h(item.id)}">预览${item.imported?'':'与导入'} ↗</button></td></tr>`).join('')}</tbody></table></div></section>`);
 }
 function render() {
+  searchSequence++;
   const current=route();
   document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===current);if(a.dataset.nav===current)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号'})[current];
+  $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索'})[current];
   $('#admin-nav').hidden=!admin();
   $('#account-button').textContent=state.user?`${state.user.name} · 退出`:'员工登录 ↗';
+  $('#global-search').placeholder=state.user?'搜索知识、项目、负责人…':'搜索公开知识…';
   document.title=`${$('#page-label').textContent} · 磁脉知识库`;
-  ({home,knowledge,projects,admin:adminPage})[current]();
+  ({home,knowledge,projects,admin:adminPage,search:searchPage})[current]();
 }
 async function refresh() {
   const [info,articles]=await Promise.all([api('me'),api('articles')]);
   Object.assign(state,info,{articles});
   state.projects=state.user?await api('projects'):[];
   state.users=admin()?await api('users'):[];
+  state.references=admin()?await api('reference-articles'):[];
   if(state.category!=='全部'&&!state.articles.some(a=>a.category===state.category))state.category='全部';
   render();
 }
@@ -115,14 +165,30 @@ function resetUser(id) {
 function confirmAction(heading,message,handler) {
   openDialog(heading,`<form><p class="form-note">${h(message)}</p>${actions('确认')}</form>`);formSubmit(handler);
 }
-function readArticle(id) {
-  const item=state.articles.find(a=>a.id===id);if(!item)return;
+function readArticle(id,article) {
+  const item=article || state.articles.find(a=>a.id===id);if(!item)return;
+  if (article) {
+    if (state.articles.some(existing=>existing.id===id)) state.articles=state.articles.map(existing=>existing.id===id?article:existing);
+    else state.articles.push(article);
+  }
   openDialog('知识文库',`<span class="badge">${h(item.category)}</span><h1 class="article-detail-title">${h(item.title)}</h1><p class="form-note">更新于 ${date(item.updated)}</p><div class="article-body">${h(item.content)}</div>${admin()?`<div class="form-actions"><button class="button secondary" data-edit-article="${id}">编辑文章</button></div>`:''}`);
+}
+function previewReference(id) {
+  const item=state.references.find(article=>article.id===id);if(!item)return;
+  openDialog('旧站参考内容',`<span class="badge">${h(item.category)}</span><h1 class="article-detail-title">${h(item.title)}</h1><p class="form-note">${h(item.source)}</p><div class="article-body">${h(item.content)}</div>${item.imported?'<p class="form-note">已导入知识库，可在公开文章列表中编辑。</p>':`<div class="form-actions"><button class="button" data-import-reference="${h(id)}">确认并公开导入</button></div>`}`);
+}
+function confirmReferenceImport(ids) {
+  confirmAction('导入公开知识库',`将这 ${ids.length} 篇参考文章加入公开知识库，所有访客均可阅读。现有文章保留，已导入的内容不会重复添加。`,()=>api('reference-articles/import','POST',{ids}));
 }
 document.addEventListener('click',async event=>{
   const target=event.target.closest('button,[data-category],[data-status]');if(!target)return;
   try{
     if(target.hasAttribute('data-close'))return dialog.close();
+    if(target.dataset.searchScope){const params=searchParams();return navigateSearch(params.query,target.dataset.searchScope);}
+    if(target.dataset.searchPage){const params=searchParams();return navigateSearch(params.query,params.scope,Number(target.dataset.searchPage));}
+    if(target.dataset.searchResult)return await openSearchResult(Number(target.dataset.searchResult),target.dataset.resultType);
+    if(target.dataset.reference)return previewReference(target.dataset.reference);
+    if(target.dataset.importReference)return confirmReferenceImport([target.dataset.importReference]);
     if(target.dataset.article)return readArticle(Number(target.dataset.article));
     if(target.dataset.editArticle)return editArticle(Number(target.dataset.editArticle));
     if(target.dataset.editProject)return editProject(Number(target.dataset.editProject));
@@ -137,11 +203,17 @@ document.addEventListener('click',async event=>{
     if(action==='new-article')editArticle();
     if(action==='new-project')editProject();
     if(action==='new-user')newUser();
+    if(action==='retry-search')render();
+    if(action==='import-references')confirmReferenceImport(state.references.filter(item=>!item.imported).map(item=>item.id));
   }catch(error){toast(error.message);}
 });
 $('#account-button').addEventListener('click',()=>{
   if(state.user)confirmAction('退出登录','退出后仍可浏览公开知识库。',async()=>{await api('logout','POST',{});state.user=null;state.projects=[];state.users=[];});
   else login();
+});
+$('#global-search-form').addEventListener('submit',event=>{event.preventDefault();navigateSearch($('#global-search').value);});
+document.addEventListener('keydown',event=>{
+  if ((event.ctrlKey||event.metaKey) && event.key.toLowerCase()==='k') {event.preventDefault();$('#global-search').focus();}
 });
 window.addEventListener('hashchange',()=>{dialog.close();render();window.scrollTo(0,0);});
 dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});

@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
 import { openStore, passwordHash, passwordMatches } from './lib/store.mjs';
+import { searchRecords } from './lib/search.mjs';
+import { referenceList, importReferences } from './lib/reference.mjs';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const digest = value => createHash('sha256').update(value).digest('hex');
@@ -62,7 +64,8 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");
     if (req.method === 'HEAD') { res.writeHead(200); res.end(); return; }
     try {
-      const path = new URL(req.url, 'http://localhost').pathname;
+      const url = new URL(req.url, 'http://localhost');
+      const path = url.pathname;
       const method = req.method;
       if (!['GET','POST','PUT','DELETE'].includes(method)) throw new RequestError(405, '不支持此操作');
       if (method !== 'GET') {
@@ -114,6 +117,24 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
         return reply(res, 200, { ok: true }, { 'Set-Cookie': `hub_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0${secureCookies ? '; Secure' : ''}` });
       }
       if (path === '/api/articles' && method === 'GET') return reply(res, 200, db.prepare('SELECT * FROM articles ORDER BY updated DESC,id DESC').all());
+      if (path === '/api/search' && method === 'GET') {
+        const query = (url.searchParams.get('q') || '').trim().replace(/\s+/gu, ' ');
+        const scope = url.searchParams.get('scope') || 'all';
+        const pageText = url.searchParams.get('page') || '1';
+        if (query.length > 100 || query.split(' ').length > 8) throw new RequestError(400, '请输入不超过 100 个字符、8 个关键词');
+        if (!['all', 'article', 'project'].includes(scope)) throw new RequestError(400, '搜索范围不正确');
+        if (!/^[1-9]\d{0,3}$/.test(pageText)) throw new RequestError(400, '页码不正确');
+        let includeProjects = false;
+        try { privateTransport(req); includeProjects = !!currentUser(req); } catch { /* HTTP visitors only search public articles. */ }
+        if (scope === 'project' && !includeProjects) throw new RequestError(401, '请通过 HTTPS 登录后搜索项目');
+        return reply(res, 200, searchRecords(db, { query, scope, page: Number(pageText), includeProjects }));
+      }
+      const articleDetail = /^\/api\/articles\/(\d+)$/.exec(path);
+      if (articleDetail && method === 'GET') {
+        const article = db.prepare('SELECT * FROM articles WHERE id=?').get(articleDetail[1]);
+        if (!article) throw new RequestError(404, '文章已不存在');
+        return reply(res, 200, article);
+      }
       const articleMatch = /^\/api\/articles(?:\/(\d+))?$/.exec(path);
       if (articleMatch && ['POST','PUT','DELETE'].includes(method)) {
         requireUser(req, true);
@@ -130,6 +151,13 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
         return reply(res, 200, { ok: true });
       }
       if (path === '/api/projects' && method === 'GET') { requireUser(req); return reply(res,200,db.prepare('SELECT * FROM projects ORDER BY updated DESC,id DESC').all()); }
+      const projectDetail = /^\/api\/projects\/(\d+)$/.exec(path);
+      if (projectDetail && method === 'GET') {
+        requireUser(req);
+        const project = db.prepare('SELECT * FROM projects WHERE id=?').get(projectDetail[1]);
+        if (!project) throw new RequestError(404, '项目已不存在');
+        return reply(res, 200, project);
+      }
       const projectMatch = /^\/api\/projects(?:\/(\d+))?$/.exec(path);
       if (projectMatch && ['POST','PUT','DELETE'].includes(method)) {
         const user = requireUser(req, method === 'DELETE');
@@ -149,6 +177,19 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
         return reply(res,200,{ok:true});
       }
       if (path === '/api/users' && method === 'GET') { requireUser(req,true); return reply(res,200,db.prepare('SELECT id,username,name,role,active FROM users ORDER BY id').all()); }
+      if (path === '/api/reference-articles' && method === 'GET') {
+        requireUser(req, true);
+        return reply(res, 200, referenceList(db));
+      }
+      if (path === '/api/reference-articles/import' && method === 'POST') {
+        requireUser(req, true);
+        const input = await body(req);
+        try { return reply(res, 200, { imported: importReferences(db, input.ids) }); }
+        catch (error) {
+          if (error.message === '请选择有效的参考文章') throw new RequestError(400, error.message);
+          throw error;
+        }
+      }
       if (path === '/api/users' && method === 'POST') {
         requireUser(req,true);
         const input = await body(req);
