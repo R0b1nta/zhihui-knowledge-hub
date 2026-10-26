@@ -20,3 +20,6 @@
 > Create a cinematic photographic website background, landscape 16:9, high resolution. A majestic range of jagged slate-blue mountains emerging from a deep ocean of luminous white and pale blue mist. A dark dramatic ridgeline enters from the left bottom third and a separate closer peak occupies the lower right corner; distant smaller ridgelines recede across the middle. Clouds flow between peaks with believable volumetric light. Pale overcast dawn sky with soft warm silver light at the top, cool desaturated teal/slate atmosphere below. Rich, realistic natural texture, slightly ethereal cinematic film grading, restrained contrast, sophisticated Chinese landscape mood, calm and monumental. The center should be mostly soft cloud and distant mountains with ample quiet negative space for a white brand wordmark overlaid later in HTML. Compose the tallest near mountains to the sides, keep the very middle open. Absolutely NO text, NO letters, NO logos, NO watermark, NO interface, NO buildings, NO people, NO abstract ribbons, no neon. The image is an atmospheric brand hero for a Chinese electromagnetic manufacturing and technical knowledge company named Cimai; the image itself must contain no typography.
 
 实现为图片加 CSS 动效，是对截图氛围的原创实现；尚无原演示网址，因此不声称复现原站的视频、三维场景或滚动动画。
+
+
+0.4.0 已对照用户补充的原演示网址进行第二轮全站调整，详见 [全站设计借鉴记录](site-reference-notes.md)。本文件保留首轮背景图的生成来源与提示词。

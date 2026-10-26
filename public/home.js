@@ -1,3 +1,5 @@
+import { createCloudScene } from './clouds.js';
+
 const brandSymbol = `<svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><path d="M7 7v11c0 7 7 11 11 11S29 25 29 18V7M13 7v11c0 3 3 5 5 5s5-2 5-5V7" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6m10 0h6M18 3v9" stroke="currentColor" stroke-width="1.5"/></svg>`;
 const searchSymbol = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="m15.5 15.5 4.5 4.5" stroke="currentColor" stroke-width="1.4"/></svg>`;
 const directions = [
@@ -36,10 +38,10 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
       </header>
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-landscape" aria-hidden="true"><img class="home-landscape-image" src="/assets/cimai-mountains.jpg" width="1672" height="941" alt="" fetchpriority="high" decoding="async"></div>
-        <div class="home-hero-shade" aria-hidden="true"></div>
+        <div class="home-hero-shade" aria-hidden="true"></div><canvas class="home-cloud-canvas" aria-hidden="true"></canvas>
         <div class="home-mist home-mist-back" aria-hidden="true"></div><div class="home-mist home-mist-front" aria-hidden="true"></div>
-        <div class="home-hero-center"><h1 id="home-title">磁脉</h1><p class="home-english-name">Cimai</p><p class="home-hero-tagline">以磁场，探索制造的更多可能</p><a class="home-hero-link" href="#knowledge">进入知识文库<span aria-hidden="true">↗</span></a></div>
-        <div class="home-hero-bottom"><p>脉冲强磁场技术<br><span>从科学探索，到工程应用</span></p><button class="home-scroll" type="button" data-home-jump="home-technology"><span>向下探索</span><svg viewBox="0 0 20 32" fill="none" aria-hidden="true"><path d="M10 1v28m-6-6 6 6 6-6" stroke="currentColor"/></svg></button><button class="home-motion" type="button" aria-pressed="false"><span class="home-motion-icon" aria-hidden="true"></span><span class="home-motion-label">暂停动态背景</span></button></div>
+        <div class="home-hero-center"><h1 id="home-title">磁脉</h1><p class="home-english-name">Cimai</p><p class="home-hero-tagline">技术有据，知识相连。</p></div>
+        <div class="home-hero-bottom"><p>脉冲强磁场技术<br><span>从科学探索，到工程应用</span></p><button class="home-scroll" type="button" data-home-jump="home-technology"><span>向下探索</span><svg viewBox="0 0 20 32" fill="none" aria-hidden="true"><path d="M10 1v28m-6-6 6 6 6-6" stroke="currentColor"/></svg></button><div class="home-scene-actions"><button class="home-settings-toggle" type="button" aria-label="调整云海效果" aria-expanded="false" aria-controls="home-scene-settings"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M8 3v6m8 0v6m-7 0v6" stroke="currentColor" stroke-width="1.3"/></svg></button><button class="home-motion" type="button" aria-pressed="false"><span class="home-motion-icon" aria-hidden="true"></span><span class="home-motion-label">暂停动态背景</span></button></div></div><div class="home-scene-settings" id="home-scene-settings" hidden><div class="home-settings-heading"><span>云海效果</span><button type="button" data-close-settings aria-label="关闭效果设置">×</button></div><label for="home-cloud-density">云雾浓度 <output id="home-density-value">65%</output></label><input id="home-cloud-density" type="range" min="0" max="100" value="65" data-scene-setting="density"><label for="home-cloud-speed">流动速度 <output id="home-speed-value">35%</output></label><input id="home-cloud-speed" type="range" min="0" max="100" value="35" data-scene-setting="speed"><label for="home-cloud-depth">交互景深 <output id="home-depth-value">50%</output></label><input id="home-cloud-depth" type="range" min="0" max="100" value="50" data-scene-setting="depth"><p>移动鼠标，感受云层的远近变化。</p></div>
       </section>
       <section class="home-technology" id="home-technology" aria-labelledby="home-technology-title">
         <div class="home-section-intro"><h2 id="home-technology-title">看不见的磁场，<br>看得见的改变。</h2><p>磁脉电气（东莞）有限公司，聚焦脉冲强磁场技术的产业化应用。<br>在这里，了解我们的技术方向，走近每一项应用背后的原理。</p></div>
@@ -55,6 +57,14 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
   const header = root.querySelector('.home-header');
   const motionButton = root.querySelector('.home-motion');
   const panel = root.querySelector('#home-direction-panel');
+  const canvas = root.querySelector('.home-cloud-canvas');
+  const scene = createCloudScene(canvas);
+  if(!scene)canvas.hidden=true;
+  root.classList.toggle('has-cloud-scene',!!scene);
+  const settingsPanel=root.querySelector('.home-scene-settings');
+  const settingsToggle=root.querySelector('.home-settings-toggle');
+  let sceneValues={density:.65,speed:.7,depth:.5};
+  function setSettingsOpen(open){settingsPanel.hidden=!open;settingsToggle.setAttribute('aria-expanded',String(open));}
   const tabs = [...root.querySelectorAll('[data-direction]')];
   function showDirection(index) {
     selected = index;
@@ -68,6 +78,7 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
   function syncMotion() {
     const paused = reduced.matches || manuallyPaused;
     root.classList.toggle('is-motion-paused',paused);
+    scene?.setPaused(paused);
     motionButton.setAttribute('aria-pressed',String(paused));
     motionButton.disabled=reduced.matches;
     motionButton.setAttribute('aria-label',reduced.matches?'已按系统设置关闭动态效果':paused?'播放动态背景':'暂停动态背景');
@@ -88,12 +99,21 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
     const target=event.target.closest('button');
     if(!target) return;
     if(target.dataset.homeJump){root.querySelector(`#${target.dataset.homeJump}`)?.scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});return;}
+    if(target===settingsToggle || settingsToggle.contains(target)){setSettingsOpen(settingsPanel.hidden);return;}
+    if(target.hasAttribute('data-close-settings')){setSettingsOpen(false);return;}
     if(target.hasAttribute('data-home-account')){onAccount();return;}
     if(target.hasAttribute('data-home-search')){onSearch();return;}
     if(target.dataset.direction!==undefined){showDirection(Number(target.dataset.direction));return;}
     if(target===motionButton || motionButton.contains(target)){manuallyPaused=!manuallyPaused;syncMotion();}
   },{signal});
+  root.addEventListener('input',event=>{
+    const key=event.target.dataset.sceneSetting;if(!key)return;const value=Number(event.target.value);
+    sceneValues[key]=key==='speed'?value/50:value/100;scene?.configure(sceneValues);
+    root.querySelector(`#home-${key}-value`).textContent=`${value}%`;
+    root.style.setProperty('--cloud-density',String(sceneValues.density));root.style.setProperty('--mist-duration',`${45/(.3+sceneValues.speed)}s`);
+  },{signal});
   root.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!settingsPanel.hidden){setSettingsOpen(false);settingsToggle.focus();return;}
     if(!event.target.matches('[data-direction]'))return;
     const actions={ArrowDown:(selected+1)%3,ArrowRight:(selected+1)%3,ArrowUp:(selected+2)%3,ArrowLeft:(selected+2)%3,Home:0,End:2};
     if(actions[event.key]===undefined)return;
@@ -102,8 +122,8 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
   window.addEventListener('scroll',updateScroll,{passive:true,signal});
   window.addEventListener('resize',updateScroll,{passive:true,signal});
   reduced.addEventListener('change',syncMotion);
-  const observer = new IntersectionObserver(entries=>root.classList.toggle('is-hero-away',!entries[0].isIntersecting));
+  const observer = new IntersectionObserver(entries=>{const visible=entries[0].isIntersecting;root.classList.toggle('is-hero-away',!visible);scene?.setActive(visible);});
   observer.observe(hero);
   showDirection(0);syncMotion();updateScroll();
-  return ()=>{controller.abort();observer.disconnect();reduced.removeEventListener('change',syncMotion);cancelAnimationFrame(frame);};
+  return ()=>{controller.abort();observer.disconnect();scene?.destroy();reduced.removeEventListener('change',syncMotion);cancelAnimationFrame(frame);};
 }

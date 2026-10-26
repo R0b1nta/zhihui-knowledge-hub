@@ -37,7 +37,7 @@ test('访客只能浏览公开文章，不能查看或修改项目与账号',asy
   assert.equal((await fetch(`${f.base}/../package.json`)).status,404);
   const page=await fetch(f.base);assert.equal(page.status,200);assert.match(await page.text(),/磁脉知识库/);
   assert.match(page.headers.get('content-security-policy'),/frame-ancestors 'none'/);
-  for (const [path,type] of [['home.js','text/javascript'],['home.css','text/css'],['assets/cimai-mountains.jpg','image/jpeg']]) {
+  for (const [path,type] of [['home.js','text/javascript'],['home.css','text/css'],['reader.js','text/javascript'],['document.js','text/javascript'],['clouds.js','text/javascript'],['assets/cimai-mountains.jpg','image/jpeg']]) {
     const asset=await fetch(`${f.base}/${path}`);assert.equal(asset.status,200);assert.ok(asset.headers.get('content-type').startsWith(type));
     assert.ok((await asset.arrayBuffer()).byteLength>100);
   }
