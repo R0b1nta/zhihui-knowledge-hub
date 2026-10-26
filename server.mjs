@@ -220,10 +220,10 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
       }
       if (path.startsWith('/api/')) throw new RequestError(404,'接口不存在');
       if (method !== 'GET') throw new RequestError(405,'不支持此操作');
-      const assets = { '/': ['index.html','text/html; charset=utf-8'], '/app.js': ['app.js','text/javascript; charset=utf-8'], '/style.css': ['style.css','text/css; charset=utf-8'], '/favicon.svg': ['favicon.svg','image/svg+xml'], '/robots.txt': ['robots.txt','text/plain; charset=utf-8'] };
+      const assets = { '/': ['index.html','text/html; charset=utf-8'], '/home.js': ['home.js','text/javascript; charset=utf-8'], '/home.css': ['home.css','text/css; charset=utf-8'], '/assets/cimai-mountains.jpg': ['assets/cimai-mountains.jpg','image/jpeg','public, max-age=86400'], '/app.js': ['app.js','text/javascript; charset=utf-8'], '/style.css': ['style.css','text/css; charset=utf-8'], '/favicon.svg': ['favicon.svg','image/svg+xml'], '/robots.txt': ['robots.txt','text/plain; charset=utf-8'] };
       const asset = assets[path];
       if (!asset) throw new RequestError(404,'页面不存在');
-      res.writeHead(200,{'Content-Type':asset[1],'Cache-Control':'no-cache'});
+      res.writeHead(200,{'Content-Type':asset[1],'Cache-Control':asset[2] || 'no-cache'});
       res.end(readFileSync(join(root,'public',asset[0])));
     } catch (error) {
       if (!error.status) console.error('Request failed:', error.message);

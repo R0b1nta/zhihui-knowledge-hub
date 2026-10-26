@@ -1,0 +1,105 @@
+/* Cimai's mountain opening: atmospheric imagery, quiet type, useful destinations. */
+body.landing{background:#eff3f2;color:#203d47}
+body.landing>.sidebar,body.landing .shell>.topbar,body.landing .shell>footer{display:none}
+body.landing>.shell{margin-left:0}
+body.landing main{max-width:none;min-height:100vh;padding:0}
+.cinematic-home{--home-ink:#203d47;--home-muted:#61767a;--home-paper:#eff3f2;--home-light:#f8faf6;--home-night:#193540;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+.cinematic-home button,.cinematic-home a{-webkit-tap-highlight-color:transparent}
+.cinematic-home a:focus-visible,.cinematic-home button:focus-visible{outline:2px solid #b09e68;outline-offset:7px}
+.home-header{position:absolute;inset:0 0 auto;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:30px;height:112px;padding:0 5.4%;color:#fff;border-bottom:1px solid #ffffff1f}
+.home-brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.home-brand>svg{width:34px;height:34px}
+.home-brand>span{font-family:"Songti SC","STSong","SimSun",serif;font-size:24px;letter-spacing:4px;line-height:1.2}
+.home-brand small{font-family:Georgia,"Times New Roman",serif;font-size:11px;letter-spacing:2px;display:block;margin-top:4px}
+.home-nav{display:flex;gap:40px;margin:0 0 0 auto;overflow:visible;align-items:center}
+.home-nav>a,.home-nav>button{font:inherit;font-size:13px;font-weight:400;letter-spacing:1px;white-space:nowrap;padding:12px 0;background:transparent;border:0;border-radius:0;color:inherit;position:relative}
+.home-nav>a:hover,.home-nav>button:hover{background:transparent;color:#fff}
+.home-nav>a:after,.home-nav>button:after{content:"";position:absolute;bottom:4px;left:0;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.home-nav>a:hover:after,.home-nav>button:hover:after{transform:scaleX(1)}
+.home-header-actions{display:flex;align-items:center;gap:23px;margin-left:14px}
+.home-search{display:grid;place-items:center;width:30px;height:36px;padding:0;border:0;background:none;color:inherit}
+.home-search svg{width:21px;height:21px}
+.home-account{border:1px solid #ffffff6b;background:transparent;color:inherit;border-radius:30px;padding:10px 20px;font-size:12px;letter-spacing:1px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-account:hover{background:#ffffff16}
+.home-header.is-solid{position:fixed;height:80px;background:#eff3f2f2;color:#203d47;border-color:#d7e1e0;backdrop-filter:blur(14px)}
+.home-header.is-solid .home-nav>a:hover,.home-header.is-solid .home-nav>button:hover{color:#203d47}
+.home-header.is-solid .home-account{border-color:#748e94}
+.home-hero{--home-scroll:0;position:relative;isolation:isolate;height:100svh;min-height:670px;max-height:1400px;overflow:hidden;background:#5f7c85;color:#fff}
+.home-landscape{position:absolute;inset:-3%;z-index:-4;transform:translate3d(0,calc(var(--home-scroll)*60px),0);will-change:transform}
+.home-landscape-image{width:100%;height:100%;object-fit:cover;object-position:50% 48%;display:block;animation:home-landscape-drift 34s ease-in-out infinite alternate;will-change:transform}
+.home-hero-shade{position:absolute;inset:0;z-index:-3;background:linear-gradient(180deg,#102b3b66 0%,#11304330 28%,#17354442 57%,#0c273766 100%)}
+.home-mist{pointer-events:none;position:absolute;width:145%;height:57%;left:-23%;bottom:-18%;z-index:-2;opacity:.3;filter:blur(18px);background:radial-gradient(ellipse at 22% 65%,#e4efef 0%,#e4efef8c 23%,transparent 53%),radial-gradient(ellipse at 78% 57%,#edf3edb3 0%,#edf3ed4d 23%,transparent 52%);animation:home-mist-drift 35s ease-in-out infinite alternate;will-change:transform}
+.home-mist-back{height:38%;bottom:17%;opacity:.16;animation-duration:46s;animation-direction:alternate-reverse;filter:blur(26px)}
+.home-hero-center{position:absolute;inset:48% 24px auto;transform:translateY(-50%);text-align:center;text-shadow:0 4px 40px #20384622}
+.home-hero-center h1{font-family:"Songti SC","STSong","SimSun",serif;font-size:clamp(115px,14.6vw,220px);font-weight:400;line-height:1.17;letter-spacing:.16em;text-indent:.16em;margin:0;color:#fff;animation:home-wordmark-arrive 1.8s cubic-bezier(.2,.6,.2,1) both}
+.home-english-name{font-family:Georgia,"Times New Roman",serif;font-size:clamp(28px,3.1vw,46px);font-weight:400;letter-spacing:.12em;text-indent:.12em;margin:10px 0 0;animation:home-copy-arrive 1.4s .3s ease-out both}
+.home-hero-tagline{font-size:14px;letter-spacing:.27em;text-indent:.27em;line-height:1.9;margin:30px 0 0;color:#ffffffed;animation:home-copy-arrive 1.4s .6s ease-out both}
+.home-hero-link{display:inline-flex;align-items:center;gap:25px;font-size:12px;letter-spacing:1px;margin-top:34px;padding:13px 25px;border:1px solid #ffffff78;border-radius:28px;background:#233c4514;animation:home-copy-arrive 1.4s .8s ease-out both;transition:background .2s,border-color .2s}
+.home-hero-link:hover{background:#ffffff19;border-color:#fff}
+.home-hero-link>span{font-size:16px}
+.home-hero-bottom{position:absolute;bottom:32px;left:5.4%;right:5.4%;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:30px}
+.home-hero-bottom>p{font-size:12px;line-height:2.1;letter-spacing:1.5px;margin:0}
+.home-hero-bottom>p>span{font-size:10px;letter-spacing:1px;opacity:.78}
+.home-scroll{border:0;background:none;color:inherit;display:flex;align-items:center;flex-direction:column;gap:14px;padding:8px 15px 0;font-size:10px;letter-spacing:2px}
+.home-scroll svg{width:16px;height:29px}
+.home-motion{justify-self:end;display:flex;align-items:center;gap:10px;color:inherit;border:0;background:transparent;padding:10px 0;font-size:10px;letter-spacing:.5px}
+.home-motion:disabled{opacity:.8;cursor:default}
+.home-motion-icon{width:30px;height:30px;border:1px solid #ffffff66;border-radius:50%;display:grid;place-items:center}
+.home-motion-icon:before{content:"";width:6px;height:8px;border-left:1.5px solid currentColor;border-right:1.5px solid currentColor}
+.is-motion-paused .home-motion-icon:before{width:0;height:0;border:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid currentColor;margin-left:2px}
+.is-motion-paused .home-landscape-image,.is-motion-paused .home-mist,.is-motion-paused .field-trace,.is-hero-away .home-landscape-image,.is-hero-away .home-mist{animation-play-state:paused}
+.home-technology{padding:112px 7% 108px;scroll-margin-top:80px;max-width:1660px;margin:auto}
+.home-section-intro{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:end;margin-bottom:62px}
+.home-section-intro h2,.home-library h2,.home-team h2{font-family:"Songti SC","STSong","SimSun",serif;font-size:clamp(32px,3.2vw,48px);font-weight:400;line-height:1.65;letter-spacing:2px;margin:0}
+.home-section-intro>p{font-size:13px;line-height:2.2;color:var(--home-muted);margin:0 0 12px;max-width:420px}
+.home-tech-layout{display:grid;grid-template-columns:1fr 1.55fr;gap:7%;align-items:start}
+.home-directions{border-top:1px solid #cbd6d6;margin-top:8px}
+.home-direction{position:relative;display:flex;align-items:flex-start;flex-direction:column;text-align:left;width:100%;background:none;border:0;border-bottom:1px solid #cbd6d6;border-radius:0;padding:28px 32px 29px 0;color:#788b8e}
+.home-direction>span:first-child{font-family:"Songti SC","STSong","SimSun",serif;font-size:25px;letter-spacing:1px;line-height:1.6}
+.home-direction small{font-size:11px;line-height:1.8;margin-top:8px;color:#6c8084}
+.home-direction-arrow{position:absolute;right:4px;top:33px;font-size:20px;opacity:.4}
+.home-direction.is-selected{color:#203d47}
+.home-direction.is-selected:before{content:"";position:absolute;left:-20px;top:42px;width:6px;height:6px;background:#557a88;border-radius:50%}
+.home-direction.is-selected .home-direction-arrow{opacity:1}
+.home-direction-panel{min-width:0;outline-offset:8px}
+.home-field-stage{position:relative;aspect-ratio:1.7;background:#233e4c;border-radius:2px;overflow:hidden}
+.field-drawing{display:block;width:100%;height:100%}
+.field-trace{animation:home-field-flow 12s linear infinite}
+.home-drawing-label{position:absolute;left:22px;bottom:15px;color:#b0c5ca;font-size:10px;letter-spacing:1px}
+.home-direction-copy{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding-top:23px}
+.home-direction-copy h3{font-size:16px;font-weight:500;margin:0 0 9px}
+.home-direction-copy p{font-size:12px;line-height:2;color:var(--home-muted);margin:0;max-width:360px}
+.home-inline-link{display:inline-flex;align-items:center;gap:20px;white-space:nowrap;font-size:12px;line-height:2;color:#2c535f;padding:2px 0;border-bottom:1px solid #8ca1a6;align-self:flex-start}
+.home-inline-link span{font-size:16px}
+.home-library{padding:90px 7% 95px;background:#f8faf8}
+.home-library-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;max-width:1428px;margin:0 auto 45px}
+.home-section-note{display:block;font-size:12px;letter-spacing:1px;color:#6b8083;margin-bottom:13px}
+.home-articles{max-width:1428px;margin:auto;border-top:1px solid #d9e1df}
+.home-article{display:grid;grid-template-columns:150px 1fr 110px 20px;align-items:center;gap:30px;padding:29px 0;border-bottom:1px solid #d9e1df}
+.home-article-category{font-size:11px;color:#607d84}
+.home-article h3{font-family:"Songti SC","STSong","SimSun",serif;font-size:22px;font-weight:400;line-height:1.5;margin:0 0 10px}
+.home-article p{font-size:12px;line-height:1.8;color:#6b8083;margin:0;max-width:650px}
+.home-article time{font-size:11px;color:#6b8083;text-align:right}
+.home-article-open{font-size:21px;color:#65838b}
+.home-article:hover h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.home-no-articles{padding:40px 0;margin:0;font-size:13px;color:var(--home-muted)}
+.home-team{background:#203e49;color:#eff4f0;padding:72px 7%;display:flex;align-items:center;justify-content:space-between;gap:30px}
+.home-team h2{font-size:32px;line-height:1.8}
+.home-team p{font-size:12px;color:#b2c8cb;line-height:1.9;margin:14px 0 0}
+.home-team-link{display:flex;align-items:center;gap:50px;border:1px solid #c6d9db66;border-radius:35px;padding:17px 27px;font-size:13px;letter-spacing:.5px}
+.home-team-link:hover{background:#ffffff0d;border-color:#c6d9db}
+.home-team-link span{font-size:19px}
+.cinematic-home .home-footer{display:flex;align-items:center;justify-content:space-between;gap:30px;border:0;padding:34px 7%;background:#eff3f2;color:#6a8084;font-size:11px}
+.home-footer-brand{font-family:"Songti SC","STSong","SimSun",serif;font-size:23px;color:#294752;letter-spacing:2px}
+.home-footer-brand span{font-family:Georgia,"Times New Roman",serif;font-size:16px;letter-spacing:1px;margin-left:10px}
+.home-footer p{margin:0}
+@keyframes home-landscape-drift{from{transform:scale(1.025) translate3d(-.3%,0,0)}to{transform:scale(1.09) translate3d(.3%,.5%,0)}}
+@keyframes home-mist-drift{from{transform:translate3d(-2%,4%,0)}to{transform:translate3d(7%,-3%,0)}}
+@keyframes home-wordmark-arrive{from{opacity:0;filter:blur(10px);transform:translateY(22px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes home-copy-arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes home-field-flow{to{stroke-dashoffset:-885}}
+@media(min-width:1700px){.home-hero-center h1{font-size:240px}.home-hero-tagline{font-size:16px}}
+@media(max-width:1050px){.home-header{height:94px;gap:22px;padding:0 5%}.home-nav{gap:27px}.home-header-actions{gap:16px;margin-left:2px}.home-tech-layout{grid-template-columns:.9fr 1.3fr;gap:6%}.home-technology{padding:85px 6%}.home-section-intro{gap:40px}.home-direction-copy{flex-direction:column;gap:16px}.home-direction-copy p{max-width:none}.home-library{padding:75px 6%}.home-article{grid-template-columns:110px 1fr 90px 16px;gap:22px}.home-article h3{font-size:20px}.home-team{padding:65px 6%}}
+@media(max-width:700px){.home-header{height:86px;gap:12px;padding:0 6%}.home-brand>svg{width:27px;height:27px}.home-brand>span{font-size:21px}.home-brand small{font-size:9px;margin-top:3px}.home-nav{gap:20px}.home-nav>button{display:none}.home-nav>a{font-size:11px;letter-spacing:0;padding:8px 0}.home-header-actions{margin:0;gap:5px}.home-account{display:none}.home-header.is-solid{height:70px}.home-hero{height:100svh;min-height:620px}.home-landscape{inset:-2% -30%}.home-landscape-image{object-position:51% center}.home-hero-center{top:46%;left:15px;right:15px}.home-hero-center h1{font-size:clamp(116px,25vw,170px);letter-spacing:.1em;text-indent:.1em}.home-english-name{font-size:32px;margin-top:13px}.home-hero-tagline{font-size:12px;letter-spacing:2px;text-indent:2px;margin-top:27px}.home-hero-link{margin-top:28px;font-size:11px;padding:12px 23px}.home-hero-bottom{left:6%;right:6%;bottom:26px;gap:15px;grid-template-columns:1fr 1fr}.home-hero-bottom>p{font-size:10px;line-height:2.1;letter-spacing:1px}.home-hero-bottom>p>span{font-size:9px;letter-spacing:0}.home-scroll{position:absolute;left:50%;transform:translateX(-50%);bottom:76px;font-size:9px;gap:11px}.home-scroll svg{height:24px}.home-motion{gap:7px;font-size:9px}.home-motion-icon{width:27px;height:27px}.home-section-intro{grid-template-columns:1fr;gap:24px;margin-bottom:35px}.home-section-intro h2{font-size:34px;line-height:1.7;letter-spacing:1px}.home-section-intro>p{font-size:12px;line-height:2.1;margin:0;max-width:460px}.home-technology{padding:65px 7%;scroll-margin-top:86px}.home-tech-layout{grid-template-columns:1fr;gap:28px}.home-directions{display:flex;border-top:0;border-bottom:1px solid #cbd6d6;margin:0;gap:21px}.home-direction{border:0;width:auto;padding:13px 0 17px;flex:1;align-items:center;text-align:center}.home-direction>span:first-child{font-size:17px;white-space:nowrap;letter-spacing:0}.home-direction small,.home-direction-arrow{display:none}.home-direction.is-selected:before{left:0;top:auto;bottom:-1px;width:100%;height:2px;border-radius:0}.home-field-stage{aspect-ratio:1.6}.home-direction-copy{gap:13px;padding-top:20px}.home-direction-copy h3{font-size:16px}.home-direction-copy p{font-size:12px}.home-library{padding:60px 7%}.home-library-heading{align-items:flex-start;flex-direction:column;gap:22px;margin-bottom:30px}.home-library h2{font-size:32px;letter-spacing:1px}.home-section-note{font-size:11px}.home-article{grid-template-columns:1fr 20px;gap:9px 15px;padding:25px 0}.home-article-category{grid-column:1;grid-row:1;font-size:10px}.home-article>div{grid-column:1;grid-row:2}.home-article h3{font-size:20px;margin:1px 0 10px}.home-article p{font-size:11px;line-height:1.9}.home-article time{grid-column:1;grid-row:3;text-align:left;font-size:10px;margin-top:5px}.home-article-open{grid-column:2;grid-row:2;align-self:start}.home-team{padding:52px 7%;align-items:flex-start;flex-direction:column;gap:26px}.home-team h2{font-size:28px}.home-team p{font-size:11px}.home-team-link{font-size:12px;padding:14px 23px;gap:37px}.cinematic-home .home-footer{padding:30px 7%;align-items:flex-start;flex-direction:column;gap:17px}.home-footer p{font-size:11px}.home-footer>span{font-size:10px}}
+@media(max-width:360px){.home-brand{gap:4px}.home-brand>svg{width:23px}.home-nav{gap:13px}.home-nav>a{font-size:10px}.home-hero-tagline{font-size:11px;letter-spacing:1px}.home-direction>span:first-child{font-size:14px}.home-directions{gap:10px}}
+@media(prefers-reduced-motion:reduce){.cinematic-home *{animation:none!important;transition:none!important;scroll-behavior:auto!important}.home-landscape,.home-landscape-image{transform:none!important}}

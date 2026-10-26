@@ -1,3 +1,5 @@
+import { renderCinematicHome } from '/home.js';
+
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const dialog = $('#dialog');
@@ -13,6 +15,7 @@ const route = () => {
 const admin = () => state.user?.role === 'admin';
 let toastTimer;
 let searchSequence = 0;
+let cleanupHome = null;
 function toast(text) { $('#toast').textContent=text; $('#toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(() => $('#toast').hidden=true,3500); }
 async function api(path, method='GET', data) {
   const response = await fetch(`/api/${path}`, { method, credentials:'same-origin', headers: data === undefined ? {} : {'Content-Type':'application/json'}, body: data === undefined ? undefined : JSON.stringify(data) });
@@ -31,9 +34,13 @@ function articleReturnHash() {
 function articleHref(id) { return `#article/${id}?${new URLSearchParams({from:articleReturnHash()})}`; }
 function articleCard(article) { return `<a class="article-card" href="${h(articleHref(article.id))}"><span class="badge">${h(article.category)}</span><h3>${h(article.title)}</h3><p>${h(article.summary)}</p><div class="article-meta"><span>更新于 ${date(article.updated)}</span><span aria-hidden="true">↗</span></div></a>`; }
 function home() {
-  const categories = new Set(state.articles.map(a => a.category)).size;
-  main.innerHTML=`<section class="hero"><div class="hero-copy"><span class="eyebrow">KNOWLEDGE CONNECTS US</span><h1>让每一份经验，<br>成为下一步的力量。</h1><p>在这里发现知识、分享方法，<br>也让团队的每一个项目，向前一步。</p><div class="hero-actions"><a class="button" href="#knowledge">探索知识文库 <span>↗</span></a><a class="button secondary" href="#projects">进入项目空间 <span>→</span></a></div></div><div class="hero-art" aria-hidden="true"><i></i></div></section><div class="intro-row"><span>欢迎来到磁脉，知识与协作从这里连接。</span><div class="intro-stats"><span><strong>${state.articles.length}</strong>篇公开文章</span><span><strong>${categories}</strong>个知识分类</span></div></div><div class="section-heading"><h2>找到你的空间</h2><span class="eyebrow">OUR SPACES</span></div><div class="spaces"><a class="space-card" href="#knowledge"><div class="space-icon" aria-hidden="true">▤</div><div><h3>知识文库 <span class="badge">公开</span></h3><p>让知识有迹可循，让经验触手可及。</p></div><span class="arrow">↗</span></a><a class="space-card project" href="#projects"><div class="space-icon" aria-hidden="true">▦</div><div><h3>项目空间 <span class="badge warm">员工专属</span></h3><p>看见目标与进展，让协作更有方向。</p></div><span class="arrow">↗</span></a></div><div class="section-heading"><div><h2>最近更新</h2><p class="section-subtitle">沉淀一点经验，积累一份共同的知识。</p></div><a class="text-button" href="#knowledge">全部文章 <span>→</span></a></div>${state.articles.length ? `<div class="card-grid">${state.articles.slice(0,3).map(articleCard).join('')}</div>` : '<div class="empty"><h3>知识正在积累中</h3><p>正式文章发布后，会在这里展示。</p></div>'}<div class="bottom-note"><span>◈</span>${state.articles.some(article=>article.summary.startsWith('示例文章'))?'当前包含使用示例，管理员可在后台编辑或删除。':'公开知识持续更新。'}项目内容仅向已登录的员工开放。</div>`;
+  cleanupHome = renderCinematicHome({
+    main, articles:state.articles, user:state.user, articleHref, escape:h, date,
+    onAccount:()=>$('#account-button').click(),
+    onSearch:()=>{navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());},
+  });
 }
+
 function filteredArticles() {
   const query = state.query.trim().toLowerCase();
   return state.articles.filter(a => (state.category==='全部' || a.category===state.category) && `${a.title} ${a.summary} ${a.content}`.toLowerCase().includes(query));
@@ -110,8 +117,10 @@ function adminPage() {
   main.insertAdjacentHTML('beforeend',`<section class="admin-section"><div class="section-heading"><div><h2>旧站参考内容 · ${state.references.length} 篇</h2><p class="section-subtitle">沿用当前版式。预览整理后的内容，确认后再导入公开知识库；不覆盖现有文章。</p></div><button class="button small" data-action="import-references" ${state.references.every(item=>item.imported)?'disabled':''}>导入全部待发布内容</button></div><div class="table-wrap"><table><thead><tr><th>参考文章</th><th>分类</th><th>状态</th><th>操作</th></tr></thead><tbody>${state.references.map(item=>`<tr><td>${h(item.title)}</td><td>${h(item.category)}</td><td>${item.imported?'已导入':'待确认'}</td><td><button class="text-button" data-reference="${h(item.id)}">预览${item.imported?'':'与导入'} ↗</button></td></tr>`).join('')}</tbody></table></div></section>`);
 }
 function render() {
+  cleanupHome?.();cleanupHome=null;
   searchSequence++;
   const current=route();
+  document.body.classList.toggle('landing',current==='home');
   const activeNav=current==='article'?'knowledge':current;
   document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===activeNav);if(a.dataset.nav===activeNav)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索',article:'文章详情'})[current];
@@ -230,7 +239,7 @@ $('#account-button').addEventListener('click',()=>{
 });
 $('#global-search-form').addEventListener('submit',event=>{event.preventDefault();navigateSearch($('#global-search').value);});
 document.addEventListener('keydown',event=>{
-  if ((event.ctrlKey||event.metaKey) && event.key.toLowerCase()==='k') {event.preventDefault();$('#global-search').focus();}
+  if ((event.ctrlKey||event.metaKey) && event.key.toLowerCase()==='k') {event.preventDefault();if(route()==='home'){navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());}else $('#global-search').focus();}
 });
 window.addEventListener('hashchange',()=>{dialog.close();render();window.scrollTo(0,0);});
 dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});
