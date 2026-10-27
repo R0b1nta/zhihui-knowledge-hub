@@ -1,6 +1,7 @@
 import { renderCinematicHome } from '/home.js';
 import { mountReader } from '/reader.js';
-import { renderDocument } from '/document.js';
+import { mountArticleEditor, draftPreview } from '/editor.js';
+import { homeDateKey, resolveHomeTheme, readHomeTheme, saveHomeTheme } from '/home-theme.js';
 
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
@@ -12,12 +13,16 @@ const date = value => value ? new Date(value).toLocaleDateString('zh-CN',{year:'
 const route = () => {
   const name = location.hash.slice(1).split('?')[0];
   if (name.startsWith('article/')) return 'article';
-  return ['home','knowledge','projects','admin','search'].includes(name) ? name : 'home';
+  return ['home','landscape','knowledge','projects','admin','search'].includes(name) ? name : 'home';
 };
 const admin = () => state.user?.role === 'admin';
 let toastTimer;
 let searchSequence = 0;
 let cleanupPage = null;
+let themeStorage;
+try{themeStorage=window.localStorage;}catch{}
+let homeThemeMode=readHomeTheme(themeStorage);
+const homeVisitDate=new Date();
 function toast(text) { $('#toast').textContent=text; $('#toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(() => $('#toast').hidden=true,3500); }
 async function api(path, method='GET', data) {
   const response = await fetch(`/api/${path}`, { method, credentials:'same-origin', headers: data === undefined ? {} : {'Content-Type':'application/json'}, body: data === undefined ? undefined : JSON.stringify(data) });
@@ -31,7 +36,7 @@ async function api(path, method='GET', data) {
 function title(heading, subtitle, action='') { return `<div class="page-title"><div><h1>${heading}</h1><p>${subtitle}</p></div>${action}</div>`; }
 function articleReturnHash() {
   const hash = route()==='article' ? new URLSearchParams(location.hash.split('?')[1] || '').get('from') : (location.hash || '#home');
-  return hash==='#home' || /^#knowledge(?:\?|$)/.test(hash || '') || /^#search(?:\?|$)/.test(hash || '') ? hash : '#knowledge';
+  return ['#home','#landscape'].includes(hash) || /^#knowledge(?:\?|$)/.test(hash || '') || /^#search(?:\?|$)/.test(hash || '') ? hash : '#knowledge';
 }
 function articleHref(id) { return `#article/${id}?${new URLSearchParams({from:articleReturnHash()})}`; }
 function articleCard(article) { return `<a class="article-card" href="${h(articleHref(article.id))}"><span class="article-card-category">${h(article.category)}</span><div class="article-card-main"><h3>${h(article.title)}</h3><p>${h(article.summary)}</p></div><div class="article-meta"><time>${date(article.updated)}</time><span>阅读全文 ↗</span></div></a>`; }
@@ -48,10 +53,42 @@ function navigateKnowledge(category=state.category,query=state.query) {
 }
 
 function home() {
+  const theme=resolveHomeTheme(homeThemeMode,homeVisitDate);
+  document.body.dataset.homeTheme=theme;
+  if(theme==='landscape')return landscape();
+  main.innerHTML='<iframe class="electromagnetic-home-frame" src="/electromagnetic-home.html" title="磁脉首页：技术与知识"></iframe>';
+  const frame=main.querySelector('iframe');
+  const controller=new AbortController();
+  frame.addEventListener('load',()=>{
+    frame.contentWindow.postMessage({type:'cimai:public-home-context',articles:state.articles.map(({id,title})=>({id,title}))},location.origin);
+  },{signal:controller.signal});
+  window.addEventListener('message',event=>{
+    if(event.source!==frame.contentWindow||event.origin!==location.origin)return;
+    if(event.data?.type==='cimai:home-search'){
+      navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());
+    }
+    if(event.data?.type==='cimai:home-theme')openHomeTheme();
+  },{signal:controller.signal});
+  cleanupPage=()=>{controller.abort();frame.remove();};
+}
+
+function landscape() {
   cleanupPage = renderCinematicHome({
     main, articles:state.articles, user:state.user, articleHref, escape:h, date,
     onAccount:()=>$('#account-button').click(),
     onSearch:()=>{navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());},
+    onTheme:openHomeTheme,
+  });
+}
+
+function openHomeTheme(){
+  const today=resolveHomeTheme('daily',homeVisitDate)==='magnetic'?'磁脉':'山水';
+  openDialog('首页外观',`<p class="theme-intro">两种外观共用同一套知识文库。文章、搜索和项目空间保持一致。</p><form id="home-theme-form" class="theme-options">${[['magnetic','磁脉','定制字标与“来拒去留”交互。'],['landscape','山水','云海与山峦，保留安静的阅读入口。'],['daily','随日期切换',`按北京时间每天交替；${homeDateKey(homeVisitDate)} 为${today}，本次浏览期间保持一致。`]].map(([value,label,description])=>`<label><input type="radio" name="theme" value="${value}" ${homeThemeMode===value?'checked':''}><span><strong>${label}</strong><small>${description}</small></span></label>`).join('')}<div class="form-actions"><button class="button secondary" type="button" data-close>取消</button><button class="button" type="submit">应用外观</button></div></form>`);
+  $('#home-theme-form').addEventListener('submit',event=>{
+    event.preventDefault();homeThemeMode=new FormData(event.currentTarget).get('theme');
+    const saved=saveHomeTheme(themeStorage,homeThemeMode);dialog.close();
+    if(route()==='home')render();else location.hash='#home';
+    if(!saved)toast('本次浏览已应用；浏览器未允许保存外观偏好。');
   });
 }
 
@@ -137,18 +174,22 @@ function adminPage() {
 function render() {
   cleanupPage?.();cleanupPage=null;
   searchSequence++;
+  if(route()==='landscape'){
+    homeThemeMode='landscape';saveHomeTheme(themeStorage,homeThemeMode);
+    history.replaceState(null,'',location.pathname+location.search+'#home');
+  }
   const current=route();
-  document.body.classList.toggle('landing',current==='home');
+  document.body.classList.toggle('landing',current==='home'||current==='landscape');
   document.body.classList.remove('nav-open');$('#nav-toggle').setAttribute('aria-expanded','false');$('#nav-backdrop').hidden=true;
   updateCategoryNavigation();
-  const activeNav=current==='article'?'knowledge':current;
+  const activeNav=current==='article'?'knowledge':current==='landscape'?'home':current;
   document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===activeNav);if(a.dataset.nav===activeNav)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
-  $('#page-label').textContent=({home:'空间首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索',article:'文章详情'})[current];
+  $('#page-label').textContent=({home:'磁脉首页',landscape:'山水首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索',article:'文章详情'})[current];
   $('#admin-nav').hidden=!admin();
   $('#account-button').textContent=state.user?`${state.user.name} · 退出`:'员工登录 ↗';
   $('#global-search').placeholder=state.user?'搜索知识、项目、负责人…':'搜索公开知识…';
   document.title=`${$('#page-label').textContent} · 磁脉知识库`;
-  ({home,knowledge,projects,admin:adminPage,search:searchPage,article:articlePage})[current]();
+  ({home,landscape,knowledge,projects,admin:adminPage,search:searchPage,article:articlePage})[current]();
 }
 async function refresh() {
   const [info,articles]=await Promise.all([api('me'),api('articles')]);
@@ -181,8 +222,9 @@ function login() {
 }
 function editArticle(id) {
   const item=state.articles.find(a=>a.id===id)||{};
-  openDialog(id?'编辑公开文章':'发布公开文章',`<form><p class="form-note">保存后所有访客均可看到全文，请确认内容适合公开。</p><label>标题<input name="title" value="${h(item.title)}" required maxlength="120"></label><label>分类<input name="category" value="${h(item.category)}" required maxlength="30" placeholder="例如：使用指南、技术知识"></label><label>摘要<textarea name="summary" rows="2" required maxlength="240">${h(item.summary)}</textarea></label><div class="editor-tabs" role="group" aria-label="正文编辑方式"><button type="button" class="active" data-editor-tab="write" aria-pressed="true">编辑正文</button><button type="button" data-editor-tab="preview" aria-pressed="false">预览排版</button></div><label>正文<textarea class="editor-input" name="content" rows="10" required maxlength="30000">${h(item.content)}</textarea></label><div id="draft-preview" class="document-content editor-preview" hidden></div><details class="editor-help"><summary>如何排版技术文章</summary><p>用 ## 标题 分章节，用 - 开头写列表，用 **文字** 表示重点。支持 Markdown 表格、引用和代码块；旧文章的“一、二、三、”标题也会生成目录。HTML 代码会作为普通文字显示。</p></details>${actions(id?'保存修改':'公开发布')}</form>`);
+  openDialog(id?'编辑公开文章':'发布公开文章',`<form class="article-editor"><p class="form-note">完成编辑并点击${id?'“保存修改”':'“公开发布”'}后，访客才能看到本次内容。请先确认资料适合公开。</p><div class="draft-import"><button type="button" class="button secondary small" data-draft-import>导入文字稿</button><input type="file" data-draft-file accept=".txt,.md,.markdown,text/plain,text/markdown" aria-label="选择文字稿" hidden><button type="button" class="text-button" data-draft-undo hidden>撤销导入</button><span>支持 TXT、Markdown；Word/PDF 可复制文字后粘贴。</span></div><p class="draft-import-status" data-draft-status role="status"></p><label>文章主标题<input name="title" value="${h(item.title)}" required maxlength="120" placeholder="这篇文章主要解决什么问题？"><small>只写一个主标题，正文里的章节请使用下方排版工具。</small></label><label>分类<input name="category" value="${h(item.category)}" required maxlength="30" placeholder="例如：整体充退磁、电磁脉冲制造"></label><label>内容摘要<textarea name="summary" rows="3" required maxlength="240" placeholder="用两三句话说明：主要结论、适用对象和阅读价值。">${h(item.summary)}</textarea><small>摘要放在主标题下方，帮助读者先抓住重点。</small></label><div class="editor-tabs" role="group" aria-label="正文编辑方式"><button type="button" class="active" data-editor-tab="write" aria-pressed="true">整理正文</button><button type="button" data-editor-tab="preview" aria-pressed="false">预览整篇文章</button></div><div class="draft-tools" id="article-editor-tools" role="group" aria-label="正文排版工具"><button type="button" data-draft-format="section">章节标题</button><button type="button" data-draft-format="subsection">小节标题</button><button type="button" data-draft-format="strong">加粗重点</button><button type="button" data-draft-format="list">要点列表</button><button type="button" data-draft-format="quote">重点提示</button></div><p class="draft-structure" data-draft-structure></p><label>正文内容<textarea class="editor-input" name="content" rows="13" required maxlength="30000" placeholder="先粘贴原文，再选中一行文字，点“章节标题”或“小节标题”；选中关键结论可点“加粗重点”。">${h(item.content)}</textarea></label><div id="draft-preview" class="editor-preview" hidden></div><details class="editor-help"><summary>建议怎样组织一篇技术文章？</summary><p>先写核心结论，再分为适用场景、原理与方法、应用与限制、资料来源等章节。不是每篇都必须有全部章节，先保留材料里确实有的内容。没有结论或参数依据时，不必补写。</p><p>也可直接使用 ## 章节标题、### 小节标题、- 要点、**重点** 和 &gt; 提示。旧文章的“一、二、三、”也会生成目录。</p></details>${actions(id?'保存修改':'公开发布')}</form>`);
   formSubmit(values=>api(`articles${id?`/${id}`:''}`,id?'PUT':'POST',values));
+  mountArticleEditor($('#dialog form'));
 }
 function editProject(id) {
   const item=state.projects.find(p=>p.id===id)||{owner:state.user.name,status:'planned'};
@@ -203,7 +245,7 @@ function confirmAction(heading,message,handler) {
 }
 function articlePage() {
   const returnHash=articleReturnHash();
-  const returnLabel=returnHash.startsWith('#search')?'返回搜索结果':returnHash==='#home'?'返回首页':'返回知识文库';
+  const returnLabel=returnHash.startsWith('#search')?'返回搜索结果':returnHash==='#home'?'返回首页':returnHash==='#landscape'?'返回山水首页':'返回知识文库';
   const backLink=`<a class="text-button article-back" href="${h(returnHash)}">← ${returnLabel}</a>`;
   const id=location.hash.slice(1).split('?')[0].split('/')[1];
   const sequence=searchSequence;
@@ -241,7 +283,7 @@ document.addEventListener('click',async event=>{
     if(target.dataset.category){navigateKnowledge(target.dataset.category);return;}
     if(target.dataset.libraryCategory){navigateKnowledge(target.dataset.libraryCategory,'');return;}
     if(target.dataset.libraryView){state.libraryView=target.dataset.libraryView;navigateKnowledge();return;}
-    if(target.dataset.editorTab){const preview=target.dataset.editorTab==='preview';const textarea=$('#dialog textarea[name=content]');$('#draft-preview').hidden=!preview;textarea.closest('label').hidden=preview;textarea.required=!preview;if(preview)$('#draft-preview').innerHTML=renderDocument(textarea.value).html.replaceAll('id="section-','id="draft-section-');document.querySelectorAll('[data-editor-tab]').forEach(button=>{button.classList.toggle('active',(button.dataset.editorTab==='preview')===preview);button.setAttribute('aria-pressed',String((button.dataset.editorTab==='preview')===preview));});return;}
+    if(target.dataset.editorTab){const preview=target.dataset.editorTab==='preview';const textarea=$('#dialog textarea[name=content]'),form=textarea.form;$('#draft-preview').hidden=!preview;textarea.closest('label').hidden=preview;textarea.required=!preview;$('#article-editor-tools').hidden=preview;if(preview)$('#draft-preview').innerHTML=draftPreview({title:form.elements.title.value,summary:form.elements.summary.value,content:textarea.value}).replaceAll('id="section-','id="draft-section-');document.querySelectorAll('[data-editor-tab]').forEach(button=>{button.classList.toggle('active',(button.dataset.editorTab==='preview')===preview);button.setAttribute('aria-pressed',String((button.dataset.editorTab==='preview')===preview));});return;}
     if(target.dataset.status){state.status=target.dataset.status;projects();return;}
     if(target.dataset.resetUser)return resetUser(Number(target.dataset.resetUser));
     if(target.dataset.deleteArticle){const id=Number(target.dataset.deleteArticle);return confirmAction('删除文章','删除后访客将无法再浏览这篇文章。确定删除？',()=>api(`articles/${id}`,'DELETE',{}));}
@@ -266,7 +308,7 @@ $('#account-button').addEventListener('click',()=>{
 });
 $('#global-search-form').addEventListener('submit',event=>{event.preventDefault();navigateSearch($('#global-search').value);});
 document.addEventListener('keydown',event=>{
-  if ((event.ctrlKey||event.metaKey) && event.key.toLowerCase()==='k') {event.preventDefault();if(route()==='home'){navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());}else $('#global-search').focus();}
+  if ((event.ctrlKey||event.metaKey) && event.key.toLowerCase()==='k') {event.preventDefault();if(['home','landscape'].includes(route())){navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());}else $('#global-search').focus();}
 });
 window.addEventListener('hashchange',()=>{dialog.close();render();window.scrollTo(0,0);});
 dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close();}});

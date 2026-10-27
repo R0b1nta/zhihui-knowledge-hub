@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="磁脉知识库的交互样例。让充退磁、电磁脉冲制造与技术服务的知识关系，回应每一次靠近。">
+<title>磁脉 · 定制字标</title>
+<style>
+:root{color-scheme:light;--paper:#f4f4f2;--ink:#2b3032;--text:#4d5558;--muted:#6a7478;--energy:#b48237;font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:var(--text);background:var(--paper);font-synthesis:none}*{box-sizing:border-box}body{margin:0}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}button,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation}a:focus-visible,button:focus-visible{outline:2px solid #94733d;outline-offset:6px}[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.page{min-height:100svh;overflow:clip;display:flex;flex-direction:column}
+.header{min-height:86px;position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 5.5%;background:var(--paper)}.brand{display:flex;align-items:center;gap:12px;color:var(--ink)}.brand>svg{width:25px;height:30px;fill:none;stroke:currentColor;stroke-width:1.3}.brand>span{font:25px "Songti SC","STSong","SimSun",serif;letter-spacing:2px}.brand small{font:16px Georgia,serif;margin-left:12px;letter-spacing:0}.header nav{display:flex;align-items:center;gap:30px;font-size:11px;color:#626c71}.header nav a:hover{color:#282f33}.concept-label{margin-left:5px;padding-left:25px;border-left:1px solid #cbd0d1;font-size:10px;color:#788185}
+.stage{position:relative;isolation:isolate;height:calc(100svh - 240px);min-height:680px;overflow:hidden;flex:none;background:var(--paper)}.stage:after{content:"";position:absolute;inset:0 3%;pointer-events:none;border-top:1px solid #cbd0d14d;border-bottom:1px solid #cbd0d14d;z-index:-1}.em-notations{display:none}.network{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}.network-wires{width:100%;height:100%;position:absolute;inset:0;overflow:visible}.network-wire{fill:none;stroke:#a9b3b7;stroke-width:.8;opacity:.52;vector-effect:non-scaling-stroke;transition:stroke .25s,opacity .25s}.network-wire.main-wire{stroke-width:1.1;opacity:.45}.network-wire.is-related{stroke:#818a8f;stroke-width:1.25;opacity:.9}.network-wire.is-muted{opacity:.21}.knowledge-pulse{fill:none;stroke:#af823d;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:.11 1;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #bc95545c)}.field-loop{fill:none;stroke:#879297;stroke-width:.65;opacity:.4;vector-effect:non-scaling-stroke}.field-loop.outer-loop{opacity:.18;stroke-dasharray:3 5}.charge-spark{fill:none;stroke:#b48237;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+.network-node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);padding:0;border:0;background:none;color:inherit;line-height:normal;pointer-events:auto;isolation:isolate;white-space:nowrap}.network-node:before{content:"";position:absolute;inset:-9px -6px;z-index:-1}.node-body{display:flex;align-items:center;gap:9px;position:relative;min-height:32px;padding:7px 10px;width:max-content;background:#f4f4f2e8;color:#6a7478;border:1px solid #cbd2d357;font-size:11px;transition:color .2s,background .2s,border-color .2s;will-change:transform}.node-dot{display:block;width:4px;height:4px;flex-shrink:0;border-radius:50%;border:1px solid #8b979c}.node-body:after{content:"";position:absolute;inset:-5px;border:1px solid transparent;pointer-events:none}.branch .node-body{font-size:13px;padding:12px 14px;min-height:45px;background:#ededeb;border-color:#bac4c7a6;color:#4c5a61}.branch-label{position:absolute;left:13px;top:-19px;font-size:9px;color:#7a878d;letter-spacing:.5px}.node-tick{display:none}.tech-glyph{width:21px;height:18px;flex-shrink:0;fill:none;stroke:#74848c;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}.network-node.is-related .node-body{background:#eae9e4;color:#505d64;border-color:#acb3b1}.network-node.is-related .node-dot{background:#a88b58;border-color:#a88b58}.network-node.is-seed .node-body{background:#39454a;color:#fff;border-color:#39454a}.network-node.is-seed .tech-glyph{stroke:#d9b77c}.network-node.is-seed .node-dot{background:#d9b77c;border-color:#d9b77c}.network-node.is-seed .node-body:after{border-color:#8d9b9f45}.network-node[aria-pressed="true"] .node-body:after{border-color:#a2864c73}.network-node.is-muted .node-body{color:#737e84;background:#f4f4f2bd;border-color:#cbd2d342}.network-node:focus-visible{outline:0}.network-node:focus-visible .node-body{outline:2px solid #94733d;outline-offset:5px}
+.network-node[data-id="magnetization"]{left:17%;top:15%}.network-node[data-id="equipment"]{left:6%;top:33%}.network-node[data-id="onsite"]{left:33%;top:3.5%}.network-node[data-id="assembly"]{left:9%;top:57%}.network-node[data-id="demag"]{left:24%;top:68%}.network-node[data-id="pulse"]{left:82%;top:15%}.network-node[data-id="welding"]{left:61%;top:3.5%}.network-node[data-id="riveting"]{left:94%;top:33%}.network-node[data-id="crimping"]{left:91%;top:56%}.network-node[data-id="service"]{left:68%;top:65%}.network-node[data-id="simulation"]{left:88%;top:69%}.network-node[data-id="poles"]{left:36%;top:72%}.network-node[data-id="coils"]{left:87%;top:44%}
+.stage-note{position:absolute;left:5.5%;top:4%;z-index:2;pointer-events:none;font-size:10px;line-height:1.8;color:#79868c}.stage-note strong{display:block;font:13px "Songti SC","STSong","SimSun",serif;letter-spacing:1px;color:#52626c}.stage-note p{display:none}.stage-bottom-note{position:absolute;left:5.5%;bottom:2%;max-width:440px;font-size:9px;color:#728088;line-height:1.8;margin:0;pointer-events:none}.field-legend{position:absolute;right:5.5%;bottom:2%;font-size:9px;display:flex;gap:18px;color:#79858b;pointer-events:none}.field-legend span{display:flex;align-items:center;gap:6px}.field-legend i{width:5px;height:5px;border:1px solid #9ca8ac;border-radius:50%}.field-legend .pulse-key{width:17px;height:0;border:0;border-top:2px solid #b48237;border-radius:0}
+.wordmark{position:absolute;left:48%;top:5%;width:min(80vw,1040px);transform:translateX(-50%);z-index:1;text-align:center;pointer-events:none}.conductive-mark{display:block;width:100%;height:auto;overflow:visible}.glyph-shape{font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:390px;font-weight:700;letter-spacing:-19px}.glyph-contour{fill:none;stroke:#343f44;stroke-width:.45;opacity:.24}.filament{fill:none;stroke:#f4f4f2;stroke-width:1.25;opacity:.77}.filament.bright-thread{stroke:#a9b0b0;opacity:.42;stroke-width:.65}.glyph-current{fill:none;stroke:url(#current-metal);stroke-width:3.1;stroke-linecap:round;filter:drop-shadow(0 0 4px #c4985d80)}.glyph-current.core{stroke:#fff4d2;stroke-width:.8;filter:none}.outside-current{fill:none;stroke:#b78b4e;stroke-width:1;stroke-linecap:round;filter:drop-shadow(0 0 3px #c3a47280)}.glyph-sweep{fill:url(#sweep-fill)}.hero-caption{display:flex;justify-content:center;align-items:center;gap:27px;min-height:42px;margin:-8px auto 0;max-width:500px;pointer-events:auto;position:relative}.hero-caption p{margin:0;font-size:12px;letter-spacing:1.5px;color:#6b777d}.power-trigger{position:relative;display:flex;align-items:center;gap:10px;background:none;border:0;padding:7px 0 7px 15px;color:#53616a;white-space:nowrap;font-size:11px;touch-action:manipulation}.power-trigger svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round}.power-trigger:before{content:"";height:22px;border-left:1px solid #bec6c9;position:absolute;left:0;top:50%;transform:translateY(-50%)}.power-trigger:hover{color:#8f6b30}.power-trigger:disabled{color:#9ca5a9;cursor:default}.power-status{font-size:9px;line-height:1.8;letter-spacing:.5px;color:#849097;min-height:17px;margin:5px 0 0}.stage[data-power="charging"] .power-trigger{color:#9d773d}.stage[data-power="discharge"] .power-trigger{color:#8a5f27}.stage.is-powered .network-wire{opacity:.65}.stage.is-powered .network-wire.is-muted{opacity:.3}.stage.is-powered .branch .node-body{border-color:#aab5b9}.stage.is-powered .network-wire.is-related{opacity:.95}.stage.is-igniting .node-body{border-color:#b6ac954d}.network-node.is-awake .node-body{color:#525d62;border-color:#ad9e839c;background:#eeece5}.network-node.is-awake .node-dot{background:#a7894d;border-color:#a7894d}
+.field-link{position:absolute;z-index:3;top:78%;width:25%;max-width:305px;min-height:119px;padding:19px 22px 17px}.knowledge{left:5.5%}.technology{left:38.5%}.projects{left:71.5%}.magnetic-ink{display:block;border-top:1px solid #b0bdc3;padding-top:17px;will-change:transform}.entry-top{display:flex;gap:12px;align-items:center;margin-bottom:8px}.entry-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#78868e;width:20px}.entry-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}.entry-title{font:26px "Songti SC","STSong","SimSun",serif;color:#3f515d;letter-spacing:1px}.entry-arrow{margin-left:auto;color:#87949c;font-size:20px;line-height:1;transition:transform .2s}.field-link:hover .entry-arrow{transform:translate(3px,-3px)}.entry-description{display:block;padding-left:32px;font-size:10px;line-height:1.9;color:#75828a}.pointer-orb{position:fixed;left:0;top:0;z-index:8;width:6px;height:6px;border-radius:50%;background:#7f8c949c;pointer-events:none;opacity:0;transition:opacity .2s;will-change:transform}.pointer-orb.visible{opacity:.8}.pointer-orb:after{content:"";position:absolute;inset:-7px;border:1px solid #77848b2e;border-radius:50%}
+.footer{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:35px;min-height:122px;padding:20px 5.5%;background:#fbfcfc;border-top:1px solid #d4dade}.topic-insight{max-width:690px;min-width:0}.insight-heading{display:flex;align-items:baseline;gap:17px;margin-bottom:8px}.insight-heading h2{font:20px "Songti SC","STSong","SimSun",serif;color:#3f515d;letter-spacing:.4px;margin:0}.insight-category{font-size:9px;color:#7a8790;white-space:nowrap}.insight-description{font-size:10px;line-height:1.9;color:#677985;max-width:620px;margin:0}.insight-bottom{display:flex;align-items:flex-start;gap:18px;margin-top:7px}.insight-relations{font-size:9px;color:#7b8790;line-height:1.8;max-width:470px}.insight-link{font-size:10px;white-space:nowrap;color:#7f683d;border-bottom:1px solid #b8aa8e;padding-bottom:1px}.controls{display:flex;align-items:center;gap:18px;flex-shrink:0}.control-button{background:none;border:0;padding:10px 0;color:#71828e;font-size:10px;white-space:nowrap}.primary-control{background:#e9edee;border:1px solid #c4cdd2;padding:11px 15px;color:#526978}.control-button:hover{color:#465d6b}.control-button:disabled{color:#9ca9af;cursor:default}.controls-separator{width:1px;height:16px;background:#cfd7dc}.help{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 5.5% 16px;background:#fbfcfc;font-size:9px;color:#829099;line-height:1.7}.help p{margin:0}.help a{color:#6d818e}.help a:hover{text-decoration:underline;text-underline-offset:3px}.motion-off .pointer-orb{display:none}
+@media(min-width:1700px){.wordmark{width:1150px;top:3%}.stage{min-height:830px}.entry-title{font-size:29px}.node-body{font-size:12px}.branch .node-body{font-size:15px}}
+@media(max-width:1150px){.wordmark{width:85vw;top:9%;left:49%}.stage{min-height:650px}.concept-label{display:none}.branch .node-body{font-size:12px;padding:10px 12px}.node-body{font-size:10px;padding:6px 8px}.branch-label{font-size:8px}.tech-glyph{width:19px}.network-node[data-id="riveting"]{left:93%}.network-node[data-id="simulation"]{left:87%}.field-link{width:28%;padding-left:15px;padding-right:15px}.knowledge{left:4%}.technology{left:36.5%}.projects{left:69%}.entry-title{font-size:24px}.entry-description{font-size:9px}.hero-caption{gap:20px}.hero-caption p{font-size:11px}.power-trigger{font-size:10px}.footer{gap:20px}.topic-insight{max-width:550px}.insight-relations{max-width:350px}.controls{gap:12px}.insight-heading h2{font-size:18px}}
+@media(max-width:900px) and (min-width:681px){.wordmark{top:17%;width:92vw}.stage{min-height:650px}.network-node[data-id="magnetization"]{left:18%;top:17%}.network-node[data-id="pulse"]{left:81%;top:17%}.network-node[data-id="coils"]{left:78%;top:54%}.network-node[data-id="service"]{left:68%;top:68%}.network-node[data-id="poles"]{left:42%;top:69%}.network-node[data-id="simulation"]{display:none}.node-body{font-size:9px}.branch .node-body{font-size:11px}.stage-note{max-width:140px;font-size:9px}.stage-note strong{font-size:11px}.field-link{top:79%;width:29%}.entry-title{font-size:23px}.entry-description{font-size:8px;padding-left:29px}.entry-top{gap:8px}.hero-caption p{font-size:10px}.power-trigger{font-size:9px}.power-trigger svg{width:26px;height:26px}.hero-caption{gap:14px}.footer{align-items:flex-start}.controls{max-width:245px;flex-wrap:wrap;justify-content:flex-end}.topic-insight{max-width:480px}.insight-description{font-size:9px}.insight-relations{font-size:8px}}
+@media(max-width:680px){.header{min-height:73px;padding:21px 7%}.brand{gap:9px}.brand>span{font-size:22px}.brand small{font-size:13px;margin-left:7px}.brand>svg{width:22px;height:27px}.header nav{font-size:10px;gap:17px}.header nav a:not(:first-child){display:none}.stage{height:auto;min-height:0;padding:470px 7% 25px;display:flex;flex-direction:column}.stage:after{inset:0 4%}.network{height:450px;bottom:auto}.wordmark{left:50%;top:86px;width:120vw;max-width:740px}.hero-caption{max-width:280px;gap:14px;margin-top:7px}.hero-caption p{font-size:10px;letter-spacing:.4px;max-width:145px;line-height:1.9}.power-trigger{font-size:10px;padding-left:13px;gap:6px}.power-trigger svg{width:27px;height:27px}.power-status{font-size:8px;letter-spacing:0;max-width:250px;margin:4px auto 0}.node-body{font-size:9px;padding:5px 7px;gap:5px;min-height:27px}.branch .node-body{font-size:10px;padding:7px 9px;min-height:32px}.tech-glyph{width:16px;height:14px}.branch-label,.node-tick{display:none}.network-node[data-id="magnetization"]{left:22%;top:10%}.network-node[data-id="equipment"]{left:10%;top:36%}.network-node[data-id="onsite"]{left:51%;top:4%}.network-node[data-id="assembly"]{left:14%;top:63%}.network-node[data-id="demag"]{left:19%;top:86%}.network-node[data-id="pulse"]{left:78%;top:14%}.network-node[data-id="welding"]{left:85%;top:37%}.network-node[data-id="riveting"]{left:87%;top:61%}.network-node[data-id="crimping"]{left:45%;top:94%}.network-node[data-id="service"]{left:80%;top:84%}.network-node[data-id="simulation"],.network-node[data-id="poles"],.network-node[data-id="coils"]{display:none}.stage-note,.stage-bottom-note,.field-legend{display:none}.field-link{position:relative;left:auto;top:auto;width:100%;max-width:none;min-height:0;padding:12px 8px 19px;background:var(--paper)}.magnetic-ink{padding-top:18px}.entry-title{font-size:25px}.entry-icon,.entry-icon svg{width:20px;height:20px}.entry-top{gap:12px;margin-bottom:8px}.entry-description{font-size:10px;padding-left:32px}.entry-arrow{font-size:19px;margin-right:4px}.footer{flex-direction:column;align-items:stretch;gap:18px;padding:21px 7%;min-height:0}.topic-insight{max-width:none;min-height:106px}.insight-heading{gap:7px 12px;flex-wrap:wrap}.insight-heading h2{font-size:20px}.insight-category{font-size:9px}.insight-description{font-size:10px;line-height:1.9}.insight-bottom{justify-content:space-between;gap:13px}.insight-relations{font-size:9px;max-width:210px}.insight-link{font-size:10px}.controls{justify-content:space-between;gap:15px;flex-wrap:nowrap}.control-button{font-size:10px}.primary-control{padding:10px 11px}.controls-separator{display:none}.help{padding:13px 7% 19px;gap:10px;flex-wrap:wrap}.keyboard-help{display:none}.knowledge-pulse{stroke-width:2}.field-loop{stroke-width:.6}}
+@media(max-width:360px){.wordmark{top:100px}.hero-caption{max-width:250px;gap:10px}.hero-caption p{font-size:9px;max-width:130px}.power-trigger{font-size:9px;gap:5px;padding-left:11px}.power-trigger svg{width:25px;height:25px}.insight-heading h2{font-size:18px}.insight-relations{max-width:160px}.controls{gap:11px}.control-button{font-size:9px}.primary-control{padding:10px}.network-node[data-id="service"]{left:79%}.network-node[data-id="pulse"]{left:77%}}
+.network{z-index:auto}.network-wires{z-index:0;pointer-events:none}.network-node{z-index:2}.glyph-hit{fill:transparent;pointer-events:fill;cursor:pointer}.power-trigger:focus-visible{outline-offset:4px}.motion-off .glyph-hit{pointer-events:none;cursor:default}
+@media(max-width:680px){.network-node[data-id="equipment"]{left:10%;top:18%}.network-node[data-id="welding"]{left:86%;top:6%}.network-node[data-id="riveting"]{left:88%;top:67%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.pointer-orb,.knowledge-pulse,.charge-spark{display:none!important}.node-body,.magnetic-ink{transform:none!important}}
+
+
+/* Custom path lettering; document content remains selectable. */
+.wordmark{-webkit-user-select:none;user-select:none}.conductive-mark{-webkit-user-select:none;user-select:none}.glyph-contour{stroke-width:.35;opacity:.2}.filament{stroke-width:.85;opacity:.58}.filament.bright-thread{stroke-width:.55;opacity:.25}.glyph-hit{fill:transparent;pointer-events:fill;cursor:pointer}
+.network-node[data-induction="approach"] .node-body:after{border-color:#63747777;transform:scale(1.045,1.13)}
+.network-node[data-induction="depart"] .node-body:after{border-color:#b4823788;transform:scale(.98,.92)}
+.node-body:after{transition:transform .14s,border-color .14s}
+.stage[data-induction="depart"] .field-loop{stroke:#b48237}
+.field-link[data-induction="depart"] .magnetic-ink{border-top-color:#b48237}
+.header nav .home-theme{font:inherit;color:inherit;border:0;background:none;padding:8px 0;cursor:pointer}
+.header nav .home-theme:focus-visible{outline:2px solid #94733d;outline-offset:5px}
+@media(max-width:680px){.header nav a.mountain-variant{display:inline}}
+
+/* v6.2: clear hierarchy for titles, technical themes and supporting copy. */
+.header nav{font-size:15px;gap:27px;color:#46545d}.concept-label{font-size:12px;color:#63717a}.stage{min-height:740px;height:calc(100svh - 220px)}.entry-title{font-size:clamp(28px,2.5vw,36px);font-weight:500;line-height:1.35;color:#2e424f;letter-spacing:1px}.entry-description{font-size:15px;line-height:1.8;color:#566974}.field-link{top:76%;min-height:136px}.entry-top{margin-bottom:10px}.entry-icon,.entry-icon svg{width:24px;height:24px}.entry-arrow{font-size:24px}.entry-description{padding-left:36px}
+.node-body{font-size:14px;line-height:1.45;color:#52626c;padding:8px 11px;min-height:36px}.branch .node-body{font-size:18px;font-weight:500;line-height:1.4;padding:12px 15px;color:#3e535f}.branch-label{font-size:12px;top:-24px;color:#606f78;letter-spacing:.2px}.network-node.is-muted .node-body{color:#62717b}.network-node[data-id="magnetization"],.network-node[data-id="pulse"]{top:13%}.network-node[data-id="poles"]{left:33%;top:72%}
+.stage-note{font-size:13px;color:#5e6e77}.stage-note strong{font-size:18px;line-height:1.5;color:#405763}.hero-caption p{font-size:16px;line-height:1.8;letter-spacing:1px;color:#526671}.power-trigger{font-size:14px;color:#435c6b}.power-status{font-size:12px;line-height:1.8;color:#606f79}.stage-bottom-note,.field-legend{font-size:12px;color:#657680}.stage-bottom-note{max-width:440px}.field-legend{gap:16px}
+.footer{min-height:171px;gap:32px;padding-top:26px;padding-bottom:25px}.topic-insight{max-width:740px}.insight-heading{gap:16px;margin-bottom:10px}.insight-heading h2{font-size:30px;font-weight:500;line-height:1.45;color:#2f4654;letter-spacing:.4px}.insight-category{font-size:13px;color:#61747f}.insight-description{font-size:15px;line-height:1.85;color:#536c7a;max-width:680px}.insight-bottom{margin-top:11px;gap:20px}.insight-relations{font-size:12px;line-height:1.8;color:#627781;max-width:470px}.insight-link{font-size:14px;line-height:1.8;color:#7b622e}.control-button{font-size:14px;color:#526b7b}.primary-control{padding:12px 15px}.help{font-size:12px;line-height:1.8;color:#637983;padding-top:15px;padding-bottom:19px}.help a{color:#536f7f}
+@media(max-width:1150px) and (min-width:681px){.stage{min-height:730px}.entry-title{font-size:29px}.entry-description{font-size:14px;padding-left:33px}.field-link{padding-left:13px;padding-right:13px}.node-body{font-size:12px}.branch .node-body{font-size:16px;padding:11px 12px}.branch-label{font-size:11px;top:-22px}.hero-caption p{font-size:14px}.power-trigger{font-size:13px}.footer{gap:22px}.insight-heading h2{font-size:26px}.insight-description{font-size:14px}.topic-insight{max-width:580px}.controls{gap:13px}.control-button{font-size:12px}.primary-control{padding:11px 12px}.insight-relations{font-size:11px;max-width:330px}.insight-link{font-size:13px}.help{font-size:11px}}
+@media(max-width:900px) and (min-width:681px){.stage{min-height:760px}.branch .node-body{font-size:14px}.node-body{font-size:12px}.network-node[data-id="equipment"]{left:7%}.network-node[data-id="riveting"]{left:92%}.entry-title{font-size:27px}.entry-description{font-size:13px}.field-link{top:77%}.entry-top{gap:9px}.entry-icon,.entry-icon svg{width:20px;height:20px}.entry-description{padding-left:29px}.footer{gap:24px}.controls{max-width:190px;gap:13px}.topic-insight{max-width:520px}.insight-heading{flex-wrap:wrap;gap:6px 12px}.insight-heading h2{font-size:25px}.insight-description{font-size:14px}.insight-category{font-size:12px}.stage-note strong{font-size:15px}.stage-bottom-note,.field-legend{font-size:10px}.hero-caption{max-width:460px}.hero-caption p{font-size:13px}.power-status{font-size:11px}}
+@media(max-width:680px){.header{min-height:77px;gap:16px}.header nav{font-size:13px;gap:14px}.stage{height:auto;min-height:0;padding-top:495px;padding-bottom:26px}.wordmark{top:74px}.node-body{font-size:12px;line-height:1.4;padding:6px 8px;min-height:30px;gap:5px}.branch .node-body{font-size:15px;line-height:1.4;padding:9px 10px;min-height:38px}.network-node[data-id="magnetization"]{left:23%;top:10%}.network-node[data-id="pulse"]{left:78%;top:14%}.network-node[data-id="equipment"]{left:14%;top:19%}.network-node[data-id="welding"]{left:86%;top:5%}.network-node[data-id="riveting"]{left:87%;top:68%}.network-node[data-id="service"]{left:80%;top:91%}.network-node[data-id="crimping"]{left:44%;top:95%}.network-node[data-id="demag"]{left:19%;top:88%}.hero-caption{max-width:300px;gap:14px;margin-top:9px;align-items:center}.hero-caption p{font-size:14px;line-height:1.7;letter-spacing:.2px;max-width:154px}.power-trigger{font-size:13px;gap:7px;padding-left:13px}.power-trigger svg{width:29px;height:29px}.power-status{font-size:11px;line-height:1.8;max-width:250px;margin-top:7px}.field-link{top:auto;min-height:0;padding:15px 8px 23px;width:100%}.entry-title{font-size:30px;line-height:1.35;font-weight:500}.entry-top{gap:12px;margin-bottom:10px}.entry-description{font-size:14px;line-height:1.8;padding-left:36px}.entry-icon,.entry-icon svg{width:24px;height:24px}.entry-arrow{font-size:23px}.magnetic-ink{padding-top:21px}.footer{min-height:0;gap:23px;padding:24px 7%}.topic-insight{min-height:155px;max-width:none}.insight-heading{gap:7px 12px;margin-bottom:10px;flex-wrap:wrap}.insight-heading h2{font-size:26px;line-height:1.45}.insight-category{font-size:12px}.insight-description{font-size:14px;line-height:1.85}.insight-bottom{gap:15px;margin-top:10px;flex-wrap:wrap}.insight-relations{font-size:12px;max-width:none;flex:1 1 160px}.insight-link{font-size:13px;line-height:1.8}.controls{gap:13px;flex-wrap:wrap;justify-content:space-between}.control-button{font-size:13px}.primary-control{padding:11px 12px}.help{font-size:11px;line-height:1.8;padding:15px 7% 20px;gap:12px}.stage-bottom-note,.field-legend{display:none}}
+@media(max-width:360px){.header{gap:12px}.header nav{font-size:12px;gap:12px}.hero-caption{max-width:270px;gap:11px}.hero-caption p{font-size:13px;max-width:140px}.power-trigger{font-size:12px;padding-left:11px}.power-trigger svg{width:26px;height:26px}.node-body{font-size:11px}.branch .node-body{font-size:14px;padding:8px 9px}.network-node[data-id="pulse"]{left:77%;top:14%}.network-node[data-id="service"]{left:79%}.entry-title{font-size:28px}.entry-description{font-size:13px}.insight-heading h2{font-size:24px}.insight-description{font-size:14px}.controls{gap:11px}.control-button{font-size:12px}.primary-control{padding:11px}.insight-relations{flex-basis:145px}}
+.stage-note{top:1.8%}.insight-heading h2{text-wrap:balance}
+@media(max-width:680px){.hero-caption{flex-direction:column;max-width:310px;gap:6px;margin-top:9px}.hero-caption p{max-width:none;white-space:nowrap;line-height:1.7}.power-trigger{padding:5px;gap:8px}.power-trigger:before{display:none}.network-node[data-id="assembly"]{left:14%;top:69%}.insight-heading h2{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="page" id="home">
+  <header class="header"><a class="brand" href="/#home" aria-label="磁脉首页" target="_top"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M4 4v15c0 8 7 13 11 13s11-5 11-13V4M10 4v15c0 4 3 6 5 6s5-2 5-6V4M4 4h6m10 0h6M15 0v12"/></svg><span>磁脉<small>Cimai</small></span></a><nav aria-label="网站入口"><a href="/#knowledge" target="_top">知识文库</a><a href="/#projects" target="_top">项目空间</a><button class="home-theme" type="button" data-home-theme>首页外观</button><span class="concept-label">技术与知识</span></nav></header>
+  <main class="stage" id="field-stage" aria-labelledby="title">
+    <div class="em-notations" aria-hidden="true">
+      <div class="induction-signs"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg><small>磁感应</small></div>
+      <div class="pulse-signature"><svg viewBox="0 0 150 40"><path class="pulse-baseline" d="M0 27h150"/><path class="pulse-waveform" d="M1 27h27l4-1 5-23 9 34 11-23 13 16 13-10 14 8 16-3 15 2h21"/></svg><small>瞬态脉冲</small></div>
+    </div>
+    <div class="network" id="knowledge-network" role="group" aria-label="探索技术主题">
+      <svg class="network-wires" id="network-wires" focusable="false" aria-hidden="true"><defs><mask id="wordmark-mask" maskUnits="userSpaceOnUse"><rect id="mask-background" fill="white"/><ellipse id="mask-wordmark" fill="black"/></mask></defs><g class="field-emitter" id="field-emitter" aria-hidden="true" opacity="0"><ellipse class="field-loop" id="field-loop-inner"/><ellipse class="field-loop outer-loop" id="field-loop-outer"/><path class="charge-spark" id="charge-spark" opacity="0"/></g><g id="wire-layer" mask="url(#wordmark-mask)"></g></svg>
+      <button type="button" class="network-node branch" data-id="magnetization" style="--x:18%;--y:29%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">永磁装备</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><circle cx="6" cy="10" r="4.5"/><circle cx="6" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="10" r="4.5"/><path d="m17 8 4 4m0-4-4 4"/></svg>整体充退磁<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node" data-id="equipment" style="--x:7%;--y:20%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>永磁电机</span></button>
+      <button type="button" class="network-node" data-id="onsite" style="--x:29%;--y:11%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>原位充磁</span></button>
+      <button type="button" class="network-node" data-id="assembly" style="--x:9%;--y:49%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>无磁装配</span></button>
+      <button type="button" class="network-node" data-id="demag" style="--x:29%;--y:57%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>原位退磁</span></button>
+      <button type="button" class="network-node branch" data-id="pulse" style="--x:63%;--y:16%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">金属成形与连接</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M1 14h6V4h6v10h5V8h3v6h3"/></svg>电磁脉冲制造<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node" data-id="welding" style="--x:47%;--y:7%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>管件焊接</span></button>
+      <button type="button" class="network-node" data-id="riveting" style="--x:85%;--y:9%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>电磁铆接</span></button>
+      <button type="button" class="network-node" data-id="crimping" style="--x:88%;--y:54%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>线缆压接</span></button>
+      <button type="button" class="network-node branch" data-id="service" style="--x:54%;--y:77%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">磁场发生部件</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M2 10c3-10 18-10 21 0-3 10-18 10-21 0Z"/><path d="M6 10c2-5 11-5 13 0-2 5-11 5-13 0Zm14-5 2 2-3 .5"/></svg>技术服务<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node" data-id="simulation" style="--x:63%;--y:56%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>多物理场仿真</span></button>
+      <button type="button" class="network-node" data-id="poles" style="--x:39%;--y:91%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>特种磁极</span></button>
+      <button type="button" class="network-node" data-id="coils" style="--x:66%;--y:92%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>特种线圈</span></button>
+    </div>
+    <div class="stage-note"><strong>强场，始于一瞬。</strong><p>从一个问题，<br>找到一组知识。</p></div>
+    <div class="wordmark">
+      <h1 id="title" class="sr-only">磁脉，脉冲强磁场的产业化应用</h1>
+      <svg class="conductive-mark" id="conductive-mark" viewBox="0 0 1000 420" aria-hidden="true" focusable="false">
+        <defs><g id="cimai-letterform" transform="translate(50 0) scale(.9 1)" fill-rule="evenodd"><path data-stroke="stone-cap" d="M76 96H223L209 120H76Z"/><path data-stroke="stone-fall" d="M144 111H174L128 205L99 221L89 207Z"/><path data-stroke="stone-counter" d="M110 196H223V316L209 330H97V210ZM125 223V303H195V223Z"/><path data-stroke="pole-left" d="M264 65L292 79L311 110H280Z"/><path data-stroke="pole-right" d="M405 65L422 83L399 110H368Z"/><path data-stroke="crown-left" d="M247 128H342L329 152H247Z"/><path data-stroke="crown-right" d="M355 128H468L454 152H355Z"/><path data-stroke="return-left-upper" d="M285 160H315L285 204H329L315 228H244L238 214Z"/><path data-stroke="return-left-lower" d="M293 214H324L278 293H320L331 317H242L234 302Z"/><path data-stroke="return-left-tip" d="M321 269L340 282L352 316H325L311 286Z"/><path data-stroke="return-right-upper" d="M401 160H431L401 204H445L431 228H360L354 214Z"/><path data-stroke="return-right-lower" d="M409 214H440L394 293H436L447 317H358L350 302Z"/><path data-stroke="return-right-tip" d="M437 269L456 282L468 316H441L427 286Z"/><path data-stroke="moon-frame" d="M554 94H654V322Q654 345 630 345H605L616 320H629V120H563V261Q563 317 536 350L516 332Q538 301 538 261V110Z"/><path data-stroke="moon-upper-rail" d="M559 179H617L607 202H559Z"/><path data-stroke="moon-lower-rail" d="M559 243H617L607 266H559Z"/><path data-stroke="pulse-head" d="M766 65L803 84L790 108L758 90Z"/><path data-stroke="pulse-spine" d="M698 120H797L783 150V321Q783 348 754 348H725L736 322H754V146H686Z"/><path data-stroke="pulse-left" d="M674 191H743V215Q726 269 679 305L660 283Q698 254 713 216H661Z"/><path data-stroke="pulse-upper-branch" d="M869 155L891 172L830 235L807 220Z"/><path data-stroke="pulse-outflow" d="M794 202L817 191Q852 263 922 302L905 327Q832 285 794 229Z"/></g>
+          <mask id="conductive-glyph" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="420"><use href="#cimai-letterform" fill="white"/></mask>
+          <linearGradient id="graphite-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#858d8f"/><stop offset=".42" stop-color="#252e32"/><stop offset="1" stop-color="#596368"/></linearGradient>
+          <linearGradient id="current-metal"><stop stop-color="#af854a"/><stop offset=".48" stop-color="#e8c98c"/><stop offset=".56" stop-color="#fff4cf"/><stop offset="1" stop-color="#9e7642"/></linearGradient>
+          <linearGradient id="sweep-fill"><stop stop-color="#d1ac6d" stop-opacity="0"/><stop offset=".45" stop-color="#d0ae73" stop-opacity=".7"/><stop offset=".65" stop-color="#fff4d0" stop-opacity=".9"/><stop offset="1" stop-color="#b89358" stop-opacity="0"/></linearGradient>
+        </defs>
+        <g mask="url(#conductive-glyph)">
+          <rect width="1000" height="420" fill="url(#graphite-fill)"/>
+          <g id="filament-layer"></g>
+          <rect class="glyph-sweep" id="glyph-sweep" x="-200" y="0" width="180" height="420" opacity="0"/>
+          <path class="glyph-current" id="glyph-current" opacity="0"/>
+          <path class="glyph-current core" id="glyph-core" opacity="0"/>
+        </g>
+        <use href="#cimai-letterform" class="glyph-contour"/>
+        <path class="outside-current" id="outside-current" opacity="0"/>
+        <use href="#cimai-letterform" class="glyph-hit"/>
+      </svg>
+      <div class="hero-caption"><p>脉冲强磁场的产业化应用</p><button class="power-trigger" id="power-button" type="button" aria-label="触发磁脉脉冲"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5v11M10 8.5a10 10 0 1 0 12 0"/><circle cx="16" cy="16" r="14" stroke-opacity=".2"/></svg><span id="power-label">触发脉冲</span></button></div>
+      <p class="power-status" id="power-status" role="status">点击字标，唤醒知识网络。</p>
+    </div>
+    <a class="field-link knowledge" href="/#knowledge" data-responsive data-kind="link" data-name="知识文库" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h6c2 0 3 1 3 2v13c0-2-2-3-4-3H3zm18 0h-6c-2 0-3 1-3 2v13c0-2 2-3 4-3h5z"/></svg></span><span class="entry-title">知识文库</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">原理、方法与应用资料</span></span></a>
+    <a class="field-link technology" href="/#article/4" data-responsive data-kind="link" data-name="技术方向" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 13h5l3-8 4 14 3-6h5"/></svg></span><span class="entry-title">技术方向</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">从充退磁到电磁脉冲制造</span></span></a>
+    <a class="field-link projects" href="/#projects" data-responsive data-kind="link" data-name="项目空间" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.5 6 7 .5M7.3 8.2l4.4 7.6m5.3-6.3-3 6"/></svg></span><span class="entry-title">项目空间</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">登录后查看团队进展</span></span></a>
+    <p class="stage-bottom-note" id="field-note">靠近一个主题，点亮一条知识脉络。</p>
+    <div class="field-legend" aria-hidden="true"><span><i></i>公开技术主题</span><span><i class="pulse-key"></i>沿关联传递</span></div>
+  </main>
+  <footer class="footer">
+    <section class="topic-insight" id="topic-insight" aria-label="主题导览">
+      <div class="insight-heading"><h2 id="insight-title">让一个问题，带出一组知识。</h2><span class="insight-category" id="insight-category">从主题出发</span></div>
+      <p class="insight-description" id="insight-description">靠近任意技术主题，点亮它的知识脉络；点选后可保留主题并打开文章。</p>
+      <div class="insight-bottom"><span class="insight-relations" id="insight-relations">公开内容来自现有知识文库。</span><a class="insight-link" id="insight-link" href="/#knowledge" target="_top">浏览知识文库</a></div>
+    </section>
+    <div class="controls"><button class="control-button primary-control" id="demo-button" type="button">点亮一条脉络</button><button class="control-button" id="reset-button" type="button">回到全貌</button><span class="controls-separator" aria-hidden="true"></span><button class="control-button" id="motion-button" type="button" aria-pressed="false">关闭动效</button></div>
+  </footer>
+  <div class="help"><p>磁脉电气（东莞）有限公司</p><p class="keyboard-help">点选保留主题，Esc 回到全貌。</p><a href="/#knowledge" target="_top">浏览知识文库 ↗</a></div>
+</div>
+<div class="pointer-orb" id="pointer-orb" aria-hidden="true"></div>
+<script>
+// A bounded interaction metaphor for Lenz's law, not a field simulation.
+// A Gaussian represents coupling; -d(flux)/dt changes sign on approach/departure.
+function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=true }={}) {
+  const idle={x:0,y:0,strength:0,phase:'idle'};
+  if(!enabled||!pointer.active||!Number.isFinite(pointer.time))return idle;
+  const age=Math.max(0,now-pointer.time);
+  if(age>650)return idle;
+  const dx=pointer.x-center.x,dy=pointer.y-center.y,d=Math.hypot(dx,dy);
+  if(d<2||d>radius*2.6)return idle;
+  const coupling=Math.exp(-(d*d)/(2*radius*radius));
+  const radial=(dx*(pointer.vx||0)+dy*(pointer.vy||0))/d;
+  const decay=Math.exp(-Math.max(0,age-35)/85);
+  const response=Math.tanh(radial*coupling/230)*decay;
+  if(Math.abs(response)<.012)return idle;
+  return {x:dx/d*response*limit,y:dy/d*response*limit,strength:Math.abs(response),phase:response<0?'approach':'depart'};
+}
+
+(() => {
+  const stage=document.querySelector('#field-stage');
+  const network=document.querySelector('#knowledge-network');
+  const wires=document.querySelector('#network-wires');
+  const layer=document.querySelector('#wire-layer');
+  const emitter=document.querySelector('#field-emitter');
+  const innerLoop=document.querySelector('#field-loop-inner');
+  const outerLoop=document.querySelector('#field-loop-outer');
+  const spark=document.querySelector('#charge-spark');
+  const orb=document.querySelector('#pointer-orb');
+  const note=document.querySelector('#field-note');
+  const demoButton=document.querySelector('#demo-button');
+  const resetButton=document.querySelector('#reset-button');
+  const motionButton=document.querySelector('#motion-button');
+  const powerButton=document.querySelector('#power-button');
+  const powerLabel=document.querySelector('#power-label');
+  const powerStatus=document.querySelector('#power-status');
+  const filamentLayer=document.querySelector('#filament-layer');
+  const glyphSweep=document.querySelector('#glyph-sweep');
+  const glyphCurrent=document.querySelector('#glyph-current');
+  const glyphCore=document.querySelector('#glyph-core');
+  const outsideCurrent=document.querySelector('#outside-current');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const base='/';
+  const catalogue={
+    magnetization:{group:'magnetization',name:'整体充退磁',article:5,summary:'围绕无磁装配与原位充退磁，认识大型永磁装备的制造、运维和再制造。'},
+    equipment:{group:'magnetization',name:'永磁电机',article:5,summary:'从大型永磁电机出发，了解充磁、退磁与装备应用之间的关系。'},
+    onsite:{group:'magnetization',name:'原位充磁',article:5,summary:'了解无磁装配后的原位充磁，以及它在永磁装备制造中的位置。'},
+    assembly:{group:'magnetization',name:'无磁装配',article:5,summary:'从无磁状态下的装配开始，沿技术路线了解原位充退磁。'},
+    demag:{group:'magnetization',name:'原位退磁',article:5,summary:'认识复杂磁路下磁极原位退磁与永磁装备运维的关联。'},
+    pulse:{group:'pulse',name:'电磁脉冲制造',article:9,summary:'脉冲磁场驱动金属高速形变与碰撞，连接管件焊接、铆接和线缆压接等应用。'},
+    welding:{group:'pulse',name:'管件焊接',article:6,summary:'从脉冲电源和线圈产生磁场，到金属管件高速碰撞，了解固相连接的基本过程。'},
+    riveting:{group:'pulse',name:'电磁铆接',article:7,summary:'利用脉冲磁场驱动铆钉高速变形，了解薄壁件与异材结构的连接方向。'},
+    crimping:{group:'pulse',name:'线缆压接',article:8,summary:'通过瞬态电磁力使端子套筒收缩包覆导体，认识线缆连接的应用方向。'},
+    service:{group:'service',name:'技术服务',article:10,summary:'从多物理场仿真设计到制造，了解特种磁极与特种线圈等磁场发生部件。'},
+    simulation:{group:'service',name:'多物理场仿真',article:10,summary:'围绕应用工况与部件要求，了解仿真设计和特种磁极、线圈制造的关联。'},
+    poles:{group:'service',name:'特种磁极',article:10,summary:'认识面向非标准应用的定制化磁场发生部件及其设计方向。'},
+    coils:{group:'service',name:'特种线圈',article:10,summary:'了解承受短时电压与电流冲击、用于金属成形或连接的特种线圈。'}
+  };
+  const topics=[...document.querySelectorAll('.network-node')].map(element=>({element,ink:element.querySelector('.node-body'),id:element.dataset.id,...catalogue[element.dataset.id],rect:null,visible:true,x:0,y:0,vx:0,vy:0}));
+  const byId=new Map(topics.map(topic=>[topic.id,topic]));
+  const relations=[['magnetization','equipment'],['magnetization','onsite'],['magnetization','assembly'],['magnetization','demag'],['pulse','welding'],['pulse','riveting'],['pulse','crimping'],['service','simulation'],['service','poles'],['service','coils'],['magnetization','pulse'],['pulse','service'],['service','magnetization']];
+  const svgElement=(tag,className)=>{const element=document.createElementNS('http://www.w3.org/2000/svg',tag);element.setAttribute('class',className);return element;};
+  const filaments=Array.from({length:60},(_,index)=>{const element=svgElement('path',index%4===0?'filament bright-thread':'filament');filamentLayer.append(element);return element;});
+  const edges=relations.map(([from,to],index)=>{
+    const element=svgElement('path','network-wire'),pulse=svgElement('path','knowledge-pulse');
+    pulse.setAttribute('pathLength','1');pulse.style.opacity='0';
+    if(index>=10)element.classList.add('main-wire');layer.append(element,pulse);
+    return {from:byId.get(from),to:byId.get(to),element,pulse,related:false,depth:0,reverse:false};
+  });
+  const entrances=[...document.querySelectorAll('.field-link')].map(element=>({element,ink:element.querySelector('[data-ink]'),rect:null,x:0,y:0,vx:0,vy:0}));
+  const pointer={x:0,y:0,vx:0,vy:0,time:-Infinity,active:false};
+  let activeId=null,pinnedId=null,disabled=false,frame=0,last=0,networkRect=null,waveStart=-Infinity,demo=null,powerScene=null,heroDirty=true,powerDone=false;
+  const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
+  const canAnimate=()=>!disabled&&!reduced.matches&&!document.hidden;
+  const requestFrame=()=>{if(!frame&&canAnimate())frame=requestAnimationFrame(animate);};
+  function spring(value,velocity,target,dt){velocity+=((target-value)*108-velocity*19)*dt;return [value+velocity*dt,velocity];}
+  function position(topic){return {x:topic.rect.left+topic.rect.width/2+topic.x-networkRect.left,y:topic.rect.top+topic.rect.height/2+topic.y-networkRect.top};}
+  function pathBetween(a,b,reverse=false){const dx=b.x-a.x,dy=b.y-a.y,d=Math.max(1,Math.hypot(dx,dy)),bend=clamp(d*.13,12,55),nx=-dy/d*bend,ny=dx/d*bend,c1={x:a.x+dx*.35+nx,y:a.y+dy*.35+ny},c2={x:a.x+dx*.65+nx,y:a.y+dy*.65+ny};return reverse?`M ${b.x} ${b.y} C ${c2.x} ${c2.y} ${c1.x} ${c1.y} ${a.x} ${a.y}`:`M ${a.x} ${a.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${b.x} ${b.y}`;}
+  function drawGlyph(front=-1000,charge=0,time=0){
+    for(let index=0;index<filaments.length;index++){
+      const baseY=8+index*6.8;let path='';
+      for(let x=-10;x<=1010;x+=20){
+        const packet=Math.exp(-Math.pow((x-front)/150,2));
+        const resting=Math.sin(x*.009+baseY*.031)*3.3+Math.sin(x*.022-baseY*.014)*1.1;
+        const force=packet*Math.sin(x*.024+baseY*.055-time*11)*29+charge*Math.sin(x*.014+baseY*.027-time*7)*8;
+        path+=`${x===-10?'M':'L'}${x} ${(baseY+resting+force).toFixed(2)} `;
+      }
+      filaments[index].setAttribute('d',path);
+    }
+  }
+  function stopPower(){
+    if(!powerScene)return;
+    powerScene=null;heroDirty=true;stage.dataset.power='idle';stage.classList.remove('is-igniting');
+    for(const topic of topics)topic.element.classList.remove('is-awake');
+    powerButton.disabled=!canAnimate();powerLabel.textContent=powerDone?'再次通电':'触发脉冲';
+    powerStatus.textContent='点击字标，唤醒知识网络。';renderPower(performance.now());
+  }
+  function startPower(){
+    if(!canAnimate()||powerScene)return;
+    stopDemo(false);pinnedId=null;pointer.active=false;focusTopic(null,{restart:true});resetInsight();
+    powerScene={start:performance.now(),phase:''};stage.classList.add('is-igniting');stage.dataset.power='charging';
+    powerButton.disabled=true;powerLabel.textContent='正在通电';requestFrame();
+  }
+  function renderPower(now){
+    if(!powerScene){if(heroDirty){drawGlyph();heroDirty=false;glyphSweep.setAttribute('opacity','0');glyphCurrent.setAttribute('opacity','0');glyphCore.setAttribute('opacity','0');outsideCurrent.setAttribute('opacity','0');}return false;}
+    const elapsed=(now-powerScene.start)/1000;
+    if(elapsed>3.45){
+      powerDone=true;powerScene=null;heroDirty=true;stage.dataset.power='idle';stage.classList.remove('is-igniting');stage.classList.add('is-powered');
+      for(const topic of topics)topic.element.classList.remove('is-awake');
+      powerButton.disabled=!canAnimate();powerLabel.textContent='再次通电';powerStatus.textContent='再点字标可重新通电，靠近主题探索知识。';renderPower(now);return false;
+    }
+    const phase=elapsed<.7?'charging':elapsed<2.05?'discharge':'settling';
+    if(phase!==powerScene.phase){powerScene.phase=phase;stage.dataset.power=phase;powerStatus.textContent=phase==='charging'?'蓄能，纹理开始响应。':phase==='discharge'?'一道脉冲，穿过磁脉。':'技术与知识，依次唤醒。';}
+    const charge=elapsed<.7?Math.sin(elapsed/.7*Math.PI*.5):Math.exp(-(elapsed-.7)*2.4);
+    const progress=clamp((elapsed-.7)/1.35,0,1),front=-100+progress*1250;
+    drawGlyph(elapsed<.7?500:front,charge,elapsed);
+    const opacity=elapsed>=.7&&elapsed<2.2?Math.sin(progress*Math.PI)*.95:0;
+    glyphSweep.setAttribute('x',String(front-90));glyphSweep.setAttribute('opacity',String(opacity*.75));
+    let arc='';for(let x=-40;x<=1040;x+=8){const packet=Math.exp(-Math.pow((x-front)/160,2)),y=210+Math.sin(x*.009)*13+packet*(Math.sin(x*.073-elapsed*28)*16+Math.sin(x*.031+elapsed*19)*21);arc+=`${x===-40?'M':'L'}${x} ${y.toFixed(2)} `;}
+    glyphCurrent.setAttribute('d',arc);glyphCore.setAttribute('d',arc);outsideCurrent.setAttribute('d',arc);
+    glyphCurrent.setAttribute('opacity',String(opacity));glyphCore.setAttribute('opacity',String(opacity));outsideCurrent.setAttribute('opacity',String(opacity*.65));
+    for(const topic of topics){const groupDelay=topic.group==='magnetization'?0:topic.group==='pulse'?.17:.34;topic.element.classList.toggle('is-awake',elapsed>1.1+groupDelay&&elapsed<3.2);}
+    return true;
+  }
+  function renderWires(now=performance.now()){
+    if(!networkRect)return false;let waveAlive=false;
+    const seed=byId.get(activeId);
+    emitter.setAttribute('opacity',seed&&seed.visible?'1':'0');
+    if(seed&&seed.visible){
+      const center=position(seed),rx=seed.rect.width/2+12,ry=seed.rect.height/2+9;
+      emitter.setAttribute('transform',`translate(${center.x} ${center.y}) rotate(-10)`);
+      innerLoop.setAttribute('rx',rx);innerLoop.setAttribute('ry',ry);
+      outerLoop.setAttribute('rx',rx+11);outerLoop.setAttribute('ry',ry+6);
+      spark.setAttribute('d',`M ${-rx-22} 0 l7 -4 3 7 7 -6 5 3`);
+      const charge=(now-waveStart)/520;
+      spark.setAttribute('opacity',canAnimate()&&charge>=0&&charge<1?String(Math.sin(charge*Math.PI)*.85):'0');
+      if(canAnimate()&&charge>=0&&charge<1)waveAlive=true;
+    }
+    for(const edge of edges){
+      const visible=edge.from.visible&&edge.to.visible;
+      edge.element.style.display=visible?'':'none';edge.pulse.style.display=visible?'':'none';if(!visible)continue;
+      const a=position(edge.from),b=position(edge.to);edge.element.setAttribute('d',pathBetween(a,b));edge.pulse.setAttribute('d',pathBetween(a,b,powerScene?false:edge.reverse));
+      const groupDelay=edge.from.group==='magnetization'?0:edge.from.group==='pulse'?170:340;
+      const progress=powerScene?(now-powerScene.start-1100-groupDelay)/1100:(now-waveStart-edge.depth*230)/900;
+      const eligible=!!powerScene||edge.related;
+      if(canAnimate()&&eligible&&progress>=0&&progress<1){
+        edge.pulse.style.opacity=String(Math.sin(progress*Math.PI));edge.pulse.style.strokeDashoffset=String(.13-progress*1.26);waveAlive=true;
+      }else{edge.pulse.style.opacity='0';if(canAnimate()&&eligible&&progress<0)waveAlive=true;}
+    }
+    return waveAlive;
+  }
+  function cachePositions(){
+    networkRect=network.getBoundingClientRect();
+    for(const topic of topics){topic.visible=topic.element.getClientRects().length>0;topic.rect=topic.element.getBoundingClientRect();}
+    for(const entry of entrances)entry.rect=entry.element.getBoundingClientRect();
+    wires.setAttribute('viewBox',`0 0 ${networkRect.width} ${networkRect.height}`);
+    const bg=document.querySelector('#mask-background');bg.setAttribute('width',networkRect.width);bg.setAttribute('height',networkRect.height);
+    const mark=document.querySelector('.wordmark').getBoundingClientRect(),mask=document.querySelector('#mask-wordmark');
+    mask.setAttribute('cx',mark.left+mark.width/2-networkRect.left);mask.setAttribute('cy',mark.top+mark.height/2-networkRect.top);mask.setAttribute('rx',mark.width*.46);mask.setAttribute('ry',mark.height*.39);
+    renderWires();requestFrame();
+  }
+  function showInsight(topic){
+    document.querySelector('#insight-title').textContent=topic.name;
+    document.querySelector('#insight-category').textContent=byId.get(topic.group).name;
+    document.querySelector('#insight-description').textContent=topic.summary;
+    const link=document.querySelector('#insight-link');link.textContent='阅读相关内容';link.href=topic.article?`${base}#article/${topic.article}`:`${base}#search?${new URLSearchParams({q:topic.name,scope:'article'})}`;
+    document.querySelector('#topic-insight').dataset.topic=topic.id;
+    const peers=topics.filter(item=>item.group===topic.group&&item.id!==topic.id);
+    document.querySelector('#insight-relations').textContent=`关联 ${peers.map(item=>item.name).join('、')}`;
+  }
+  function resetInsight(){
+    document.querySelector('#insight-title').textContent='让一个问题，带出一组知识。';
+    document.querySelector('#insight-category').textContent='从主题出发';
+    document.querySelector('#insight-description').textContent='靠近任意技术主题，点亮它的知识脉络；点选后可保留主题并打开文章。';
+    document.querySelector('#insight-relations').textContent='公开内容来自现有知识文库。';
+    const link=document.querySelector('#insight-link');link.textContent='浏览知识文库';link.href=`${base}#knowledge`;
+    delete document.querySelector('#topic-insight').dataset.topic;
+  }
+  function focusTopic(id,{restart=false}={}){
+    if(id===activeId&&!restart)return;
+    activeId=id;const seed=byId.get(id);stage.dataset.focusId=id||'';stage.classList.toggle('is-exploring',!!seed);
+    for(const topic of topics){
+      const related=!!seed&&topic.group===seed.group;
+      topic.element.classList.toggle('is-seed',topic.id===id);topic.element.classList.toggle('is-related',related);topic.element.classList.toggle('is-muted',!!seed&&!related);
+      topic.element.setAttribute('aria-pressed',String(topic.id===pinnedId));
+    }
+    const depth=new Map();if(seed){depth.set(seed.id,0);const queue=[seed.id];for(let i=0;i<queue.length;i++){for(const [a,b] of relations){const next=a===queue[i]?b:b===queue[i]?a:null;if(next&&byId.get(next).group===seed.group&&!depth.has(next)){depth.set(next,depth.get(queue[i])+1);queue.push(next);}}}}
+    for(const edge of edges){edge.related=!!seed&&edge.from.group===seed.group&&edge.to.group===seed.group;edge.depth=Math.min(depth.get(edge.from.id)??0,depth.get(edge.to.id)??0);edge.reverse=(depth.get(edge.to.id)??0)<(depth.get(edge.from.id)??0);edge.element.classList.toggle('is-related',edge.related);edge.element.classList.toggle('is-muted',!!seed&&!edge.related);}
+    if(seed){showInsight(seed);note.textContent=pinnedId?'主题已保留；点选其他主题，或回到全貌。':`${seed.name}，连起${topics.filter(item=>item.group===seed.group).length-1}个相关主题。`;}
+    else note.textContent='来拒，去留。移动鼠标，感受主题间的响应。';
+    waveStart=seed?performance.now():-Infinity;renderWires();requestFrame();
+  }
+  function nearestTopic(){
+    let nearest=null,best=Infinity;
+    for(const topic of topics){if(!topic.visible)continue;const r=topic.rect,dx=pointer.x-(r.left+r.width/2),dy=pointer.y-(r.top+r.height/2),distance=Math.hypot(dx,dy);if(distance<best){best=distance;nearest=topic;}}
+    if(activeId&&!pinnedId){const current=byId.get(activeId),r=current.rect,dist=Math.hypot(pointer.x-r.left-r.width/2,pointer.y-r.top-r.height/2);if(dist<135&&dist<best+34)return activeId;}
+    return nearest&&best<105?nearest.id:null;
+  }
+  function chooseTopic(id){stopPower();stopDemo(false);pinnedId=pinnedId===id?null:id;focusTopic(pinnedId,{restart:true});if(!pinnedId)resetInsight();}
+  function clearExploration(){stopPower();stopDemo(false);pinnedId=null;pointer.active=false;focusTopic(null,{restart:true});resetInsight();orb.classList.remove('visible');}
+  function runDemo(now){
+    if(!demo)return;
+    const elapsed=(now-demo.start)/1000;if(elapsed>7.2){stopDemo();return;}
+    const route=['welding','magnetization','service'],id=route[Math.min(2,Math.floor(elapsed/2.4))];
+    if(activeId!==id)focusTopic(id);
+    const r=byId.get(id).rect,phase=(elapsed%2.4)/2.4*Math.PI*2;
+    pointer.x=r.left+r.width/2-105-72*Math.cos(phase);pointer.y=r.top+r.height/2+18;
+    pointer.vx=72*Math.sin(phase)*Math.PI*2/2.4;pointer.vy=0;pointer.time=now;pointer.active=true;
+  }
+  function animate(now){
+    frame=0;if(!canAnimate())return;
+    const dt=last?clamp((now-last)/1000,1/120,1/30):1/60;last=now;if(demo)runDemo(now);
+    const mobile=innerWidth<=680;let moving=false;
+    orb.classList.toggle('visible',pointer.active);orb.classList.toggle('is-demo',!!demo);
+    if(pointer.active)orb.style.transform=`translate3d(${pointer.x-4}px,${pointer.y-4}px,0)`;
+    for(const topic of topics){
+      if(!topic.visible)continue;
+      const r=topic.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:175,limit:mobile?5:18,enabled:document.activeElement!==topic.element&&pinnedId!==topic.id&&!powerScene});
+      const inset=mobile?6:18,tx=clamp(response.x,Math.min(0,networkRect.left+inset-r.left),Math.max(0,networkRect.right-inset-r.right)),ty=clamp(response.y,Math.min(0,networkRect.top+inset-r.top),Math.max(0,networkRect.bottom-inset-r.bottom));
+      topic.element.dataset.induction=response.phase;topic.element.style.setProperty('--induction-strength',response.strength.toFixed(3));
+      [topic.x,topic.vx]=spring(topic.x,topic.vx,tx,dt);[topic.y,topic.vy]=spring(topic.y,topic.vy,ty,dt);
+      topic.ink.style.transform=`translate3d(${topic.x.toFixed(3)}px,${topic.y.toFixed(3)}px,0)`;
+      if(Math.abs(topic.x-tx)+Math.abs(topic.y-ty)+Math.abs(topic.vx)+Math.abs(topic.vy)>.035)moving=true;
+    }
+    for(const entry of entrances){
+      const r=entry.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:220,limit:mobile?3:9,enabled:document.activeElement!==entry.element&&!powerScene});
+      entry.element.dataset.induction=response.phase;
+      [entry.x,entry.vx]=spring(entry.x,entry.vx,response.x,dt);[entry.y,entry.vy]=spring(entry.y,entry.vy,response.y,dt);entry.ink.style.transform=`translate3d(${entry.x.toFixed(3)}px,${entry.y.toFixed(3)}px,0)`;
+      if(Math.abs(entry.x-response.x)+Math.abs(entry.y-response.y)+Math.abs(entry.vx)+Math.abs(entry.vy)>.035)moving=true;
+    }
+    const nearest=pointer.active?byId.get(nearestTopic()):null;
+    const response=nearest?inductionTarget({x:nearest.rect.left+nearest.rect.width/2,y:nearest.rect.top+nearest.rect.height/2},pointer,now):{phase:'idle'};
+    stage.dataset.induction=response.phase;
+    if(!pinnedId&&!powerScene)note.textContent=response.phase==='approach'?'来拒 · 靠近时轻轻退让':response.phase==='depart'?'去留 · 离开时短暂跟随':'来拒，去留。移动鼠标，感受主题间的响应。';
+    const hero=renderPower(now),wave=renderWires(now),inputAlive=pointer.active&&now-pointer.time<650;
+    if(demo||moving||wave||hero||inputAlive)requestFrame();else last=0;
+  }
+  function stopDemo(clear=true){if(!demo)return;demo=null;demoButton.textContent='体验来拒去留';pointer.active=false;orb.classList.remove('visible','is-demo');if(clear){pinnedId=null;focusTopic(null);resetInsight();}}
+  function resetMotion(){
+    stopPower();stopDemo();cancelAnimationFrame(frame);frame=0;last=0;waveStart=-Infinity;pointer.active=false;orb.classList.remove('visible','is-demo');
+    for(const item of [...topics,...entrances]){item.x=item.y=item.vx=item.vy=0;item.ink.style.transform='none';item.element.dataset.induction='idle';}stage.dataset.induction='idle';renderWires();
+  }
+  function syncMotion(){if(!canAnimate())resetMotion();else requestFrame();document.body.classList.toggle('motion-off',!canAnimate());motionButton.disabled=reduced.matches;motionButton.setAttribute('aria-pressed',String(disabled||reduced.matches));motionButton.textContent=reduced.matches?'已按系统关闭动效':disabled?'开启动效':'关闭动效';demoButton.disabled=!canAnimate();powerButton.disabled=!canAnimate();if(reduced.matches)powerStatus.textContent='已按系统设置保留静态画面，知识仍可探索。';else if(disabled)powerStatus.textContent='动效已关闭，仍可选择主题与阅读文章。';else if(!powerScene)powerStatus.textContent=powerDone?'再点字标可重新通电，靠近主题探索知识。':'点击字标，唤醒知识网络。';}
+  for(const topic of topics){
+    topic.element.setAttribute('aria-label',`探索${topic.name}`);
+    topic.element.addEventListener('click',()=>chooseTopic(topic.id));
+    topic.element.addEventListener('focus',()=>{if(!pinnedId){stopDemo(false);focusTopic(topic.id);}});
+    topic.element.addEventListener('blur',()=>{if(!pinnedId&&!pointer.active)focusTopic(null);});
+  }
+  stage.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch')return;
+    if(demo)stopDemo(false);
+    const now=performance.now(),elapsed=(now-pointer.time)/1000,continuous=pointer.active&&elapsed>0&&elapsed<.16;
+    pointer.vx=continuous?clamp((event.clientX-pointer.x)/elapsed,-1800,1800):0;
+    pointer.vy=continuous?clamp((event.clientY-pointer.y)/elapsed,-1800,1800):0;
+    pointer.x=event.clientX;pointer.y=event.clientY;pointer.time=now;pointer.active=true;if(powerScene)return;
+    if(!pinnedId)focusTopic(nearestTopic());requestFrame();
+  },{passive:true});
+  stage.addEventListener('pointerleave',()=>{if(demo)return;pointer.active=false;orb.classList.remove('visible');if(!pinnedId&&!document.activeElement?.classList.contains('network-node'))focusTopic(null);requestFrame();},{passive:true});
+  demoButton.addEventListener('click',()=>{stopPower();if(demo){stopDemo();return;}if(!canAnimate())return;pinnedId=null;cachePositions();demo={start:performance.now()};demoButton.textContent='停止演示';requestFrame();});
+  powerButton.addEventListener('click',startPower);
+  document.querySelector('.glyph-hit').addEventListener('click',startPower);
+  resetButton.addEventListener('click',clearExploration);motionButton.addEventListener('click',()=>{disabled=!disabled;syncMotion();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')clearExploration();if(event.key==='Tab'){stopDemo();pointer.active=false;orb.classList.remove('visible');}});
+  window.addEventListener('blur',()=>{stopPower();stopDemo();pointer.active=false;orb.classList.remove('visible');if(!pinnedId)focusTopic(null);});
+  window.addEventListener('resize',cachePositions,{passive:true});window.addEventListener('scroll',cachePositions,{passive:true});
+  document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',syncMotion);
+  demoButton.textContent='体验来拒去留';
+
+  // Only accept the public catalogue from this page's same-origin host application.
+  const publicArticleTerms={magnetization:['整体充退磁','充退磁'],equipment:['整体充退磁','充退磁'],onsite:['整体充退磁','充退磁'],assembly:['整体充退磁','充退磁'],demag:['整体充退磁','充退磁'],pulse:['电磁加工','电磁脉冲制造'],welding:['管件'],riveting:['电磁铆接'],crimping:['线缆'],service:['特种磁极','特种线圈'],simulation:['特种磁极','特种线圈'],poles:['特种磁极','特种线圈'],coils:['特种磁极','特种线圈']};
+  for(const topic of topics)topic.article=null;
+  const technologyLink=document.querySelector('.technology');technologyLink.href='/#knowledge';
+  window.addEventListener('message',event=>{
+    if(event.source!==window.parent||event.origin!==location.origin||event.data?.type!=='cimai:public-home-context')return;
+    const records=Array.isArray(event.data.articles)?event.data.articles.filter(item=>Number.isSafeInteger(item.id)&&item.id>0&&typeof item.title==='string'):[];
+    for(const topic of topics){const match=records.find(item=>publicArticleTerms[topic.id].some(term=>item.title.includes(term)));topic.article=match?.id||null;}
+    const about=records.find(item=>item.title.includes('关于磁脉'));
+    technologyLink.href=about?`/#article/${about.id}`:'/#knowledge';
+    if(activeId)showInsight(byId.get(activeId));
+  });
+  document.addEventListener('keydown',event=>{
+    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&window.parent!==window){event.preventDefault();window.parent.postMessage({type:'cimai:home-search'},location.origin);}
+  });
+  document.querySelector('[data-home-theme]').addEventListener('click',()=>window.parent.postMessage({type:'cimai:home-theme'},location.origin));
+
+  stage.dataset.power='idle';cachePositions();resetInsight();renderPower(performance.now());syncMotion();document.fonts?.ready.then(()=>{cachePositions();if(canAnimate())startPower();});
+})();
+
+</script>
+</body>
+</html>

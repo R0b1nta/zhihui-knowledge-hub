@@ -221,8 +221,15 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
       if (path.startsWith('/api/')) throw new RequestError(404,'接口不存在');
       if (method !== 'GET') throw new RequestError(405,'不支持此操作');
       const assets = { '/': ['index.html','text/html; charset=utf-8'], '/home.js': ['home.js','text/javascript; charset=utf-8'], '/reader.js': ['reader.js','text/javascript; charset=utf-8'], '/document.js': ['document.js','text/javascript; charset=utf-8'], '/clouds.js': ['clouds.js','text/javascript; charset=utf-8'], '/home.css': ['home.css','text/css; charset=utf-8'], '/assets/cimai-mountains.jpg': ['assets/cimai-mountains.jpg','image/jpeg','public, max-age=86400'], '/app.js': ['app.js','text/javascript; charset=utf-8'], '/style.css': ['style.css','text/css; charset=utf-8'], '/favicon.svg': ['favicon.svg','image/svg+xml'], '/robots.txt': ['robots.txt','text/plain; charset=utf-8'] };
+      assets['/editor.js']=['editor.js','text/javascript; charset=utf-8'];
+      assets['/home-theme.js']=['home-theme.js','text/javascript; charset=utf-8'];
+      assets['/electromagnetic-home.html']=['electromagnetic-home.html','text/html; charset=utf-8'];
       const asset = assets[path];
       if (!asset) throw new RequestError(404,'页面不存在');
+      if(path==='/electromagnetic-home.html'){
+        res.setHeader('X-Frame-Options','SAMEORIGIN');
+        res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; frame-ancestors 'self'; object-src 'none'; base-uri 'none'; form-action 'none'");
+      }
       res.writeHead(200,{'Content-Type':asset[1],'Cache-Control':asset[2] || 'no-cache'});
       res.end(readFileSync(join(root,'public',asset[0])));
     } catch (error) {

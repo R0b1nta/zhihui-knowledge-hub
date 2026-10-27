@@ -37,7 +37,7 @@ test('访客只能浏览公开文章，不能查看或修改项目与账号',asy
   assert.equal((await fetch(`${f.base}/../package.json`)).status,404);
   const page=await fetch(f.base);assert.equal(page.status,200);assert.match(await page.text(),/磁脉知识库/);
   assert.match(page.headers.get('content-security-policy'),/frame-ancestors 'none'/);
-  for (const [path,type] of [['home.js','text/javascript'],['home.css','text/css'],['reader.js','text/javascript'],['document.js','text/javascript'],['clouds.js','text/javascript'],['assets/cimai-mountains.jpg','image/jpeg']]) {
+  for (const [path,type] of [['home.js','text/javascript'],['home-theme.js','text/javascript'],['home.css','text/css'],['reader.js','text/javascript'],['document.js','text/javascript'],['clouds.js','text/javascript'],['assets/cimai-mountains.jpg','image/jpeg']]) {
     const asset=await fetch(`${f.base}/${path}`);assert.equal(asset.status,200);assert.ok(asset.headers.get('content-type').startsWith(type));
     assert.ok((await asset.arrayBuffer()).byteLength>100);
   }
@@ -52,6 +52,24 @@ test('公网 HTTP 配置拒绝员工登录和项目接口',async t=>{
   assert.equal((await f.request('me')).body.loginAvailable,false);
   const viaProxy=await f.request('login','POST',{username:'admin',password:'Admin-test-password-123'},'',{'X-Forwarded-Proto':'https'});
   assert.equal(viaProxy.status,200);assert.match(viaProxy.headers.get('set-cookie'),/; Secure/);
+});
+
+test('默认首页资源包含定制字标，阅读与首页共用站点且页面隔离策略正确',async t=>{
+  const f=await fixture(t);
+  const page=await fetch(`${f.base}/electromagnetic-home.html`);
+  assert.equal(page.status,200);
+  assert.equal(page.headers.get('x-frame-options'),'SAMEORIGIN');
+  assert.match(page.headers.get('content-security-policy'),/frame-ancestors 'self'/);
+  const html=await page.text();
+  assert.match(html,/cimai-letterform/);
+  assert.match(html,/cimai:public-home-context/);
+  assert.match(html,/data-home-theme/);
+  assert.match(html,/function inductionTarget/);
+  assert.doesNotMatch(html,/127\.0\.0\.1|localhost:310[23]/);
+  assert.equal((await fetch(`${f.base}/editor.js`)).status,200);
+  const root=await fetch(f.base);
+  assert.equal(root.headers.get('x-frame-options'),'DENY');
+  assert.match(root.headers.get('content-security-policy'),/frame-ancestors 'none'/);
 });
 
 test('管理员开通员工，员工维护项目但不能修改公开内容或管理账号',async t=>{

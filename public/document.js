@@ -41,8 +41,9 @@ export function renderDocument(content){
     paragraph.push(line);
   }
   flush();
-  if(!headings.length){headings.push({id:'section-1',text:'正文',level:2});blocks.unshift('<h2 class="document-body-label" id="section-1" tabindex="-1">正文</h2>');}
-  return {html:blocks.join('\n'),headings,minutes:Math.max(1,Math.ceil(String(content??'').replace(/\s/g,'').length/450))};
+  const hasSections=headings.length>0;
+  if(!hasSections){headings.push({id:'section-1',text:'正文',level:2});blocks.unshift('<h2 class="document-body-label" id="section-1" tabindex="-1">正文</h2>');}
+  return {html:blocks.join('\n'),headings,hasSections,minutes:Math.max(1,Math.ceil(String(content??'').replace(/\s/g,'').length/450))};
 }
 
 export function relatedArticles(articles,article,limit=3){
