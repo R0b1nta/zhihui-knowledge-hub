@@ -20,9 +20,15 @@ function checkPassword(password) {
   if (typeof password !== 'string' || password.length < 12 || password.length > 128) throw new RequestError(400, '密码需要 12–128 个字符');
   return password;
 }
-export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data'), secureCookies = true } = {}) {
+export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data'), secureCookies = true, allowLocalSetup = false } = {}) {
   const db = openStore(dataDir);
   const attempts = new Map();
+  const hasAccounts = () => !!db.prepare('SELECT id FROM users LIMIT 1').get();
+  function localSetupRequest(req) {
+    if (allowLocalSetup !== true || secureCookies || !localAddress(req.socket.remoteAddress)) return false;
+    if (['forwarded','x-forwarded-for','x-forwarded-host','x-forwarded-proto','x-real-ip'].some(key => req.headers[key] !== undefined)) return false;
+    return /^(?:127\.0\.0\.1|localhost|\[::1\])(?::[0-9]{1,5})?$/i.test(req.headers.host || '');
+  }
   function reply(res, status, value, headers = {}) {
     res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers });
     res.end(JSON.stringify(value));
@@ -82,7 +88,30 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
       if (path === '/api/me' && method === 'GET') {
         let loginAvailable = true;
         try { privateTransport(req); } catch { loginAvailable = false; }
-        return reply(res, 200, { user: loginAvailable ? currentUser(req) : null, loginAvailable, configured: !!db.prepare("SELECT id FROM users WHERE active=1 AND role='admin' LIMIT 1").get() });
+        return reply(res, 200, { user: loginAvailable ? currentUser(req) : null, loginAvailable, configured: !!db.prepare("SELECT id FROM users WHERE active=1 AND role='admin' LIMIT 1").get(), setupAvailable: localSetupRequest(req) && !hasAccounts() });
+      }
+      if (path === '/api/setup' && method === 'POST') {
+        if (!localSetupRequest(req)) throw new RequestError(403, '首次开通只能在本机预览中进行');
+        if (hasAccounts()) throw new RequestError(409, '账号已开通，请使用已有账号登录');
+        const input = await body(req);
+        const username = string(input.username, '账号', 64).toLowerCase();
+        if (!/^[a-z0-9._-]{3,64}$/.test(username)) throw new RequestError(400, '账号需为 3–64 位字母、数字、点、横线或下划线');
+        const name = string(input.name, '姓名', 60);
+        const password = checkPassword(input.password);
+        if (input.passwordConfirm !== password) throw new RequestError(400, '两次密码不一致');
+        const hashed = passwordHash(password), token = randomBytes(32).toString('hex');
+        let user;
+        db.exec('BEGIN IMMEDIATE');
+        try {
+          // Recheck after reading the body so concurrent tabs cannot claim a second admin.
+          if (hasAccounts()) throw new RequestError(409, '账号已开通，请使用已有账号登录');
+          const created = db.prepare("INSERT INTO users(username,name,password,role) VALUES (?,?,?,'admin')").run(username, name, hashed);
+          user = {id:Number(created.lastInsertRowid),username,name,role:'admin'};
+          db.prepare('INSERT INTO sessions(token,user_id,expires) VALUES (?,?,?)').run(digest(token), user.id, Date.now()+8*3600000);
+          db.exec('COMMIT');
+        } catch(error) { db.exec('ROLLBACK');throw error; }
+        attempts.clear();
+        return reply(res, 201, {user}, {'Set-Cookie':`hub_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800`});
       }
       if (path === '/api/login' && method === 'POST') {
         privateTransport(req);
@@ -248,7 +277,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const port = Number(process.env.PORT || 3100);
   const secureCookies = process.env.SESSION_SECURE !== '0';
   if (!secureCookies && !localAddress(host)) throw new Error('HTTP 员工登录仅可用于本机预览；公网服务必须启用 HTTPS');
-  const { server } = createApp({secureCookies});
+  const { server } = createApp({secureCookies,allowLocalSetup:!secureCookies});
   server.listen(port,host,() => console.log(`磁脉知识库 Local: http://${host}:${port}`));
   for (const signal of ['SIGINT','SIGTERM']) process.on(signal,() => server.close(() => process.exit(0)));
 }

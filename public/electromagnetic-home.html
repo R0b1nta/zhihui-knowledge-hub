@@ -12,7 +12,7 @@
 .network-node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);padding:0;border:0;background:none;color:inherit;line-height:normal;pointer-events:auto;isolation:isolate;white-space:nowrap}.network-node:before{content:"";position:absolute;inset:-9px -6px;z-index:-1}.node-body{display:flex;align-items:center;gap:9px;position:relative;min-height:32px;padding:7px 10px;width:max-content;background:#f4f4f2e8;color:#6a7478;border:1px solid #cbd2d357;font-size:11px;transition:color .2s,background .2s,border-color .2s;will-change:transform}.node-dot{display:block;width:4px;height:4px;flex-shrink:0;border-radius:50%;border:1px solid #8b979c}.node-body:after{content:"";position:absolute;inset:-5px;border:1px solid transparent;pointer-events:none}.branch .node-body{font-size:13px;padding:12px 14px;min-height:45px;background:#ededeb;border-color:#bac4c7a6;color:#4c5a61}.branch-label{position:absolute;left:13px;top:-19px;font-size:9px;color:#7a878d;letter-spacing:.5px}.node-tick{display:none}.tech-glyph{width:21px;height:18px;flex-shrink:0;fill:none;stroke:#74848c;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}.network-node.is-related .node-body{background:#eae9e4;color:#505d64;border-color:#acb3b1}.network-node.is-related .node-dot{background:#a88b58;border-color:#a88b58}.network-node.is-seed .node-body{background:#39454a;color:#fff;border-color:#39454a}.network-node.is-seed .tech-glyph{stroke:#d9b77c}.network-node.is-seed .node-dot{background:#d9b77c;border-color:#d9b77c}.network-node.is-seed .node-body:after{border-color:#8d9b9f45}.network-node[aria-pressed="true"] .node-body:after{border-color:#a2864c73}.network-node.is-muted .node-body{color:#737e84;background:#f4f4f2bd;border-color:#cbd2d342}.network-node:focus-visible{outline:0}.network-node:focus-visible .node-body{outline:2px solid #94733d;outline-offset:5px}
 .network-node[data-id="magnetization"]{left:17%;top:15%}.network-node[data-id="equipment"]{left:6%;top:33%}.network-node[data-id="onsite"]{left:33%;top:3.5%}.network-node[data-id="assembly"]{left:9%;top:57%}.network-node[data-id="demag"]{left:24%;top:68%}.network-node[data-id="pulse"]{left:82%;top:15%}.network-node[data-id="welding"]{left:61%;top:3.5%}.network-node[data-id="riveting"]{left:94%;top:33%}.network-node[data-id="crimping"]{left:91%;top:56%}.network-node[data-id="service"]{left:68%;top:65%}.network-node[data-id="simulation"]{left:88%;top:69%}.network-node[data-id="poles"]{left:36%;top:72%}.network-node[data-id="coils"]{left:87%;top:44%}
 .stage-note{position:absolute;left:5.5%;top:4%;z-index:2;pointer-events:none;font-size:10px;line-height:1.8;color:#79868c}.stage-note strong{display:block;font:13px "Songti SC","STSong","SimSun",serif;letter-spacing:1px;color:#52626c}.stage-note p{display:none}.stage-bottom-note{position:absolute;left:5.5%;bottom:2%;max-width:440px;font-size:9px;color:#728088;line-height:1.8;margin:0;pointer-events:none}.field-legend{position:absolute;right:5.5%;bottom:2%;font-size:9px;display:flex;gap:18px;color:#79858b;pointer-events:none}.field-legend span{display:flex;align-items:center;gap:6px}.field-legend i{width:5px;height:5px;border:1px solid #9ca8ac;border-radius:50%}.field-legend .pulse-key{width:17px;height:0;border:0;border-top:2px solid #b48237;border-radius:0}
-.wordmark{position:absolute;left:48%;top:5%;width:min(80vw,1040px);transform:translateX(-50%);z-index:1;text-align:center;pointer-events:none}.conductive-mark{display:block;width:100%;height:auto;overflow:visible}.glyph-shape{font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:390px;font-weight:700;letter-spacing:-19px}.glyph-contour{fill:none;stroke:#343f44;stroke-width:.45;opacity:.24}.filament{fill:none;stroke:#f4f4f2;stroke-width:1.25;opacity:.77}.filament.bright-thread{stroke:#a9b0b0;opacity:.42;stroke-width:.65}.glyph-current{fill:none;stroke:url(#current-metal);stroke-width:3.1;stroke-linecap:round;filter:drop-shadow(0 0 4px #c4985d80)}.glyph-current.core{stroke:#fff4d2;stroke-width:.8;filter:none}.outside-current{fill:none;stroke:#b78b4e;stroke-width:1;stroke-linecap:round;filter:drop-shadow(0 0 3px #c3a47280)}.glyph-sweep{fill:url(#sweep-fill)}.hero-caption{display:flex;justify-content:center;align-items:center;gap:27px;min-height:42px;margin:-8px auto 0;max-width:500px;pointer-events:auto;position:relative}.hero-caption p{margin:0;font-size:12px;letter-spacing:1.5px;color:#6b777d}.power-trigger{position:relative;display:flex;align-items:center;gap:10px;background:none;border:0;padding:7px 0 7px 15px;color:#53616a;white-space:nowrap;font-size:11px;touch-action:manipulation}.power-trigger svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round}.power-trigger:before{content:"";height:22px;border-left:1px solid #bec6c9;position:absolute;left:0;top:50%;transform:translateY(-50%)}.power-trigger:hover{color:#8f6b30}.power-trigger:disabled{color:#9ca5a9;cursor:default}.power-status{font-size:9px;line-height:1.8;letter-spacing:.5px;color:#849097;min-height:17px;margin:5px 0 0}.stage[data-power="charging"] .power-trigger{color:#9d773d}.stage[data-power="discharge"] .power-trigger{color:#8a5f27}.stage.is-powered .network-wire{opacity:.65}.stage.is-powered .network-wire.is-muted{opacity:.3}.stage.is-powered .branch .node-body{border-color:#aab5b9}.stage.is-powered .network-wire.is-related{opacity:.95}.stage.is-igniting .node-body{border-color:#b6ac954d}.network-node.is-awake .node-body{color:#525d62;border-color:#ad9e839c;background:#eeece5}.network-node.is-awake .node-dot{background:#a7894d;border-color:#a7894d}
+.wordmark{position:absolute;left:48%;top:5%;width:min(80vw,1040px);transform:translateX(-50%);z-index:1;text-align:center;pointer-events:none}.conductive-mark{display:block;width:100%;height:auto;overflow:visible}.glyph-shape{font-family:"Microsoft YaHei","PingFang SC",sans-serif;font-size:390px;font-weight:700;letter-spacing:-19px}.glyph-contour{fill:none;stroke:#343f44;stroke-width:.45;opacity:.24}.filament{fill:none;stroke:#f4f4f2;stroke-width:1.25;opacity:.77}.filament.bright-thread{stroke:#a9b0b0;opacity:.42;stroke-width:.65}.glyph-current{fill:none;stroke:url(#current-metal);stroke-width:3.1;stroke-linecap:round;filter:drop-shadow(0 0 4px #c4985d80)}.glyph-current.core{stroke:#fff4d2;stroke-width:.8;filter:none}.outside-current{fill:none;stroke:#b78b4e;stroke-width:1;stroke-linecap:round;filter:drop-shadow(0 0 3px #c3a47280)}.glyph-sweep{fill:url(#sweep-fill)}.hero-caption{display:flex;justify-content:center;align-items:center;gap:27px;min-height:42px;margin:-8px auto 0;max-width:500px;pointer-events:auto;position:relative}.hero-caption p{margin:0;font-size:12px;letter-spacing:1.5px;color:#6b777d}.power-trigger{position:relative;display:flex;align-items:center;gap:10px;background:none;border:0;padding:7px 0 7px 15px;color:#53616a;white-space:nowrap;font-size:11px;touch-action:manipulation}.power-trigger svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round}.power-trigger:before{content:"";height:22px;border-left:1px solid #bec6c9;position:absolute;left:0;top:50%;transform:translateY(-50%)}.power-trigger:hover{color:#8f6b30}.power-trigger:disabled{color:#9ca5a9;cursor:default}.power-status{font-size:9px;line-height:1.8;letter-spacing:.5px;color:#849097;min-height:17px;margin:5px 0 0}.stage[data-power="charging"] .power-trigger{color:#9d773d}.stage[data-power="discharge"] .power-trigger{color:#8a5f27}.stage.is-powered .network-wire{opacity:.65}.stage.is-powered .network-wire.is-muted{opacity:.3}.stage.is-powered .branch .node-body{border-color:#aab5b9}.stage.is-powered .network-wire.is-related{opacity:.95}.stage.is-igniting[data-power-source="manual"] .node-body{border-color:#b6ac954d}.network-node.is-awake .node-body{color:#525d62;border-color:#ad9e839c;background:#eeece5}.network-node.is-awake .node-dot{background:#a7894d;border-color:#a7894d}
 .field-link{position:absolute;z-index:3;top:78%;width:25%;max-width:305px;min-height:119px;padding:19px 22px 17px}.knowledge{left:5.5%}.technology{left:38.5%}.projects{left:71.5%}.magnetic-ink{display:block;border-top:1px solid #b0bdc3;padding-top:17px;will-change:transform}.entry-top{display:flex;gap:12px;align-items:center;margin-bottom:8px}.entry-icon{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:#78868e;width:20px}.entry-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}.entry-title{font:26px "Songti SC","STSong","SimSun",serif;color:#3f515d;letter-spacing:1px}.entry-arrow{margin-left:auto;color:#87949c;font-size:20px;line-height:1;transition:transform .2s}.field-link:hover .entry-arrow{transform:translate(3px,-3px)}.entry-description{display:block;padding-left:32px;font-size:10px;line-height:1.9;color:#75828a}.pointer-orb{position:fixed;left:0;top:0;z-index:8;width:6px;height:6px;border-radius:50%;background:#7f8c949c;pointer-events:none;opacity:0;transition:opacity .2s;will-change:transform}.pointer-orb.visible{opacity:.8}.pointer-orb:after{content:"";position:absolute;inset:-7px;border:1px solid #77848b2e;border-radius:50%}
 .footer{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:35px;min-height:122px;padding:20px 5.5%;background:#fbfcfc;border-top:1px solid #d4dade}.topic-insight{max-width:690px;min-width:0}.insight-heading{display:flex;align-items:baseline;gap:17px;margin-bottom:8px}.insight-heading h2{font:20px "Songti SC","STSong","SimSun",serif;color:#3f515d;letter-spacing:.4px;margin:0}.insight-category{font-size:9px;color:#7a8790;white-space:nowrap}.insight-description{font-size:10px;line-height:1.9;color:#677985;max-width:620px;margin:0}.insight-bottom{display:flex;align-items:flex-start;gap:18px;margin-top:7px}.insight-relations{font-size:9px;color:#7b8790;line-height:1.8;max-width:470px}.insight-link{font-size:10px;white-space:nowrap;color:#7f683d;border-bottom:1px solid #b8aa8e;padding-bottom:1px}.controls{display:flex;align-items:center;gap:18px;flex-shrink:0}.control-button{background:none;border:0;padding:10px 0;color:#71828e;font-size:10px;white-space:nowrap}.primary-control{background:#e9edee;border:1px solid #c4cdd2;padding:11px 15px;color:#526978}.control-button:hover{color:#465d6b}.control-button:disabled{color:#9ca9af;cursor:default}.controls-separator{width:1px;height:16px;background:#cfd7dc}.help{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:11px 5.5% 16px;background:#fbfcfc;font-size:9px;color:#829099;line-height:1.7}.help p{margin:0}.help a{color:#6d818e}.help a:hover{text-decoration:underline;text-underline-offset:3px}.motion-off .pointer-orb{display:none}
 @media(min-width:1700px){.wordmark{width:1150px;top:3%}.stage{min-height:830px}.entry-title{font-size:29px}.node-body{font-size:12px}.branch .node-body{font-size:15px}}
@@ -47,33 +47,41 @@
 @media(max-width:360px){.header{gap:12px}.header nav{font-size:12px;gap:12px}.hero-caption{max-width:270px;gap:11px}.hero-caption p{font-size:13px;max-width:140px}.power-trigger{font-size:12px;padding-left:11px}.power-trigger svg{width:26px;height:26px}.node-body{font-size:11px}.branch .node-body{font-size:14px;padding:8px 9px}.network-node[data-id="pulse"]{left:77%;top:14%}.network-node[data-id="service"]{left:79%}.entry-title{font-size:28px}.entry-description{font-size:13px}.insight-heading h2{font-size:24px}.insight-description{font-size:14px}.controls{gap:11px}.control-button{font-size:12px}.primary-control{padding:11px}.insight-relations{flex-basis:145px}}
 .stage-note{top:1.8%}.insight-heading h2{text-wrap:balance}
 @media(max-width:680px){.hero-caption{flex-direction:column;max-width:310px;gap:6px;margin-top:9px}.hero-caption p{max-width:none;white-space:nowrap;line-height:1.7}.power-trigger{padding:5px;gap:8px}.power-trigger:before{display:none}.network-node[data-id="assembly"]{left:14%;top:69%}.insight-heading h2{max-width:100%}}
+
+.hero-caption{flex-wrap:wrap;column-gap:18px;row-gap:2px;max-width:610px}.power-settings-toggle{border:0;border-bottom:1px solid #b6bebc;background:none;color:#64716e;padding:4px 0;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}.power-settings-toggle:focus-visible{outline:2px solid #94733d;outline-offset:5px}.power-settings{width:min(400px,calc(100vw - 32px));max-height:calc(100svh - 36px);padding:26px;border:1px solid #b9c1bd;border-radius:12px;background:#f8f8f5;color:#30383b;text-align:left;box-shadow:0 20px 75px #30383b26;overflow-y:auto}.power-settings::backdrop{background:#30383b55;backdrop-filter:blur(3px)}.power-settings-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.power-settings h2{font:25px "Songti SC","STSong","SimSun",serif;margin:0}.power-settings-head button{font:26px/1 sans-serif;border:0;background:none;color:#65726d;cursor:pointer;padding:0 3px}.power-settings-intro{font-size:13px;line-height:1.8;color:#67716d;margin:13px 0 21px}.power-auto-row{display:flex;align-items:center;justify-content:space-between;font-size:15px;padding-bottom:19px;border-bottom:1px solid #d7dcd6;cursor:pointer}.power-auto-row small{display:block;font-size:11px;color:#78817a;margin-top:6px}.power-auto-row input{width:19px;height:19px;accent-color:#8b6936}.power-setting{display:grid;grid-template-columns:1fr auto;gap:11px 16px;margin-top:20px;font-size:14px}.power-setting output{font-size:12px;color:#8a6834}.power-setting input{grid-column:1/-1;width:100%;margin:0;accent-color:#927044;cursor:pointer;min-height:22px}.power-style-label{display:block;font-size:14px;margin-top:21px}.power-settings select{width:100%;padding:9px 11px;margin-top:10px;font:14px inherit;color:#36413d;border:1px solid #b9c3ba;border-radius:5px;background:#fff}.power-setting-hint{font-size:11px;line-height:1.9;color:#788178;margin:17px 0}.power-settings-actions{display:flex;justify-content:space-between;gap:15px;margin-top:21px}.power-settings-actions button{font:13px inherit;border:1px solid #bbc5bb;background:none;color:#4b5b51;padding:9px 15px;border-radius:4px;cursor:pointer}.power-settings-actions #power-preview{background:#424f46;border-color:#424f46;color:#fff}.power-settings button:focus-visible,.power-settings select:focus-visible,.power-settings input:focus-visible{outline:2px solid #94733d;outline-offset:3px}.power-settings button:disabled{opacity:.5;cursor:default}.stage.is-igniting .glyph-contour{stroke:#ad854b;opacity:calc(.2 + var(--power-light,0)*.5);filter:drop-shadow(0 0 calc(var(--power-light,0)*5px) #b98e4b80)}
+.power-settings{user-select:text}.power-settings h2,.power-settings p{letter-spacing:normal}.power-settings select,.power-settings-actions button{font-family:inherit;font-size:13px}.power-settings .power-settings-intro{font-size:13px;line-height:1.8;color:#67716d;margin:13px 0 21px}.power-settings .power-setting-hint{font-size:11px;line-height:1.9;color:#788178;margin:17px 0}
+@media(max-width:680px){.hero-caption{max-width:300px;row-gap:5px;column-gap:15px}.hero-caption p{flex-basis:100%}.power-settings-toggle{font-size:11px}.power-settings{padding:22px}.power-settings h2{font-size:24px}}
+.power-dock{position:fixed;left:24px;bottom:max(20px,env(safe-area-inset-bottom));z-index:20;max-width:calc(100vw - 32px);padding:10px 14px;background:#f4f4f2f2;backdrop-filter:blur(8px);border:1px solid #c9cfca99;color:#53616a}.power-dock-actions{display:flex;align-items:center;gap:18px}.power-dock .power-trigger{padding:0;font-size:12px;gap:8px}.power-dock .power-trigger:before{display:none}.power-dock .power-trigger svg{width:25px;height:25px}.power-dock .power-settings-toggle{border:0;padding:4px 0;font-size:12px}.power-dock .power-status{position:absolute;width:1px;height:1px;min-height:0;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.help{padding-bottom:90px}.hero-caption{column-gap:0}.hero-caption p{margin:0}[hidden].stage-bottom-note,[hidden].insight-category{display:none!important}
+@media(max-width:680px){.power-dock{left:16px;bottom:max(14px,env(safe-area-inset-bottom));padding:9px 12px}.power-dock-actions{gap:16px}.help{padding-bottom:85px}}
+.power-dock{left:0;bottom:0;max-width:none;width:100%;padding:12px 24px;background:#f4f4f2;border:0;border-top:1px solid #d4d9d3;backdrop-filter:none}.power-page-controls{margin-top:20px;padding-top:14px;border-top:1px solid #d7dcd6}.power-page-controls .controls{display:flex;justify-content:space-between;gap:12px;max-width:none;flex-wrap:wrap}.power-page-controls .controls-separator{display:none}.power-page-controls .control-button{font-size:12px;padding:7px 0;border:0;background:none;color:#59685f}.power-page-controls .primary-control{background:none;border:0}
+@media(max-width:680px){.power-dock{left:0;bottom:0;padding:11px 16px calc(11px + env(safe-area-inset-bottom,0px))}.power-page-controls .controls{gap:10px}.power-page-controls .control-button{font-size:11px}}
 </style>
 </head>
 <body>
 <div class="page" id="home">
-  <header class="header"><a class="brand" href="/#home" aria-label="磁脉首页" target="_top"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M4 4v15c0 8 7 13 11 13s11-5 11-13V4M10 4v15c0 4 3 6 5 6s5-2 5-6V4M4 4h6m10 0h6M15 0v12"/></svg><span>磁脉<small>Cimai</small></span></a><nav aria-label="网站入口"><a href="/#knowledge" target="_top">知识文库</a><a href="/#projects" target="_top">项目空间</a><button class="home-theme" type="button" data-home-theme>首页外观</button><span class="concept-label">技术与知识</span></nav></header>
+  <header class="header"><a class="brand" href="/#home" aria-label="磁脉首页" target="_top"><svg viewBox="0 0 30 36" aria-hidden="true"><path d="M4 4v15c0 8 7 13 11 13s11-5 11-13V4M10 4v15c0 4 3 6 5 6s5-2 5-6V4M4 4h6m10 0h6M15 0v12"/></svg><span>磁脉<small>Cimai</small></span></a><nav aria-label="网站入口"><a href="/#knowledge" target="_top">知识文库</a><a href="/#projects" target="_top">项目空间</a></nav></header>
   <main class="stage" id="field-stage" aria-labelledby="title">
     <div class="em-notations" aria-hidden="true">
-      <div class="induction-signs"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg><small>磁感应</small></div>
-      <div class="pulse-signature"><svg viewBox="0 0 150 40"><path class="pulse-baseline" d="M0 27h150"/><path class="pulse-waveform" d="M1 27h27l4-1 5-23 9 34 11-23 13 16 13-10 14 8 16-3 15 2h21"/></svg><small>瞬态脉冲</small></div>
+      <div class="induction-signs"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><path d="m7 7 6 6m0-6-6 6"/></svg><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="8"/><circle class="flux-dot" cx="10" cy="10" r="1.8"/></svg></div>
+      <div class="pulse-signature"><svg viewBox="0 0 150 40"><path class="pulse-baseline" d="M0 27h150"/><path class="pulse-waveform" d="M1 27h27l4-1 5-23 9 34 11-23 13 16 13-10 14 8 16-3 15 2h21"/></svg></div>
     </div>
     <div class="network" id="knowledge-network" role="group" aria-label="探索技术主题">
       <svg class="network-wires" id="network-wires" focusable="false" aria-hidden="true"><defs><mask id="wordmark-mask" maskUnits="userSpaceOnUse"><rect id="mask-background" fill="white"/><ellipse id="mask-wordmark" fill="black"/></mask></defs><g class="field-emitter" id="field-emitter" aria-hidden="true" opacity="0"><ellipse class="field-loop" id="field-loop-inner"/><ellipse class="field-loop outer-loop" id="field-loop-outer"/><path class="charge-spark" id="charge-spark" opacity="0"/></g><g id="wire-layer" mask="url(#wordmark-mask)"></g></svg>
-      <button type="button" class="network-node branch" data-id="magnetization" style="--x:18%;--y:29%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">永磁装备</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><circle cx="6" cy="10" r="4.5"/><circle cx="6" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="10" r="4.5"/><path d="m17 8 4 4m0-4-4 4"/></svg>整体充退磁<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node branch" data-id="magnetization" style="--x:18%;--y:29%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><circle cx="6" cy="10" r="4.5"/><circle cx="6" cy="10" r="1" fill="currentColor" stroke="none"/><circle cx="19" cy="10" r="4.5"/><path d="m17 8 4 4m0-4-4 4"/></svg>整体充退磁<span class="node-tick"></span></span></button>
       <button type="button" class="network-node" data-id="equipment" style="--x:7%;--y:20%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>永磁电机</span></button>
       <button type="button" class="network-node" data-id="onsite" style="--x:29%;--y:11%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>原位充磁</span></button>
       <button type="button" class="network-node" data-id="assembly" style="--x:9%;--y:49%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>无磁装配</span></button>
       <button type="button" class="network-node" data-id="demag" style="--x:29%;--y:57%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>原位退磁</span></button>
-      <button type="button" class="network-node branch" data-id="pulse" style="--x:63%;--y:16%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">金属成形与连接</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M1 14h6V4h6v10h5V8h3v6h3"/></svg>电磁脉冲制造<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node branch" data-id="pulse" style="--x:63%;--y:16%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M1 14h6V4h6v10h5V8h3v6h3"/></svg>电磁脉冲制造<span class="node-tick"></span></span></button>
       <button type="button" class="network-node" data-id="welding" style="--x:47%;--y:7%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>管件焊接</span></button>
       <button type="button" class="network-node" data-id="riveting" style="--x:85%;--y:9%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>电磁铆接</span></button>
       <button type="button" class="network-node" data-id="crimping" style="--x:88%;--y:54%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>线缆压接</span></button>
-      <button type="button" class="network-node branch" data-id="service" style="--x:54%;--y:77%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><span class="branch-label">磁场发生部件</span><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M2 10c3-10 18-10 21 0-3 10-18 10-21 0Z"/><path d="M6 10c2-5 11-5 13 0-2 5-11 5-13 0Zm14-5 2 2-3 .5"/></svg>技术服务<span class="node-tick"></span></span></button>
+      <button type="button" class="network-node branch" data-id="service" style="--x:54%;--y:77%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><svg class="tech-glyph" viewBox="0 0 25 20" aria-hidden="true"><path d="M2 10c3-10 18-10 21 0-3 10-18 10-21 0Z"/><path d="M6 10c2-5 11-5 13 0-2 5-11 5-13 0Zm14-5 2 2-3 .5"/></svg>技术服务<span class="node-tick"></span></span></button>
       <button type="button" class="network-node" data-id="simulation" style="--x:63%;--y:56%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>多物理场仿真</span></button>
       <button type="button" class="network-node" data-id="poles" style="--x:39%;--y:91%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>特种磁极</span></button>
       <button type="button" class="network-node" data-id="coils" style="--x:66%;--y:92%" aria-pressed="false" aria-controls="topic-insight"><span class="node-body"><i class="node-dot"></i>特种线圈</span></button>
     </div>
-    <div class="stage-note"><strong>强场，始于一瞬。</strong><p>从一个问题，<br>找到一组知识。</p></div>
+    
     <div class="wordmark">
       <h1 id="title" class="sr-only">磁脉，脉冲强磁场的产业化应用</h1>
       <svg class="conductive-mark" id="conductive-mark" viewBox="0 0 1000 420" aria-hidden="true" focusable="false">
@@ -87,32 +95,45 @@
           <rect width="1000" height="420" fill="url(#graphite-fill)"/>
           <g id="filament-layer"></g>
           <rect class="glyph-sweep" id="glyph-sweep" x="-200" y="0" width="180" height="420" opacity="0"/>
-          <path class="glyph-current" id="glyph-current" opacity="0"/>
+          <rect class="glyph-sweep" id="glyph-sweep-return" x="1200" y="0" width="180" height="420" opacity="0"/><path class="glyph-current" id="glyph-current" opacity="0"/>
           <path class="glyph-current core" id="glyph-core" opacity="0"/>
         </g>
         <use href="#cimai-letterform" class="glyph-contour"/>
         <path class="outside-current" id="outside-current" opacity="0"/>
         <use href="#cimai-letterform" class="glyph-hit"/>
       </svg>
-      <div class="hero-caption"><p>脉冲强磁场的产业化应用</p><button class="power-trigger" id="power-button" type="button" aria-label="触发磁脉脉冲"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5v11M10 8.5a10 10 0 1 0 12 0"/><circle cx="16" cy="16" r="14" stroke-opacity=".2"/></svg><span id="power-label">触发脉冲</span></button></div>
-      <p class="power-status" id="power-status" role="status">点击字标，唤醒知识网络。</p>
+      <div class="hero-caption"><p>脉冲强磁场的产业化应用</p></div>
+      
     </div>
     <a class="field-link knowledge" href="/#knowledge" data-responsive data-kind="link" data-name="知识文库" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h6c2 0 3 1 3 2v13c0-2-2-3-4-3H3zm18 0h-6c-2 0-3 1-3 2v13c0-2 2-3 4-3h5z"/></svg></span><span class="entry-title">知识文库</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">原理、方法与应用资料</span></span></a>
     <a class="field-link technology" href="/#article/4" data-responsive data-kind="link" data-name="技术方向" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 13h5l3-8 4 14 3-6h5"/></svg></span><span class="entry-title">技术方向</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">从充退磁到电磁脉冲制造</span></span></a>
     <a class="field-link projects" href="/#projects" data-responsive data-kind="link" data-name="项目空间" target="_top"><span class="magnetic-ink" data-ink><span class="entry-top"><span class="entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="7" r="2.5"/><circle cx="13" cy="18" r="2.5"/><path d="m8.5 6 7 .5M7.3 8.2l4.4 7.6m5.3-6.3-3 6"/></svg></span><span class="entry-title">项目空间</span><span class="entry-arrow" aria-hidden="true">↗</span></span><span class="entry-description">登录后查看团队进展</span></span></a>
-    <p class="stage-bottom-note" id="field-note">靠近一个主题，点亮一条知识脉络。</p>
-    <div class="field-legend" aria-hidden="true"><span><i></i>公开技术主题</span><span><i class="pulse-key"></i>沿关联传递</span></div>
+    <p hidden class="stage-bottom-note" id="field-note">靠近一个主题，点亮一条知识脉络。</p>
+    
   </main>
   <footer class="footer">
     <section class="topic-insight" id="topic-insight" aria-label="主题导览">
-      <div class="insight-heading"><h2 id="insight-title">让一个问题，带出一组知识。</h2><span class="insight-category" id="insight-category">从主题出发</span></div>
+      <div class="insight-heading"><h2 id="insight-title">让一个问题，带出一组知识。</h2><span hidden class="insight-category" id="insight-category">从主题出发</span></div>
       <p class="insight-description" id="insight-description">靠近任意技术主题，点亮它的知识脉络；点选后可保留主题并打开文章。</p>
       <div class="insight-bottom"><span class="insight-relations" id="insight-relations">公开内容来自现有知识文库。</span><a class="insight-link" id="insight-link" href="/#knowledge" target="_top">浏览知识文库</a></div>
     </section>
-    <div class="controls"><button class="control-button primary-control" id="demo-button" type="button">点亮一条脉络</button><button class="control-button" id="reset-button" type="button">回到全貌</button><span class="controls-separator" aria-hidden="true"></span><button class="control-button" id="motion-button" type="button" aria-pressed="false">关闭动效</button></div>
+    
   </footer>
-  <div class="help"><p>磁脉电气（东莞）有限公司</p><p class="keyboard-help">点选保留主题，Esc 回到全貌。</p><a href="/#knowledge" target="_top">浏览知识文库 ↗</a></div>
+  <div class="help"><p>磁脉电气（东莞）有限公司</p><a href="/#knowledge" target="_top">浏览知识文库 ↗</a></div>
 </div>
+<aside class="power-dock" aria-label="通电控制"><div class="power-dock-actions"><button class="power-trigger" id="power-button" type="button" aria-label="触发磁脉脉冲"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5v11M10 8.5a10 10 0 1 0 12 0"/><circle cx="16" cy="16" r="14" stroke-opacity=".2"/></svg><span id="power-label">触发脉冲</span></button><button class="power-settings-toggle" id="power-settings-toggle" type="button" aria-haspopup="dialog" aria-controls="power-settings">通电设置</button>
+</div><p class="power-status" id="power-status" role="status">点击字标，唤醒知识网络。</p></aside><dialog class="power-settings" id="power-settings" aria-labelledby="power-settings-title">
+  <div class="power-settings-head"><h2 id="power-settings-title">字标通电</h2><button type="button" id="power-settings-close" aria-label="关闭通电设置">×</button></div>
+  <p class="power-settings-intro">让电流穿过字标，找到你喜欢的节奏。</p>
+  <label class="power-auto-row"><span>自动通电<small>暂停时仍可手动触发</small></span><input type="checkbox" id="power-auto"></label>
+  <div class="power-setting"><label for="power-interval">触发间隔</label><output id="power-interval-value" for="power-interval">8 秒</output><input id="power-interval" type="range" min="5" max="20" step="1" value="8"></div>
+  <div class="power-setting"><label for="power-speed">脉冲速度</label><output id="power-speed-value" for="power-speed">1.0 倍</output><input id="power-speed" type="range" min="75" max="175" step="25" value="100"></div>
+  <div class="power-setting"><label for="power-intensity">电流亮度</label><output id="power-intensity-value" for="power-intensity">100%</output><input id="power-intensity" type="range" min="40" max="140" step="10" value="100"></div>
+  <label class="power-style-label" for="power-style">电流效果</label><select id="power-style"><option value="sweep">脉冲扫描</option><option value="converge">双向汇流</option></select>
+  <p class="power-setting-hint" id="power-setting-hint">设置保存在当前浏览器，切到后台时自动暂停。</p>
+  <div class="power-settings-actions"><button id="power-restore" type="button">恢复默认</button><button id="power-preview" type="button">预览一次</button></div>
+<div class="power-page-controls"><div class="controls"><button class="control-button primary-control" id="demo-button" type="button">点亮一条脉络</button><button class="control-button" id="reset-button" type="button">回到全貌</button><span class="controls-separator" aria-hidden="true"></span><button class="control-button" id="motion-button" type="button" aria-pressed="false">关闭动效</button></div></div></dialog>
+
 <div class="pointer-orb" id="pointer-orb" aria-hidden="true"></div>
 <script>
 // A bounded interaction metaphor for Lenz's law, not a field simulation.
@@ -130,6 +151,30 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
   const response=Math.tanh(radial*coupling/230)*decay;
   if(Math.abs(response)<.012)return idle;
   return {x:dx/d*response*limit,y:dy/d*response*limit,strength:Math.abs(response),phase:response<0?'approach':'depart'};
+}
+
+const defaultPowerOptions=Object.freeze({auto:true,interval:8,speed:1,intensity:1,style:'sweep',motion:true});
+function normalizePowerOptions(input){
+  const value=input&&typeof input==='object'&&!Array.isArray(input)?input:{};
+  const number=(key,min,max)=>typeof value[key]==='number'&&Number.isFinite(value[key])?Math.min(max,Math.max(min,value[key])):defaultPowerOptions[key];
+  return {auto:typeof value.auto==='boolean'?value.auto:true,interval:Math.round(number('interval',5,20)),speed:number('speed',.75,1.75),intensity:number('intensity',.4,1.4),style:value.style==='converge'?'converge':'sweep',motion:typeof value.motion==='boolean'?value.motion:true};
+}
+function readPowerOptions(storage){try{return normalizePowerOptions(JSON.parse(storage.getItem('cimai.logo-power')));}catch{return normalizePowerOptions();}}
+function savePowerOptions(storage,options){try{storage.setItem('cimai.logo-power',JSON.stringify(normalizePowerOptions(options)));return true;}catch{return false;}}
+function powerTimeline(elapsedMs,options){
+  const speed=normalizePowerOptions(options).speed,time=Math.max(0,elapsedMs)/1000*speed;
+  return {time,done:elapsedMs>=3450/speed,phase:time<.7?'charging':time<2.05?'discharge':'settling',progress:Math.min(1,Math.max(0,(time-.7)/1.35))};
+}
+// One timeout per visible homepage. No catch-up bursts after a pause.
+function createPowerCycle({getOptions,canRun,onTrigger,setTimer=setTimeout,clearTimer=clearTimeout}){
+  let timer=null,disposed=false;
+  function pause(){if(timer!==null)clearTimer(timer);timer=null;}
+  function schedule(){
+    pause();const options=normalizePowerOptions(getOptions());
+    if(disposed||!options.auto||!options.motion||!canRun())return;
+    timer=setTimer(()=>{timer=null;if(disposed)return;const current=normalizePowerOptions(getOptions());if(!current.auto||!current.motion)return;if(canRun())onTrigger();schedule();},options.interval*1000);
+  }
+  return {schedule,pause,dispose(){disposed=true;pause();}};
 }
 
 (() => {
@@ -151,10 +196,16 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
   const powerStatus=document.querySelector('#power-status');
   const filamentLayer=document.querySelector('#filament-layer');
   const glyphSweep=document.querySelector('#glyph-sweep');
+  const glyphSweepReturn=document.querySelector('#glyph-sweep-return');
   const glyphCurrent=document.querySelector('#glyph-current');
   const glyphCore=document.querySelector('#glyph-core');
   const outsideCurrent=document.querySelector('#outside-current');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const powerSettings=document.querySelector('#power-settings');
+  const powerSettingsToggle=document.querySelector('#power-settings-toggle');
+  let powerStorage;
+  try{powerStorage=window.localStorage;}catch{}
+  let powerOptions=readPowerOptions(powerStorage),logoVisible=true;
   const base='/';
   const catalogue={
     magnetization:{group:'magnetization',name:'整体充退磁',article:5,summary:'围绕无磁装配与原位充退磁，认识大型永磁装备的制造、运维和再制造。'},
@@ -184,10 +235,11 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
   });
   const entrances=[...document.querySelectorAll('.field-link')].map(element=>({element,ink:element.querySelector('[data-ink]'),rect:null,x:0,y:0,vx:0,vy:0}));
   const pointer={x:0,y:0,vx:0,vy:0,time:-Infinity,active:false};
-  let activeId=null,pinnedId=null,disabled=false,frame=0,last=0,networkRect=null,waveStart=-Infinity,demo=null,powerScene=null,heroDirty=true,powerDone=false;
+  let activeId=null,pinnedId=null,disabled=!powerOptions.motion,frame=0,last=0,networkRect=null,waveStart=-Infinity,demo=null,powerScene=null,heroDirty=true,powerDone=false;
   const clamp=(value,min,max)=>Math.min(max,Math.max(min,value));
   const canAnimate=()=>!disabled&&!reduced.matches&&!document.hidden;
   const requestFrame=()=>{if(!frame&&canAnimate())frame=requestAnimationFrame(animate);};
+  const powerCycle=createPowerCycle({getOptions:()=>powerOptions,canRun:()=>canAnimate()&&logoVisible&&!powerSettings.open,onTrigger:()=>{if(!demo&&!powerScene)startPower({automatic:true});}});
   function spring(value,velocity,target,dt){velocity+=((target-value)*108-velocity*19)*dt;return [value+velocity*dt,velocity];}
   function position(topic){return {x:topic.rect.left+topic.rect.width/2+topic.x-networkRect.left,y:topic.rect.top+topic.rect.height/2+topic.y-networkRect.top};}
   function pathBetween(a,b,reverse=false){const dx=b.x-a.x,dy=b.y-a.y,d=Math.max(1,Math.hypot(dx,dy)),bend=clamp(d*.13,12,55),nx=-dy/d*bend,ny=dx/d*bend,c1={x:a.x+dx*.35+nx,y:a.y+dy*.35+ny},c2={x:a.x+dx*.65+nx,y:a.y+dy*.65+ny};return reverse?`M ${b.x} ${b.y} C ${c2.x} ${c2.y} ${c1.x} ${c1.y} ${a.x} ${a.y}`:`M ${a.x} ${a.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${b.x} ${b.y}`;}
@@ -195,9 +247,10 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     for(let index=0;index<filaments.length;index++){
       const baseY=8+index*6.8;let path='';
       for(let x=-10;x<=1010;x+=20){
-        const packet=Math.exp(-Math.pow((x-front)/150,2));
+        const packet=Math.exp(-Math.pow((x-front)/150,2))+(powerScene?.options.style==='converge'?Math.exp(-Math.pow((x-(1000-front))/150,2)):0);
         const resting=Math.sin(x*.009+baseY*.031)*3.3+Math.sin(x*.022-baseY*.014)*1.1;
-        const force=packet*Math.sin(x*.024+baseY*.055-time*11)*29+charge*Math.sin(x*.014+baseY*.027-time*7)*8;
+        const strength=powerScene?.options.intensity||1;
+        const force=(packet*Math.sin(x*.024+baseY*.055-time*11)*29+charge*Math.sin(x*.014+baseY*.027-time*7)*8)*strength;
         path+=`${x===-10?'M':'L'}${x} ${(baseY+resting+force).toFixed(2)} `;
       }
       filaments[index].setAttribute('d',path);
@@ -208,33 +261,39 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     powerScene=null;heroDirty=true;stage.dataset.power='idle';stage.classList.remove('is-igniting');
     for(const topic of topics)topic.element.classList.remove('is-awake');
     powerButton.disabled=!canAnimate();powerLabel.textContent=powerDone?'再次通电':'触发脉冲';
-    powerStatus.textContent='点击字标，唤醒知识网络。';renderPower(performance.now());
+    powerStatus.textContent=idlePowerStatus();renderPower(performance.now());
   }
-  function startPower(){
+  function idlePowerStatus(){return powerOptions.auto?`自动通电 · 每 ${powerOptions.interval} 秒一次；点击字标也可触发。`:'自动通电已暂停，点击字标可手动触发。';}
+  function startPower({automatic=false}={}){
     if(!canAnimate()||powerScene)return;
-    stopDemo(false);pinnedId=null;pointer.active=false;focusTopic(null,{restart:true});resetInsight();
-    powerScene={start:performance.now(),phase:''};stage.classList.add('is-igniting');stage.dataset.power='charging';
+    if(!automatic){stopDemo(false);pinnedId=null;pointer.active=false;focusTopic(null,{restart:true});resetInsight();}
+    powerScene={start:performance.now(),phase:'',automatic,options:{...powerOptions}};stage.classList.add('is-igniting');stage.dataset.power='charging';
+    powerStatus.setAttribute('aria-live',automatic?'off':'polite');
+    stage.dataset.powerCount=String(Number(stage.dataset.powerCount||0)+1);
+    stage.dataset.powerSource=automatic?'auto':'manual';
     powerButton.disabled=true;powerLabel.textContent='正在通电';requestFrame();
+    powerCycle.schedule();
   }
   function renderPower(now){
-    if(!powerScene){if(heroDirty){drawGlyph();heroDirty=false;glyphSweep.setAttribute('opacity','0');glyphCurrent.setAttribute('opacity','0');glyphCore.setAttribute('opacity','0');outsideCurrent.setAttribute('opacity','0');}return false;}
-    const elapsed=(now-powerScene.start)/1000;
-    if(elapsed>3.45){
+    if(!powerScene){if(heroDirty){drawGlyph();heroDirty=false;stage.style.setProperty('--power-light','0');glyphSweep.setAttribute('opacity','0');glyphSweepReturn.setAttribute('opacity','0');glyphCurrent.setAttribute('opacity','0');glyphCore.setAttribute('opacity','0');outsideCurrent.setAttribute('opacity','0');}return false;}
+    const scene=powerScene,{time:elapsed,done,phase,progress}=powerTimeline(now-scene.start,scene.options);
+    if(done){
       powerDone=true;powerScene=null;heroDirty=true;stage.dataset.power='idle';stage.classList.remove('is-igniting');stage.classList.add('is-powered');
       for(const topic of topics)topic.element.classList.remove('is-awake');
-      powerButton.disabled=!canAnimate();powerLabel.textContent='再次通电';powerStatus.textContent='再点字标可重新通电，靠近主题探索知识。';renderPower(now);return false;
+      powerButton.disabled=!canAnimate();powerLabel.textContent='再次通电';powerStatus.textContent=idlePowerStatus();renderPower(now);return false;
     }
-    const phase=elapsed<.7?'charging':elapsed<2.05?'discharge':'settling';
     if(phase!==powerScene.phase){powerScene.phase=phase;stage.dataset.power=phase;powerStatus.textContent=phase==='charging'?'蓄能，纹理开始响应。':phase==='discharge'?'一道脉冲，穿过磁脉。':'技术与知识，依次唤醒。';}
     const charge=elapsed<.7?Math.sin(elapsed/.7*Math.PI*.5):Math.exp(-(elapsed-.7)*2.4);
-    const progress=clamp((elapsed-.7)/1.35,0,1),front=-100+progress*1250;
+    const converge=scene.options.style==='converge',front=-100+progress*(converge?600:1250);
     drawGlyph(elapsed<.7?500:front,charge,elapsed);
-    const opacity=elapsed>=.7&&elapsed<2.2?Math.sin(progress*Math.PI)*.95:0;
+    const opacity=elapsed>=.7&&elapsed<2.2?Math.min(1,Math.sin(progress*Math.PI)*.95*scene.options.intensity):0;
+    stage.style.setProperty('--power-light',String(opacity));
     glyphSweep.setAttribute('x',String(front-90));glyphSweep.setAttribute('opacity',String(opacity*.75));
-    let arc='';for(let x=-40;x<=1040;x+=8){const packet=Math.exp(-Math.pow((x-front)/160,2)),y=210+Math.sin(x*.009)*13+packet*(Math.sin(x*.073-elapsed*28)*16+Math.sin(x*.031+elapsed*19)*21);arc+=`${x===-40?'M':'L'}${x} ${y.toFixed(2)} `;}
+    glyphSweepReturn.setAttribute('x',String(1000-front-90));glyphSweepReturn.setAttribute('opacity',String(converge?opacity*.75:0));
+    let arc='';for(const [side,center] of (converge?[[0,front],[1,1000-front]]:[[0,front]])){for(let x=-40;x<=1040;x+=8){const packet=Math.exp(-Math.pow((x-center)/160,2)),y=210+Math.sin(x*.009+side)*13+packet*(Math.sin(x*.073-elapsed*28+side)*16+Math.sin(x*.031+elapsed*19)*21)*scene.options.intensity;arc+=`${x===-40?'M':'L'}${x} ${y.toFixed(2)} `;}}
     glyphCurrent.setAttribute('d',arc);glyphCore.setAttribute('d',arc);outsideCurrent.setAttribute('d',arc);
     glyphCurrent.setAttribute('opacity',String(opacity));glyphCore.setAttribute('opacity',String(opacity));outsideCurrent.setAttribute('opacity',String(opacity*.65));
-    for(const topic of topics){const groupDelay=topic.group==='magnetization'?0:topic.group==='pulse'?.17:.34;topic.element.classList.toggle('is-awake',elapsed>1.1+groupDelay&&elapsed<3.2);}
+    if(!scene.automatic)for(const topic of topics){const groupDelay=topic.group==='magnetization'?0:topic.group==='pulse'?.17:.34;topic.element.classList.toggle('is-awake',elapsed>1.1+groupDelay&&elapsed<3.2);}
     return true;
   }
   function renderWires(now=performance.now()){
@@ -254,10 +313,11 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     for(const edge of edges){
       const visible=edge.from.visible&&edge.to.visible;
       edge.element.style.display=visible?'':'none';edge.pulse.style.display=visible?'':'none';if(!visible)continue;
-      const a=position(edge.from),b=position(edge.to);edge.element.setAttribute('d',pathBetween(a,b));edge.pulse.setAttribute('d',pathBetween(a,b,powerScene?false:edge.reverse));
+      const powering=powerScene&&!powerScene.automatic;
+      const a=position(edge.from),b=position(edge.to);edge.element.setAttribute('d',pathBetween(a,b));edge.pulse.setAttribute('d',pathBetween(a,b,powering?false:edge.reverse));
       const groupDelay=edge.from.group==='magnetization'?0:edge.from.group==='pulse'?170:340;
-      const progress=powerScene?(now-powerScene.start-1100-groupDelay)/1100:(now-waveStart-edge.depth*230)/900;
-      const eligible=!!powerScene||edge.related;
+      const progress=powering?((now-powerScene.start)*powerScene.options.speed-1100-groupDelay)/1100:(now-waveStart-edge.depth*230)/900;
+      const eligible=!!powering||edge.related;
       if(canAnimate()&&eligible&&progress>=0&&progress<1){
         edge.pulse.style.opacity=String(Math.sin(progress*Math.PI));edge.pulse.style.strokeDashoffset=String(.13-progress*1.26);waveAlive=true;
       }else{edge.pulse.style.opacity='0';if(canAnimate()&&eligible&&progress<0)waveAlive=true;}
@@ -284,10 +344,10 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     document.querySelector('#insight-relations').textContent=`关联 ${peers.map(item=>item.name).join('、')}`;
   }
   function resetInsight(){
-    document.querySelector('#insight-title').textContent='让一个问题，带出一组知识。';
+    document.querySelector('#insight-title').textContent='技术资料';
     document.querySelector('#insight-category').textContent='从主题出发';
-    document.querySelector('#insight-description').textContent='靠近任意技术主题，点亮它的知识脉络；点选后可保留主题并打开文章。';
-    document.querySelector('#insight-relations').textContent='公开内容来自现有知识文库。';
+    document.querySelector('#insight-description').textContent='整体充退磁、电磁脉冲制造，以及特种磁极与线圈的相关资料。';
+    document.querySelector('#insight-relations').textContent='';
     const link=document.querySelector('#insight-link');link.textContent='浏览知识文库';link.href=`${base}#knowledge`;
     delete document.querySelector('#topic-insight').dataset.topic;
   }
@@ -330,7 +390,7 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     if(pointer.active)orb.style.transform=`translate3d(${pointer.x-4}px,${pointer.y-4}px,0)`;
     for(const topic of topics){
       if(!topic.visible)continue;
-      const r=topic.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:175,limit:mobile?5:18,enabled:document.activeElement!==topic.element&&pinnedId!==topic.id&&!powerScene});
+      const r=topic.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:175,limit:mobile?5:18,enabled:document.activeElement!==topic.element&&pinnedId!==topic.id&&(!powerScene||powerScene.automatic)});
       const inset=mobile?6:18,tx=clamp(response.x,Math.min(0,networkRect.left+inset-r.left),Math.max(0,networkRect.right-inset-r.right)),ty=clamp(response.y,Math.min(0,networkRect.top+inset-r.top),Math.max(0,networkRect.bottom-inset-r.bottom));
       topic.element.dataset.induction=response.phase;topic.element.style.setProperty('--induction-strength',response.strength.toFixed(3));
       [topic.x,topic.vx]=spring(topic.x,topic.vx,tx,dt);[topic.y,topic.vy]=spring(topic.y,topic.vy,ty,dt);
@@ -338,7 +398,7 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
       if(Math.abs(topic.x-tx)+Math.abs(topic.y-ty)+Math.abs(topic.vx)+Math.abs(topic.vy)>.035)moving=true;
     }
     for(const entry of entrances){
-      const r=entry.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:220,limit:mobile?3:9,enabled:document.activeElement!==entry.element&&!powerScene});
+      const r=entry.rect,response=inductionTarget({x:r.left+r.width/2,y:r.top+r.height/2},pointer,now,{radius:220,limit:mobile?3:9,enabled:document.activeElement!==entry.element&&(!powerScene||powerScene.automatic)});
       entry.element.dataset.induction=response.phase;
       [entry.x,entry.vx]=spring(entry.x,entry.vx,response.x,dt);[entry.y,entry.vy]=spring(entry.y,entry.vy,response.y,dt);entry.ink.style.transform=`translate3d(${entry.x.toFixed(3)}px,${entry.y.toFixed(3)}px,0)`;
       if(Math.abs(entry.x-response.x)+Math.abs(entry.y-response.y)+Math.abs(entry.vx)+Math.abs(entry.vy)>.035)moving=true;
@@ -350,12 +410,37 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     const hero=renderPower(now),wave=renderWires(now),inputAlive=pointer.active&&now-pointer.time<650;
     if(demo||moving||wave||hero||inputAlive)requestFrame();else last=0;
   }
-  function stopDemo(clear=true){if(!demo)return;demo=null;demoButton.textContent='体验来拒去留';pointer.active=false;orb.classList.remove('visible','is-demo');if(clear){pinnedId=null;focusTopic(null);resetInsight();}}
+  function stopDemo(clear=true){if(!demo)return;demo=null;demoButton.textContent='交互演示';pointer.active=false;orb.classList.remove('visible','is-demo');if(clear){pinnedId=null;focusTopic(null);resetInsight();}}
   function resetMotion(){
     stopPower();stopDemo();cancelAnimationFrame(frame);frame=0;last=0;waveStart=-Infinity;pointer.active=false;orb.classList.remove('visible','is-demo');
     for(const item of [...topics,...entrances]){item.x=item.y=item.vx=item.vy=0;item.ink.style.transform='none';item.element.dataset.induction='idle';}stage.dataset.induction='idle';renderWires();
   }
-  function syncMotion(){if(!canAnimate())resetMotion();else requestFrame();document.body.classList.toggle('motion-off',!canAnimate());motionButton.disabled=reduced.matches;motionButton.setAttribute('aria-pressed',String(disabled||reduced.matches));motionButton.textContent=reduced.matches?'已按系统关闭动效':disabled?'开启动效':'关闭动效';demoButton.disabled=!canAnimate();powerButton.disabled=!canAnimate();if(reduced.matches)powerStatus.textContent='已按系统设置保留静态画面，知识仍可探索。';else if(disabled)powerStatus.textContent='动效已关闭，仍可选择主题与阅读文章。';else if(!powerScene)powerStatus.textContent=powerDone?'再点字标可重新通电，靠近主题探索知识。':'点击字标，唤醒知识网络。';}
+  function syncMotion(){if(!canAnimate()){powerCycle.pause();resetMotion();}else{requestFrame();powerCycle.schedule();}document.body.classList.toggle('motion-off',!canAnimate());motionButton.disabled=reduced.matches;motionButton.setAttribute('aria-pressed',String(disabled||reduced.matches));motionButton.textContent=reduced.matches?'已按系统关闭动效':disabled?'开启动效':'关闭动效';demoButton.disabled=!canAnimate();powerButton.disabled=!canAnimate();document.querySelector('#power-preview').disabled=!canAnimate();if(reduced.matches)powerStatus.textContent='已按系统设置保留静态画面，知识仍可探索。';else if(disabled)powerStatus.textContent='动效已关闭，仍可选择主题与阅读文章。';else if(!powerScene)powerStatus.textContent=idlePowerStatus();}
+  function syncPowerControls(){
+    document.querySelector('#power-auto').checked=powerOptions.auto;
+    for(const [key,scale,suffix] of [['interval',1,' 秒'],['speed',100,' 倍'],['intensity',100,'%']]){
+      const value=powerOptions[key]*scale;document.querySelector(`#power-${key}`).value=String(value);
+      document.querySelector(`#power-${key}-value`).textContent=(key==='speed'?powerOptions.speed.toFixed(2).replace(/0$/,''):Math.round(value))+suffix;
+    }
+    document.querySelector('#power-style').value=powerOptions.style;
+  }
+  function persistPowerOptions(){
+    document.querySelector('#power-setting-hint').textContent=savePowerOptions(powerStorage,powerOptions)?'已保存在当前浏览器，切到后台时自动暂停。':'本次设置已生效；浏览器未允许保存偏好。';
+  }
+  powerSettingsToggle.addEventListener('click',()=>{stopPower();powerCycle.pause();pointer.active=false;orb.classList.remove('visible');syncPowerControls();powerSettings.showModal();});
+  document.querySelector('#power-settings-close').addEventListener('click',()=>powerSettings.close());
+  powerSettings.addEventListener('close',()=>{powerCycle.schedule();if(!powerScene&&canAnimate())powerStatus.textContent=idlePowerStatus();});
+  powerSettings.addEventListener('cancel',event=>event.stopPropagation());
+  powerSettings.addEventListener('click',event=>{if(event.target===powerSettings){const r=powerSettings.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)powerSettings.close();}});
+  function changePowerOption(event){
+    const key=event.target.id.replace('power-','');if(!['auto','interval','speed','intensity','style'].includes(key))return;
+    const value=key==='auto'?event.target.checked:key==='style'?event.target.value:Number(event.target.value)/(key==='interval'?1:100);
+    powerOptions=normalizePowerOptions({...powerOptions,[key]:value});syncPowerControls();persistPowerOptions();powerCycle.schedule();
+  }
+  powerSettings.addEventListener('input',changePowerOption);
+  powerSettings.addEventListener('change',changePowerOption);
+  document.querySelector('#power-restore').addEventListener('click',()=>{powerOptions=normalizePowerOptions();disabled=false;persistPowerOptions();syncPowerControls();syncMotion();});
+  document.querySelector('#power-preview').addEventListener('click',()=>{powerSettings.close();startPower();});
   for(const topic of topics){
     topic.element.setAttribute('aria-label',`探索${topic.name}`);
     topic.element.addEventListener('click',()=>chooseTopic(topic.id));
@@ -363,24 +448,30 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
     topic.element.addEventListener('blur',()=>{if(!pinnedId&&!pointer.active)focusTopic(null);});
   }
   stage.addEventListener('pointermove',event=>{
-    if(event.pointerType==='touch')return;
+    if(powerSettings.open||event.pointerType==='touch')return;
     if(demo)stopDemo(false);
     const now=performance.now(),elapsed=(now-pointer.time)/1000,continuous=pointer.active&&elapsed>0&&elapsed<.16;
     pointer.vx=continuous?clamp((event.clientX-pointer.x)/elapsed,-1800,1800):0;
     pointer.vy=continuous?clamp((event.clientY-pointer.y)/elapsed,-1800,1800):0;
-    pointer.x=event.clientX;pointer.y=event.clientY;pointer.time=now;pointer.active=true;if(powerScene)return;
+    pointer.x=event.clientX;pointer.y=event.clientY;pointer.time=now;pointer.active=true;if(powerScene&&!powerScene.automatic)return;
     if(!pinnedId)focusTopic(nearestTopic());requestFrame();
   },{passive:true});
   stage.addEventListener('pointerleave',()=>{if(demo)return;pointer.active=false;orb.classList.remove('visible');if(!pinnedId&&!document.activeElement?.classList.contains('network-node'))focusTopic(null);requestFrame();},{passive:true});
-  demoButton.addEventListener('click',()=>{stopPower();if(demo){stopDemo();return;}if(!canAnimate())return;pinnedId=null;cachePositions();demo={start:performance.now()};demoButton.textContent='停止演示';requestFrame();});
+  demoButton.addEventListener('click',()=>{if(powerSettings.open)powerSettings.close();stopPower();if(demo){stopDemo();return;}if(!canAnimate())return;pinnedId=null;cachePositions();demo={start:performance.now()};demoButton.textContent='停止演示';requestFrame();});
   powerButton.addEventListener('click',startPower);
   document.querySelector('.glyph-hit').addEventListener('click',startPower);
-  resetButton.addEventListener('click',clearExploration);motionButton.addEventListener('click',()=>{disabled=!disabled;syncMotion();});
-  document.addEventListener('keydown',event=>{if(event.key==='Escape')clearExploration();if(event.key==='Tab'){stopDemo();pointer.active=false;orb.classList.remove('visible');}});
-  window.addEventListener('blur',()=>{stopPower();stopDemo();pointer.active=false;orb.classList.remove('visible');if(!pinnedId)focusTopic(null);});
+  resetButton.addEventListener('click',clearExploration);motionButton.addEventListener('click',()=>{disabled=!disabled;powerOptions.motion=!disabled;persistPowerOptions();syncMotion();});
+  document.addEventListener('keydown',event=>{if(powerSettings.open)return;if(event.key==='Escape')clearExploration();if(event.key==='Tab'){stopDemo();pointer.active=false;orb.classList.remove('visible');}});
+  window.addEventListener('blur',()=>{powerCycle.pause();stopPower();stopDemo();pointer.active=false;orb.classList.remove('visible');if(!pinnedId)focusTopic(null);});
+  window.addEventListener('focus',()=>powerCycle.schedule());
   window.addEventListener('resize',cachePositions,{passive:true});window.addEventListener('scroll',cachePositions,{passive:true});
   document.addEventListener('visibilitychange',syncMotion);reduced.addEventListener('change',syncMotion);
-  demoButton.textContent='体验来拒去留';
+  const logoObserver=new IntersectionObserver(entries=>{logoVisible=entries[0].isIntersecting;if(logoVisible)powerCycle.schedule();else{powerCycle.pause();stopPower();}},{threshold:.1});
+  logoObserver.observe(document.querySelector('.wordmark'));
+  window.addEventListener('pagehide',event=>{if(event.persisted)powerCycle.pause();else{powerCycle.dispose();logoObserver.disconnect();}});
+  window.addEventListener('pageshow',event=>{if(event.persisted)syncMotion();});
+  demoButton.textContent='交互演示';
+  syncPowerControls();
 
   // Only accept the public catalogue from this page's same-origin host application.
   const publicArticleTerms={magnetization:['整体充退磁','充退磁'],equipment:['整体充退磁','充退磁'],onsite:['整体充退磁','充退磁'],assembly:['整体充退磁','充退磁'],demag:['整体充退磁','充退磁'],pulse:['电磁加工','电磁脉冲制造'],welding:['管件'],riveting:['电磁铆接'],crimping:['线缆'],service:['特种磁极','特种线圈'],simulation:['特种磁极','特种线圈'],poles:['特种磁极','特种线圈'],coils:['特种磁极','特种线圈']};
@@ -397,9 +488,8 @@ function inductionTarget(center, pointer, now, { radius=190, limit=16, enabled=t
   document.addEventListener('keydown',event=>{
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&window.parent!==window){event.preventDefault();window.parent.postMessage({type:'cimai:home-search'},location.origin);}
   });
-  document.querySelector('[data-home-theme]').addEventListener('click',()=>window.parent.postMessage({type:'cimai:home-theme'},location.origin));
 
-  stage.dataset.power='idle';cachePositions();resetInsight();renderPower(performance.now());syncMotion();document.fonts?.ready.then(()=>{cachePositions();if(canAnimate())startPower();});
+  stage.dataset.power='idle';cachePositions();resetInsight();renderPower(performance.now());syncMotion();document.fonts?.ready.then(()=>{cachePositions();if(canAnimate()&&powerOptions.auto&&logoVisible)startPower({automatic:true});powerCycle.schedule();});
 })();
 
 </script>

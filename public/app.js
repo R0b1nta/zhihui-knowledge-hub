@@ -1,12 +1,12 @@
 import { renderCinematicHome } from '/home.js';
 import { mountReader } from '/reader.js';
 import { mountArticleEditor, draftPreview } from '/editor.js';
-import { homeDateKey, resolveHomeTheme, readHomeTheme, saveHomeTheme } from '/home-theme.js';
+import { resolveHomeTheme } from '/home-theme.js';
 
 const $ = selector => document.querySelector(selector);
 const main = $('#main');
 const dialog = $('#dialog');
-const state = { articles: [], projects: [], users: [], references: [], user: null, configured: false, loginAvailable: false, category: '全部', query: '', status: 'all', libraryView: 'list', librarySort: 'updated' };
+const state = { articles: [], projects: [], users: [], references: [], user: null, configured: false, loginAvailable: false, setupAvailable: false, category: '全部', query: '', status: 'all', libraryView: 'list', librarySort: 'updated' };
 const statuses = { planned: '待开始', active: '进行中', done: '已完成' };
 const h = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date = value => value ? new Date(value).toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}) : '未设置';
@@ -19,10 +19,6 @@ const admin = () => state.user?.role === 'admin';
 let toastTimer;
 let searchSequence = 0;
 let cleanupPage = null;
-let themeStorage;
-try{themeStorage=window.localStorage;}catch{}
-let homeThemeMode=readHomeTheme(themeStorage);
-const homeVisitDate=new Date();
 function toast(text) { $('#toast').textContent=text; $('#toast').hidden=false; clearTimeout(toastTimer); toastTimer=setTimeout(() => $('#toast').hidden=true,3500); }
 async function api(path, method='GET', data) {
   const response = await fetch(`/api/${path}`, { method, credentials:'same-origin', headers: data === undefined ? {} : {'Content-Type':'application/json'}, body: data === undefined ? undefined : JSON.stringify(data) });
@@ -36,6 +32,7 @@ async function api(path, method='GET', data) {
 function title(heading, subtitle, action='') { return `<div class="page-title"><div><h1>${heading}</h1><p>${subtitle}</p></div>${action}</div>`; }
 function articleReturnHash() {
   const hash = route()==='article' ? new URLSearchParams(location.hash.split('?')[1] || '').get('from') : (location.hash || '#home');
+  if(hash==='#landscape')return '#home';
   return ['#home','#landscape'].includes(hash) || /^#knowledge(?:\?|$)/.test(hash || '') || /^#search(?:\?|$)/.test(hash || '') ? hash : '#knowledge';
 }
 function articleHref(id) { return `#article/${id}?${new URLSearchParams({from:articleReturnHash()})}`; }
@@ -53,7 +50,7 @@ function navigateKnowledge(category=state.category,query=state.query) {
 }
 
 function home() {
-  const theme=resolveHomeTheme(homeThemeMode,homeVisitDate);
+  const theme=resolveHomeTheme();
   document.body.dataset.homeTheme=theme;
   if(theme==='landscape')return landscape();
   main.innerHTML='<iframe class="electromagnetic-home-frame" src="/electromagnetic-home.html" title="磁脉首页：技术与知识"></iframe>';
@@ -67,7 +64,6 @@ function home() {
     if(event.data?.type==='cimai:home-search'){
       navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());
     }
-    if(event.data?.type==='cimai:home-theme')openHomeTheme();
   },{signal:controller.signal});
   cleanupPage=()=>{controller.abort();frame.remove();};
 }
@@ -77,18 +73,6 @@ function landscape() {
     main, articles:state.articles, user:state.user, articleHref, escape:h, date,
     onAccount:()=>$('#account-button').click(),
     onSearch:()=>{navigateSearch('');requestAnimationFrame(()=>$('#page-search')?.focus());},
-    onTheme:openHomeTheme,
-  });
-}
-
-function openHomeTheme(){
-  const today=resolveHomeTheme('daily',homeVisitDate)==='magnetic'?'磁脉':'山水';
-  openDialog('首页外观',`<p class="theme-intro">两种外观共用同一套知识文库。文章、搜索和项目空间保持一致。</p><form id="home-theme-form" class="theme-options">${[['magnetic','磁脉','定制字标与“来拒去留”交互。'],['landscape','山水','云海与山峦，保留安静的阅读入口。'],['daily','随日期切换',`按北京时间每天交替；${homeDateKey(homeVisitDate)} 为${today}，本次浏览期间保持一致。`]].map(([value,label,description])=>`<label><input type="radio" name="theme" value="${value}" ${homeThemeMode===value?'checked':''}><span><strong>${label}</strong><small>${description}</small></span></label>`).join('')}<div class="form-actions"><button class="button secondary" type="button" data-close>取消</button><button class="button" type="submit">应用外观</button></div></form>`);
-  $('#home-theme-form').addEventListener('submit',event=>{
-    event.preventDefault();homeThemeMode=new FormData(event.currentTarget).get('theme');
-    const saved=saveHomeTheme(themeStorage,homeThemeMode);dialog.close();
-    if(route()==='home')render();else location.hash='#home';
-    if(!saved)toast('本次浏览已应用；浏览器未允许保存外观偏好。');
   });
 }
 
@@ -104,7 +88,7 @@ function renderArticleResults() {
 function knowledge() {
   const params=new URLSearchParams(location.hash.split('?')[1]||'');const category=params.get('category')||'全部';state.category=category==='全部'||state.articles.some(a=>a.category===category)?category:'全部';state.query=(params.get('q')||'').slice(0,100);state.libraryView=params.get('view')==='grid'?'grid':'list';state.librarySort=params.get('sort')==='title'?'title':'updated';
   const categories=[...new Set(state.articles.map(article=>article.category))];
-  main.innerHTML=`<section class="knowledge-intro"><div><span class="eyebrow">磁脉技术与知识</span><h1>知识文库</h1><p>从技术原理到工程应用，让每一份经验有据可查。</p></div><div class="knowledge-intro-meta"><strong>${state.articles.length}</strong> 篇公开知识 / ${categories.length} 个分类</div>${admin()?'<button class="button" data-action="new-article">发布文章</button>':''}</section><div class="knowledge-toolbar"><div class="search-bar"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="搜索文章" placeholder="搜索标题、摘要或正文…" maxlength="100" value="${h(state.query)}"></div><select class="library-order" aria-label="文章排序"><option value="updated" ${state.librarySort==='updated'?'selected':''}>最近更新</option><option value="title" ${state.librarySort==='title'?'selected':''}>按标题排序</option></select><div class="library-view" role="group" aria-label="文章显示方式"><button type="button" data-library-view="list" class="${state.libraryView==='list'?'active':''}" aria-pressed="${state.libraryView==='list'}">列表</button><button type="button" data-library-view="grid" class="${state.libraryView==='grid'?'active':''}" aria-pressed="${state.libraryView==='grid'}">卡片</button></div></div><div class="filters">${['全部',...categories].map(name=>`<button type="button" class="filter ${state.category===name?'active':''}" data-category="${h(name)}">${h(name)}<small>${name==='全部'?state.articles.length:state.articles.filter(article=>article.category===name).length}</small></button>`).join('')}</div><div class="library-results-heading"><p id="results-count"></p><span>${state.category==='全部'?'全部知识':h(state.category)}</span></div><div id="article-results"></div>`;
+  main.innerHTML=`<section class="knowledge-intro"><div><h1>知识文库</h1><p>从技术原理到工程应用，让每一份经验有据可查。</p></div><div class="knowledge-intro-meta"><strong>${state.articles.length}</strong> 篇公开知识 / ${categories.length} 个分类</div>${admin()?'<button class="button" data-action="new-article">发布文章</button>':''}</section><div class="knowledge-toolbar"><div class="search-bar"><span aria-hidden="true">⌕</span><input id="search" type="search" aria-label="搜索文章" placeholder="搜索标题、摘要或正文…" maxlength="100" value="${h(state.query)}"></div><select class="library-order" aria-label="文章排序"><option value="updated" ${state.librarySort==='updated'?'selected':''}>最近更新</option><option value="title" ${state.librarySort==='title'?'selected':''}>按标题排序</option></select><div class="library-view" role="group" aria-label="文章显示方式"><button type="button" data-library-view="list" class="${state.libraryView==='list'?'active':''}" aria-pressed="${state.libraryView==='list'}">列表</button><button type="button" data-library-view="grid" class="${state.libraryView==='grid'?'active':''}" aria-pressed="${state.libraryView==='grid'}">卡片</button></div></div><div class="filters">${['全部',...categories].map(name=>`<button type="button" class="filter ${state.category===name?'active':''}" data-category="${h(name)}">${h(name)}<small>${name==='全部'?state.articles.length:state.articles.filter(article=>article.category===name).length}</small></button>`).join('')}</div><div class="library-results-heading"><p id="results-count"></p><span>${state.category==='全部'?'全部知识':h(state.category)}</span></div><div id="article-results"></div>`;
   updateCategoryNavigation();renderArticleResults();
   $('#search').addEventListener('input',event=>{state.query=event.target.value;history.replaceState(null,'',knowledgeHash());renderArticleResults();});
   $('.library-order').addEventListener('change',event=>{state.librarySort=event.target.value;history.replaceState(null,'',knowledgeHash());renderArticleResults();});
@@ -167,6 +151,7 @@ function projects() {
   main.innerHTML=title('项目空间',`你好，${h(state.user.name)}。团队项目在这里保持同步。`,'<button class="button" data-action="new-project">＋ 新建项目</button>')+`<div class="project-summary">${[['全部项目',state.projects.length],['进行中',state.projects.filter(p=>p.status==='active').length],['已完成',state.projects.filter(p=>p.status==='done').length]].map(([name,count])=>`<div><span>${name}</span><strong>${count}</strong></div>`).join('')}</div><div class="preview-notice">当前为团队共享空间：所有已开通账号的员工均可查看和更新项目；管理员可以删除项目。</div><div class="filters">${Object.entries({all:'全部项目',...statuses}).map(([key,label])=>`<button class="filter ${state.status===key?'active':''}" data-status="${key}">${label} · ${key==='all'?state.projects.length:state.projects.filter(p=>p.status===key).length}</button>`).join('')}</div>${items.length?`<div class="project-grid">${items.map(projectCard).join('')}</div>`:`<div class="empty"><h3>${state.status==='all'?'从第一个项目开始':'此状态下还没有项目'}</h3><p>写下目标、负责人和截止日期，让大家知道下一步做什么。</p><button class="button secondary" data-action="new-project">新建项目 →</button></div>`}`;
 }
 function adminPage() {
+  if(state.setupAvailable)return setupAdminPage();
   if(!admin()){main.innerHTML=title('内容与账号','这里需要管理员账号。')+'<div class="empty"><h3>请使用管理员账号登录</h3><p>管理员负责发布公开文章和开通员工账号。</p><button class="button" data-action="login">员工登录 ↗</button></div>';return;}
   main.innerHTML=title('内容与账号','管理对外分享的知识，以及团队成员的访问权限。')+`<section class="admin-section"><div class="section-heading"><h2>公开文章 · ${state.articles.length}</h2><button class="button small" data-action="new-article">＋ 发布文章</button></div><div class="table-wrap"><table><thead><tr><th>文章标题</th><th>分类</th><th>更新日期</th><th>操作</th></tr></thead><tbody>${state.articles.map(a=>`<tr><td>${h(a.title)}</td><td>${h(a.category)}</td><td>${date(a.updated)}</td><td><div class="inline-actions"><button class="text-button" data-edit-article="${a.id}">编辑</button><button class="text-button" data-delete-article="${a.id}">删除</button></div></td></tr>`).join('')||'<tr><td colspan="4">暂无文章</td></tr>'}</tbody></table></div></section><section class="admin-section"><div class="section-heading"><h2>团队账号 · ${state.users.length}</h2><button class="button small" data-action="new-user">＋ 开通账号</button></div><div class="table-wrap"><table><thead><tr><th>姓名</th><th>账号</th><th>角色 / 状态</th><th>操作</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${h(u.name)}</td><td>${h(u.username)}</td><td>${u.role==='admin'?'管理员':'员工'} / ${u.active?'已启用':'已停用'}</td><td><div class="inline-actions"><button class="text-button" data-reset-user="${u.id}">重设密码</button>${u.role!=='admin'?`<button class="text-button" data-toggle-user="${u.id}">${u.active?'停用':'启用'}</button>`:''}</div></td></tr>`).join('')}</tbody></table></div></section>`;
   main.insertAdjacentHTML('beforeend',`<section class="admin-section"><div class="section-heading"><div><h2>旧站参考内容 · ${state.references.length} 篇</h2><p class="section-subtitle">预览整理后的内容，确认后再导入公开知识库；不覆盖现有文章。</p></div><button class="button small" data-action="import-references" ${state.references.every(item=>item.imported)?'disabled':''}>导入全部待发布内容</button></div><div class="table-wrap"><table><thead><tr><th>参考文章</th><th>分类</th><th>状态</th><th>操作</th></tr></thead><tbody>${state.references.map(item=>`<tr><td>${h(item.title)}</td><td>${h(item.category)}</td><td>${item.imported?'已导入':'待确认'}</td><td><button class="text-button" data-reference="${h(item.id)}">预览${item.imported?'':'与导入'} ↗</button></td></tr>`).join('')}</tbody></table></div></section>`);
@@ -175,7 +160,6 @@ function render() {
   cleanupPage?.();cleanupPage=null;
   searchSequence++;
   if(route()==='landscape'){
-    homeThemeMode='landscape';saveHomeTheme(themeStorage,homeThemeMode);
     history.replaceState(null,'',location.pathname+location.search+'#home');
   }
   const current=route();
@@ -185,8 +169,8 @@ function render() {
   const activeNav=current==='article'?'knowledge':current==='landscape'?'home':current;
   document.querySelectorAll('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===activeNav);if(a.dataset.nav===activeNav)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   $('#page-label').textContent=({home:'磁脉首页',landscape:'山水首页',knowledge:'知识文库',projects:'项目空间',admin:'内容与账号',search:'全局搜索',article:'文章详情'})[current];
-  $('#admin-nav').hidden=!admin();
-  $('#account-button').textContent=state.user?`${state.user.name} · 退出`:'员工登录 ↗';
+  $('#admin-nav').hidden=!admin()&&!state.setupAvailable;
+  $('#account-button').textContent=state.user?`${state.user.name} · 退出`:state.setupAvailable?'开通管理员':'员工登录 ↗';
   $('#global-search').placeholder=state.user?'搜索知识、项目、负责人…':'搜索公开知识…';
   document.title=`${$('#page-label').textContent} · 磁脉知识库`;
   ({home,landscape,knowledge,projects,admin:adminPage,search:searchPage,article:articlePage})[current]();
@@ -215,10 +199,25 @@ function formSubmit(handler) {
   });
 }
 function login() {
+  if(state.setupAvailable){dialog.close();if(route()==='admin')render();else location.hash='#admin';return;}
   if(!state.loginAvailable){openDialog('员工登录',`<p class="form-note">${state.configured?'员工登录需要加密连接。当前入口可浏览公开知识库，域名与 HTTPS 配置完成后即可登录。':'员工账号正在准备中，请联系管理员开通。公开知识库可以直接浏览。'}</p><div class="form-actions"><button class="button" data-close>知道了</button></div>`);return;}
   if(!state.configured){openDialog('员工登录','<p class="form-note">管理员尚未开通账号。公开知识库可以直接浏览，项目空间将在账号开通后启用。</p><div class="form-actions"><button class="button" data-close>知道了</button></div>');return;}
   openDialog('登录员工空间',`<form><p class="form-note">使用管理员为你开通的账号登录。</p><label>账号<input name="username" required maxlength="64" autocomplete="username" autocapitalize="none"></label><label>密码<input name="password" type="password" required maxlength="128" autocomplete="current-password"></label>${actions('登录 →')}</form>`);
   formSubmit(async values=>{await api('login','POST',values);});
+}
+function setupAdminPage(){
+  main.innerHTML=title('开通管理员','设置账号后，即可发布文章和开通员工账号。')+`<section class="setup-panel"><form id="admin-setup-form"><p class="form-note">这是本机首次开通。密码由你在这里设置，开通后会直接进入后台。</p><label>管理员账号<input name="username" required minlength="3" maxlength="64" pattern="[a-zA-Z0-9._-]{3,64}" autocomplete="username" autocapitalize="none" placeholder="例如 admin"></label><label>显示姓名<input name="name" required maxlength="60" value="管理员" autocomplete="name"></label><label>设置密码<input name="password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"><small>至少 12 个字符，请保存好。</small></label><label>再次输入密码<input name="passwordConfirm" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></label><p class="form-error" role="alert"></p><button class="button" type="submit">开通并进入后台</button></form></section>`;
+  const form=$('#admin-setup-form'),confirmation=form.elements.passwordConfirm;
+  confirmation.addEventListener('input',()=>confirmation.setCustomValidity(''));
+  form.elements.password.addEventListener('input',()=>confirmation.setCustomValidity(''));
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(form.elements.password.value!==confirmation.value){confirmation.setCustomValidity('两次密码不一致');confirmation.reportValidity();return;}
+    const button=form.querySelector('[type=submit]');button.disabled=true;form.querySelector('.form-error').textContent='';
+    try{await api('setup','POST',Object.fromEntries(new FormData(form)));form.reset();await refresh();toast('管理员已开通，现在可以管理文章和账号。');}
+    catch(error){form.querySelector('.form-error').textContent=error.message;}
+    finally{button.disabled=false;}
+  });
 }
 function editArticle(id) {
   const item=state.articles.find(a=>a.id===id)||{};

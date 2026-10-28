@@ -19,7 +19,7 @@ function fieldDrawing(id) {
   return `<svg class="field-drawing" viewBox="0 0 680 410" role="img" aria-label="${directions.find(d=>d.id===id).caption}，概念示意"><defs><radialGradient id="field-glow"><stop stop-color="#afc9cd" stop-opacity=".25"/><stop offset="1" stop-color="#afc9cd" stop-opacity="0"/></radialGradient></defs><ellipse cx="340" cy="198" rx="310" ry="185" fill="url(#field-glow)"/><g class="field-lines" fill="none" stroke="#aac7ce" stroke-width=".8" opacity=".35">${rings}</g><path d="M70 198h540M340 36v324" stroke="#809ea8" stroke-width=".7" stroke-dasharray="3 8" opacity=".45"/><g>${workpiece}</g><g class="field-coil" fill="none" stroke="#d1e1df" stroke-width="2.4">${id==='coils'?'':coil}</g><ellipse class="field-trace" cx="340" cy="198" rx="210" ry="103" fill="none" stroke="#e3ede9" stroke-width="1.4" stroke-dasharray="35 850"/><circle cx="340" cy="198" r="3" fill="#e8f0ed"/></svg>`;
 }
 
-export function renderCinematicHome({main, articles, user, articleHref, escape:h, date, onAccount, onSearch, onTheme}) {
+export function renderCinematicHome({main, articles, user, articleHref, escape:h, date, onAccount, onSearch}) {
   const controller = new AbortController();
   const signal = controller.signal;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -34,7 +34,7 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
       <header class="home-header">
         <a class="home-brand" href="#home" aria-label="磁脉首页">${brandSymbol}<span>磁脉<small>Cimai</small></span></a>
         <nav class="home-nav" aria-label="首页导航"><button type="button" data-home-jump="home-technology">技术方向</button><a href="#knowledge">知识文库</a><a href="#projects">项目空间</a></nav>
-        <div class="home-header-actions"><button class="home-theme-choice" type="button" data-home-theme>首页外观</button><button class="home-search" type="button" data-home-search aria-label="搜索公开知识">${searchSymbol}</button><button class="home-account" type="button" data-home-account>${user?h(user.name):'员工登录'}</button></div>
+        <div class="home-header-actions"><button class="home-search" type="button" data-home-search aria-label="搜索公开知识">${searchSymbol}</button><button class="home-account" type="button" data-home-account>${user?h(user.name):'员工登录'}</button></div>
       </header>
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-landscape" aria-hidden="true"><img class="home-landscape-image" src="/assets/cimai-mountains.jpg" width="1672" height="941" alt="" fetchpriority="high" decoding="async"></div>
@@ -103,7 +103,6 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
     if(target.hasAttribute('data-close-settings')){setSettingsOpen(false);return;}
     if(target.hasAttribute('data-home-account')){onAccount();return;}
     if(target.hasAttribute('data-home-search')){onSearch();return;}
-    if(target.hasAttribute('data-home-theme')){onTheme?.();return;}
     if(target.dataset.direction!==undefined){showDirection(Number(target.dataset.direction));return;}
     if(target===motionButton || motionButton.contains(target)){manuallyPaused=!manuallyPaused;syncMotion();}
   },{signal});

@@ -4,13 +4,14 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname, basename } from 'node:path';
 import { once } from 'node:events';
+import { request as httpRequest } from 'node:http';
 import { createApp } from '../server.mjs';
 import { openStore, passwordHash, passwordMatches } from '../lib/store.mjs';
 
-async function fixture(t,secureCookies=false) {
+async function fixture(t,secureCookies=false,{seedAdmin=true,allowLocalSetup=false}={}) {
   const dataDir=mkdtempSync(join(tmpdir(),'cimai-test-'));
-  const app=createApp({dataDir,secureCookies});
-  app.db.prepare("INSERT INTO users(username,name,password,role) VALUES (?,?,?,'admin')").run('admin','管理员',passwordHash('Admin-test-password-123'));
+  const app=createApp({dataDir,secureCookies,allowLocalSetup});
+  if(seedAdmin)app.db.prepare("INSERT INTO users(username,name,password,role) VALUES (?,?,?,'admin')").run('admin','管理员',passwordHash('Admin-test-password-123'));
   app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
   const base=`http://127.0.0.1:${app.server.address().port}`;
   t.after(async()=>{
@@ -63,8 +64,10 @@ test('默认首页资源包含定制字标，阅读与首页共用站点且页�
   const html=await page.text();
   assert.match(html,/cimai-letterform/);
   assert.match(html,/cimai:public-home-context/);
-  assert.match(html,/data-home-theme/);
+  assert.doesNotMatch(html,/data-home-theme|cimai:home-theme/);
   assert.match(html,/function inductionTarget/);
+  assert.match(html,/function createPowerCycle/);
+  assert.match(html,/id="power-settings"/);
   assert.doesNotMatch(html,/127\.0\.0\.1|localhost:310[23]/);
   assert.equal((await fetch(`${f.base}/editor.js`)).status,200);
   const root=await fetch(f.base);
@@ -234,4 +237,50 @@ test('旧站参考内容：仅管理员可预览导入，保留原数据并避�
   assert.equal((await f.request('reference-articles/import','POST',{ids},admin)).body.imported,0);
   assert.equal((await f.request(`articles/${imported.id}`)).body.content,'保留编辑内容');
   assert.equal((await f.request('reference-articles','GET',undefined,admin)).body.every(a=>a.imported),true);
+});
+
+test('本机首次开通管理员并建立会话，随后可发布文章、重新登录且不能再次开通',async t=>{
+  const f=await fixture(t,false,{seedAdmin:false,allowLocalSetup:true});
+  const before=(await f.request('me')).body;assert.equal(before.setupAvailable,true);assert.equal(before.configured,false);
+  const input={username:'Owner',name:'管理者',password:'Setup-test-password-123',passwordConfirm:'Setup-test-password-123'};
+  const created=await f.request('setup','POST',input);assert.equal(created.status,201);assert.equal(created.body.user.role,'admin');assert.equal(created.body.user.username,'owner');assert.equal('password' in created.body.user,false);
+  assert.match(created.headers.get('set-cookie'),/HttpOnly/);assert.match(created.headers.get('set-cookie'),/SameSite=Strict/);
+  const after=(await f.request('me','GET',undefined,created.cookie)).body;assert.equal(after.configured,true);assert.equal(after.setupAvailable,false);assert.equal(after.user.role,'admin');
+  assert.equal((await f.request('articles','POST',{title:'首次管理测试',category:'测试',summary:'测试摘要',content:'仅在隔离数据中验证。'},created.cookie)).status,200);
+  assert.equal((await f.request('setup','POST',{...input,username:'second'})).status,409);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM users').get().n,1);
+  await f.request('logout','POST',{},created.cookie);assert.equal((await f.login('owner',input.password)).status,200);
+  const persisted=openStore(f.dataDir);assert.equal(persisted.prepare('SELECT username FROM users').get().username,'owner');assert.equal(persisted.prepare('SELECT COUNT(*) AS n FROM articles').get().n,4);persisted.close();
+});
+
+test('首次开通默认关闭，生产模式与代理请求不能领取管理员',async t=>{
+  const input={username:'owner',name:'管理者',password:'Setup-test-password-123',passwordConfirm:'Setup-test-password-123'};
+  const disabled=await fixture(t,false,{seedAdmin:false});assert.equal((await disabled.request('me')).body.setupAvailable,false);assert.equal((await disabled.request('setup','POST',input)).status,403);
+  const production=await fixture(t,true,{seedAdmin:false,allowLocalSetup:true});assert.equal((await production.request('me','GET',undefined,'',{'X-Forwarded-Proto':'https'})).body.setupAvailable,false);assert.equal((await production.request('setup','POST',input,'',{'X-Forwarded-Proto':'https'})).status,403);
+  const local=await fixture(t,false,{seedAdmin:false,allowLocalSetup:true});
+  for(const headers of [{Host:'public.example'},{Host:'user@127.0.0.1'},{'X-Forwarded-For':'8.8.8.8'},{'X-Real-IP':'8.8.8.8'},{Forwarded:'for=8.8.8.8'},{Origin:'https://other.example'},{'Sec-Fetch-Site':'cross-site'}]){
+    // Use raw HTTP: fetch can normalize or ignore Host and fetch-metadata headers.
+    const status=await new Promise((resolve,reject)=>{
+      const request=httpRequest(`${local.base}/api/setup`,{method:'POST',headers:{'Content-Type':'application/json',...headers}},response=>{response.resume();response.on('end',()=>resolve(response.statusCode));});
+      request.on('error',reject);request.end(JSON.stringify(input));
+    });
+    assert.equal(status,403,JSON.stringify(headers));
+  }
+  assert.equal(local.db.prepare('SELECT COUNT(*) AS n FROM users').get().n,0);
+});
+
+test('首次开通校验账号与两次密码，现存或停用账号均不能被重置接管',async t=>{
+  const f=await fixture(t,false,{seedAdmin:false,allowLocalSetup:true});
+  const input={username:'owner',name:'管理者',password:'Setup-test-password-123',passwordConfirm:'Setup-test-password-123'};
+  for(const patch of [{username:'x'},{name:''},{password:'short',passwordConfirm:'short'},{passwordConfirm:'different'}])assert.equal((await f.request('setup','POST',{...input,...patch})).status,400);
+  assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM users').get().n,0);
+  f.db.prepare("INSERT INTO users(username,name,password,role,active) VALUES (?,?,?,'admin',0)").run('previous','原管理员',passwordHash('Previous-password-123'));
+  assert.equal((await f.request('me')).body.configured,false);assert.equal((await f.request('me')).body.setupAvailable,false);assert.equal((await f.request('setup','POST',input)).status,409);
+});
+
+test('两个同时开通的标签页只有一个成功，不会生成第二个管理员',async t=>{
+  const f=await fixture(t,false,{seedAdmin:false,allowLocalSetup:true});
+  const input={username:'first',name:'管理者',password:'Setup-test-password-123',passwordConfirm:'Setup-test-password-123'};
+  const results=await Promise.all([f.request('setup','POST',input),f.request('setup','POST',{...input,username:'second'})]);
+  assert.deepEqual(results.map(r=>r.status).sort(),[201,409]);assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM users').get().n,1);assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM sessions').get().n,1);
 });
