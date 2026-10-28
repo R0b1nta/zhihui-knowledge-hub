@@ -252,6 +252,7 @@ export function createApp({ dataDir = process.env.DATA_DIR || join(root, 'data')
       const assets = { '/': ['index.html','text/html; charset=utf-8'], '/home.js': ['home.js','text/javascript; charset=utf-8'], '/reader.js': ['reader.js','text/javascript; charset=utf-8'], '/document.js': ['document.js','text/javascript; charset=utf-8'], '/clouds.js': ['clouds.js','text/javascript; charset=utf-8'], '/home.css': ['home.css','text/css; charset=utf-8'], '/assets/cimai-mountains.jpg': ['assets/cimai-mountains.jpg','image/jpeg','public, max-age=86400'], '/app.js': ['app.js','text/javascript; charset=utf-8'], '/style.css': ['style.css','text/css; charset=utf-8'], '/favicon.svg': ['favicon.svg','image/svg+xml'], '/robots.txt': ['robots.txt','text/plain; charset=utf-8'] };
       assets['/editor.js']=['editor.js','text/javascript; charset=utf-8'];
       assets['/home-theme.js']=['home-theme.js','text/javascript; charset=utf-8'];
+      assets['/assets/cimai-landscape-v2.svg']=['assets/cimai-landscape-v2.svg','image/svg+xml'];
       assets['/electromagnetic-home.html']=['electromagnetic-home.html','text/html; charset=utf-8'];
       const asset = assets[path];
       if (!asset) throw new RequestError(404,'页面不存在');

@@ -32,7 +32,7 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
   main.innerHTML = `
     <div class="cinematic-home">
       <header class="home-header">
-        <a class="home-brand" href="#home" aria-label="磁脉首页">${brandSymbol}<span>磁脉<small>Cimai</small></span></a>
+        <a class="home-brand" href="#home" aria-label="磁脉首页">${brandSymbol}<span>磁脉</span></a>
         <nav class="home-nav" aria-label="首页导航"><button type="button" data-home-jump="home-technology">技术方向</button><a href="#knowledge">知识文库</a><a href="#projects">项目空间</a></nav>
         <div class="home-header-actions"><button class="home-search" type="button" data-home-search aria-label="搜索公开知识">${searchSymbol}</button><button class="home-account" type="button" data-home-account>${user?h(user.name):'员工登录'}</button></div>
       </header>
@@ -40,7 +40,7 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
         <div class="home-landscape" aria-hidden="true"><img class="home-landscape-image" src="/assets/cimai-mountains.jpg" width="1672" height="941" alt="" fetchpriority="high" decoding="async"></div>
         <div class="home-hero-shade" aria-hidden="true"></div><canvas class="home-cloud-canvas" aria-hidden="true"></canvas>
         <div class="home-mist home-mist-back" aria-hidden="true"></div><div class="home-mist home-mist-front" aria-hidden="true"></div>
-        <div class="home-hero-center"><h1 id="home-title">磁脉</h1><p class="home-english-name">Cimai</p><p class="home-hero-tagline">技术有据，知识相连。</p></div>
+        <div class="home-hero-center"><h1 id="home-title" class="home-wordmark" aria-label="磁脉"><img src="/assets/cimai-landscape-v2.svg" width="535" height="164" alt="" aria-hidden="true" draggable="false" fetchpriority="high"></h1><p class="home-hero-tagline"><span>驭磁成器</span><span>聚脉成章</span></p></div>
         <div class="home-hero-bottom"><p>脉冲强磁场技术<br><span>从科学探索，到工程应用</span></p><button class="home-scroll" type="button" data-home-jump="home-technology"><span>向下探索</span><svg viewBox="0 0 20 32" fill="none" aria-hidden="true"><path d="M10 1v28m-6-6 6 6 6-6" stroke="currentColor"/></svg></button><div class="home-scene-actions"><button class="home-settings-toggle" type="button" aria-label="调整云海效果" aria-expanded="false" aria-controls="home-scene-settings"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18M8 3v6m8 0v6m-7 0v6" stroke="currentColor" stroke-width="1.3"/></svg></button><button class="home-motion" type="button" aria-pressed="false"><span class="home-motion-icon" aria-hidden="true"></span><span class="home-motion-label">暂停动态背景</span></button></div></div><div class="home-scene-settings" id="home-scene-settings" hidden><div class="home-settings-heading"><span>云海效果</span><button type="button" data-close-settings aria-label="关闭效果设置">×</button></div><label for="home-cloud-density">云雾浓度 <output id="home-density-value">65%</output></label><input id="home-cloud-density" type="range" min="0" max="100" value="65" data-scene-setting="density"><label for="home-cloud-speed">流动速度 <output id="home-speed-value">35%</output></label><input id="home-cloud-speed" type="range" min="0" max="100" value="35" data-scene-setting="speed"><label for="home-cloud-depth">交互景深 <output id="home-depth-value">50%</output></label><input id="home-cloud-depth" type="range" min="0" max="100" value="50" data-scene-setting="depth"><p>移动鼠标，感受云层的远近变化。</p></div>
       </section>
       <section class="home-technology" id="home-technology" aria-labelledby="home-technology-title">
@@ -49,7 +49,7 @@ export function renderCinematicHome({main, articles, user, articleHref, escape:h
       </section>
       <section class="home-library" aria-labelledby="home-library-title"><div class="home-library-heading"><div><span class="home-section-note">公开知识，持续积累</span><h2 id="home-library-title">让技术，有迹可循。</h2></div><a href="#knowledge" class="home-inline-link">浏览知识文库 <span aria-hidden="true">↗</span></a></div><div class="home-articles">${articleRows || '<p class="home-no-articles">技术文章正在整理中，欢迎稍后回来查阅。</p>'}</div></section>
       <section class="home-team" aria-labelledby="home-team-title"><div><h2 id="home-team-title">让经验留下来，<br>让协作向前走。</h2><p>员工登录后，进入团队的项目空间。</p></div><a class="home-team-link" href="#projects">进入项目空间 <span aria-hidden="true">↗</span></a></section>
-      <footer class="home-footer"><a class="home-footer-brand" href="#home">磁脉 <span>Cimai</span></a><p>磁脉电气（东莞）有限公司</p><span>© ${new Date().getFullYear()} 磁脉知识库</span></footer>
+      <footer class="home-footer"><a class="home-footer-brand" href="#home">磁脉</a><p>磁脉电气（东莞）有限公司</p><span>© ${new Date().getFullYear()} 磁脉知识库</span></footer>
     </div>`;
 
   const root = main.querySelector('.cinematic-home');
